@@ -190,8 +190,8 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
     private void initComponents() {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
-        ppPilihSemua = new widget.MenuItem();
-        ppBersihkan = new widget.MenuItem();
+        ppPilihSemua = new javax.swing.JMenuItem();
+        ppBersihkan = new javax.swing.JMenuItem();
         LoadHTML = new widget.editorpane();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
@@ -210,6 +210,8 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
         DTPCari1 = new widget.Tanggal();
         jLabel17 = new widget.Label();
         DTPCari2 = new widget.Tanggal();
+        jLabel12 = new widget.Label();
+        cmbStatus = new widget.ComboBox();
         jLabel16 = new widget.Label();
         TCari = new widget.TextBox();
         BtnCari = new widget.Button();
@@ -403,6 +405,21 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
         DTPCari2.setPreferredSize(new java.awt.Dimension(95, 23));
         panelGlass9.add(DTPCari2);
 
+        jLabel12.setText("Status Kirim :");
+        jLabel12.setName("jLabel12"); // NOI18N
+        jLabel12.setPreferredSize(new java.awt.Dimension(120, 23));
+        panelGlass9.add(jLabel12);
+
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Semua", "Terkirim", "Belum Terkirim" }));
+        cmbStatus.setName("cmbStatus"); // NOI18N
+        cmbStatus.setPreferredSize(new java.awt.Dimension(150, 23));
+        cmbStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbStatusActionPerformed(evt);
+            }
+        });
+        panelGlass9.add(cmbStatus);
+
         jLabel16.setText("Key Word :");
         jLabel16.setName("jLabel16"); // NOI18N
         jLabel16.setPreferredSize(new java.awt.Dimension(70, 23));
@@ -568,6 +585,12 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
         runBackground(() ->tampil());
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnCariActionPerformed
+
+    private void cmbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStatusActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        runBackground(() ->tampil());
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_cmbStatusActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
@@ -811,7 +834,9 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
     private widget.editorpane LoadHTML;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
+    private widget.ComboBox cmbStatus;
     private widget.InternalFrame internalFrame1;
+    private widget.Label jLabel12;
     private widget.Label jLabel15;
     private widget.Label jLabel16;
     private widget.Label jLabel17;
@@ -820,36 +845,49 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
     private javax.swing.JPopupMenu jPopupMenu1;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
-    private widget.MenuItem ppBersihkan;
-    private widget.MenuItem ppPilihSemua;
+    private javax.swing.JMenuItem ppBersihkan;
+    private javax.swing.JMenuItem ppPilihSemua;
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
     
     private void tampil() {
-        Valid.tabelKosong(tabMode);
-        try{
-            ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
-                   "pasien.nm_pasien,pasien.no_ktp,reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) "+
-                   "as pulang,satu_sehat_encounter.id_encounter,pegawai.nama,pegawai.no_ktp as ktppraktisi,"+
-                   "pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.penilaian,"+
-                   "pemeriksaan_ralan.keluhan,pemeriksaan_ralan.pemeriksaan,satu_sehat_condition.kd_penyakit,"+
-                   "penyakit.nm_penyakit,satu_sehat_condition.id_condition,"+
-                   "ifnull(satu_sehat_clinicalimpression.id_clinicalimpression,'') as satu_sehat_clinicalimpression "+
-                   "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
-                   "inner join satu_sehat_condition on satu_sehat_condition.no_rawat=reg_periksa.no_rawat and satu_sehat_condition.status='Ralan' "+
-                   "inner join penyakit on penyakit.kd_penyakit=satu_sehat_condition.kd_penyakit "+
-                   "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
-                   "left join satu_sehat_clinicalimpression on satu_sehat_clinicalimpression.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_clinicalimpression.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
-                   "and satu_sehat_clinicalimpression.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "and satu_sehat_clinicalimpression.status='Ralan' where pemeriksaan_ralan.penilaian<>'' "+
-                   "and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+    Valid.tabelKosong(tabMode);
+    try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim = " and ifnull(satu_sehat_clinicalimpression.id_clinicalimpression,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim = " and ifnull(satu_sehat_clinicalimpression.id_clinicalimpression,'')='' ";
+        }
+
+        ps=koneksi.prepareStatement(
+            "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+            "pasien.nm_pasien,pasien.no_ktp,reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) "+
+            "as pulang,satu_sehat_encounter.id_encounter,pegawai.nama,pegawai.no_ktp as ktppraktisi,"+
+            "pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.penilaian,"+
+            "pemeriksaan_ralan.keluhan,pemeriksaan_ralan.pemeriksaan,satu_sehat_condition.kd_penyakit,"+
+            "penyakit.nm_penyakit,satu_sehat_condition.id_condition,"+
+            "ifnull(satu_sehat_clinicalimpression.id_clinicalimpression,'') as satu_sehat_clinicalimpression "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join satu_sehat_condition on satu_sehat_condition.no_rawat=reg_periksa.no_rawat and satu_sehat_condition.status='Ralan' "+
+            "inner join penyakit on penyakit.kd_penyakit=satu_sehat_condition.kd_penyakit "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_clinicalimpression on satu_sehat_clinicalimpression.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_clinicalimpression.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_clinicalimpression.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "and satu_sehat_clinicalimpression.status='Ralan' "+
+            "where pemeriksaan_ralan.penilaian<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim +
+            (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
+            "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
+            "reg_periksa.stts like ?)")
+        );
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -898,6 +936,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
                    "left join satu_sehat_clinicalimpression on satu_sehat_clinicalimpression.no_rawat=pemeriksaan_ranap.no_rawat "+
                    "and satu_sehat_clinicalimpression.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_clinicalimpression.jam_rawat=pemeriksaan_ranap.jam_rawat "+
                    "and satu_sehat_clinicalimpression.status='Ranap' where pemeriksaan_ranap.penilaian<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+                   statusKirim +
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
                    "reg_periksa.stts like ?)"));
@@ -917,7 +956,7 @@ public final class SatuSehatKirimClinicalImpression extends javax.swing.JDialog 
                 while(rs.next()){
                     tabMode.addRow(new Object[]{
                         false,rs.getString("tgl_registrasi")+" "+rs.getString("jam_reg"),rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),
-                        rs.getString("no_ktp"),rs.getString("stts"),"Ralan",rs.getString("pulang"),rs.getString("id_encounter"),rs.getString("keluhan")+", "+rs.getString("pemeriksaan"),rs.getString("penilaian"),
+                        rs.getString("no_ktp"),rs.getString("stts"),"Ranap",rs.getString("pulang"),rs.getString("id_encounter"),rs.getString("keluhan")+", "+rs.getString("pemeriksaan"),rs.getString("penilaian"),
                         rs.getString("nama"),rs.getString("ktppraktisi"),rs.getString("tgl_perawatan"),rs.getString("jam_rawat"),rs.getString("kd_penyakit"),rs.getString("nm_penyakit"),rs.getString("id_condition"),
                         rs.getString("satu_sehat_clinicalimpression")
                     });

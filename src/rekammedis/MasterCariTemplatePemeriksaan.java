@@ -1104,8 +1104,8 @@ public final class MasterCariTemplatePemeriksaan extends javax.swing.JDialog {
                     
                     if(tabModeRadiologi.getRowCount()>0){
                         nomor=Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(permintaan_radiologi.noorder,4),signed)),0) from permintaan_radiologi where permintaan_radiologi.tgl_permintaan='"+tanggaldilakukan+"'","PR"+tanggaldilakukan.replaceAll("-",""),4);
-                        if(Sequel.menyimpantf2("permintaan_radiologi","?,?,?,?,?,?,?,?,?,?,?,?","No.Permintaan Radiologi",12,new String[]{
-                                nomor,noperawatan,tanggaldilakukan,jamdilakukan,"0000-00-00","00:00:00","0000-00-00","00:00:00",kodedokter,"ralan","-",Asesmen.getText()
+                        if(Sequel.menyimpantf2("permintaan_radiologi","?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Permintaan Radiologi",14,new String[]{
+                                nomor,noperawatan,tanggaldilakukan,jamdilakukan,"0000-00-00","00:00:00","0000-00-00","00:00:00",kodedokter,"ralan","-",Asesmen.getText(),"TIDAK CITO","-"
                             })==true){
                             for(i=0;i<tbPermintaanRadiologi.getRowCount();i++){ 
                                 if(Sequel.menyimpantf2("permintaan_pemeriksaan_radiologi","?,?,?","Permintaan Radiologi "+tbPermintaanRadiologi.getValueAt(i,1).toString(),3,new String[]{
@@ -1121,8 +1121,8 @@ public final class MasterCariTemplatePemeriksaan extends javax.swing.JDialog {
                     
                     if(tabModePK.getRowCount()>0){
                         nomor=Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(permintaan_lab.noorder,4),signed)),0) from permintaan_lab where permintaan_lab.tgl_permintaan='"+tanggaldilakukan+"' ","PK"+tanggaldilakukan.replaceAll("-",""),4);   
-                        if(Sequel.menyimpantf2("permintaan_lab","?,?,?,?,?,?,?,?,?,?,?,?","No.Permintaan",12,new String[]{
-                                nomor,noperawatan,tanggaldilakukan,jamdilakukan,"0000-00-00","00:00:00","0000-00-00","00:00:00",kodedokter,"ralan","-",Asesmen.getText()
+                        if(Sequel.menyimpantf2("permintaan_lab","?,?,?,?,?,?,?,?,?,?,?,?,?","No.Permintaan",13,new String[]{
+                                nomor,noperawatan,tanggaldilakukan,jamdilakukan,"0000-00-00","00:00:00","0000-00-00","00:00:00",kodedokter,"ralan","-",Asesmen.getText(),"TIDAK CITO"
                             })==true){
                             for(i=0;i<tbPermintaanPK.getRowCount();i++){ 
                                 if(Sequel.menyimpantf2("permintaan_pemeriksaan_lab","?,?,?","Permintaan Lab "+tbPermintaanPK.getValueAt(i,1).toString(),3,new String[]{
@@ -1191,9 +1191,9 @@ public final class MasterCariTemplatePemeriksaan extends javax.swing.JDialog {
                     }
                     
                     if((tabModeObatUmum.getRowCount()>0)||(tabModeObatRacikan.getRowCount()>0)){
-                        nomor=Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(resep_obat.no_resep,4),signed)),0) from resep_obat where resep_obat.tgl_peresepan='"+tanggaldilakukan+"' or resep_obat.tgl_perawatan='"+tanggaldilakukan+"'",tanggaldilakukan.replaceAll("-",""),4);    
-                        if(Sequel.menyimpantf2("resep_obat","?,?,?,?,?,?,?,?,?,?","Nomer Resep",10,new String[]{
-                                nomor,"0000-00-00","00:00:00",noperawatan,kodedokter,tanggaldilakukan,jamdilakukan,"ralan","0000-00-00","00:00:00"
+                        nomor=Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(resep_obat.no_resep,4),signed)),0) from resep_obat where resep_obat.tgl_peresepan='"+tanggaldilakukan+"' or resep_obat.tgl_perawatan='"+tanggaldilakukan+"' ",tanggaldilakukan.replaceAll("-",""),4);    
+                        if(Sequel.menyimpantf2("resep_obat","?,?,?,?,?,?,?,?,?,?,?,?,?","Nomer Resep",13,new String[]{
+                                nomor,"0000-00-00","00:00:00",noperawatan,kodedokter,tanggaldilakukan,jamdilakukan,"ralan","0000-00-00","00:00:00","Tidak","Biasa","Resep Otomatis dari Template Pemeriksaan"
                             })==true){
                             for(i=0;i<tbObatNonRacikan.getRowCount();i++){ 
                                 if(Valid.SetAngka(tbObatNonRacikan.getValueAt(i,0).toString())>0){ 
@@ -1457,22 +1457,17 @@ public final class MasterCariTemplatePemeriksaan extends javax.swing.JDialog {
                     "template_pemeriksaan_dokter.keluhan,template_pemeriksaan_dokter.pemeriksaan,template_pemeriksaan_dokter.penilaian,"+
                     "template_pemeriksaan_dokter.rencana,template_pemeriksaan_dokter.instruksi,template_pemeriksaan_dokter.evaluasi "+
                     "from template_pemeriksaan_dokter inner join dokter on dokter.kd_dokter=template_pemeriksaan_dokter.kd_dokter "+
-                    "where template_pemeriksaan_dokter.kd_dokter=? "+(TCari.getText().equals("")?"":"and (template_pemeriksaan_dokter.no_template like ? or "+
+                    (TCari.getText().equals("")?"":"where (template_pemeriksaan_dokter.no_template like ? or template_pemeriksaan_dokter.kd_dokter like ? or dokter.nm_dokter like ? or "+
                     "template_pemeriksaan_dokter.keluhan like ? or template_pemeriksaan_dokter.pemeriksaan like ? or "+
                     "template_pemeriksaan_dokter.penilaian like ? or template_pemeriksaan_dokter.rencana like ? or "+
                     "template_pemeriksaan_dokter.instruksi like ? or template_pemeriksaan_dokter.evaluasi like ?) ")+
                     "order by template_pemeriksaan_dokter.no_template");
                 
             try {
-                ps.setString(1,kodedokter);
                 if(!TCari.getText().equals("")){
-                    ps.setString(2,"%"+TCari.getText().trim()+"%");
-                    ps.setString(3,"%"+TCari.getText().trim()+"%");
-                    ps.setString(4,"%"+TCari.getText().trim()+"%");
-                    ps.setString(5,"%"+TCari.getText().trim()+"%");
-                    ps.setString(6,"%"+TCari.getText().trim()+"%");
-                    ps.setString(7,"%"+TCari.getText().trim()+"%");
-                    ps.setString(8,"%"+TCari.getText().trim()+"%");
+                    for(int k=1;k<=9;k++){
+                        ps.setString(k,"%"+TCari.getText().trim()+"%");
+                }
                 }
                 
                 rs=ps.executeQuery();

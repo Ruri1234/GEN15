@@ -344,6 +344,47 @@ public class DlgPenjualan extends javax.swing.JDialog {
             aktifkanbatch = "no";
             ppStok.setVisible(true);
         }
+
+/* =======================
+   AMBIL SETTING PPN OBAT
+   ======================= */
+try {
+    ps = koneksi.prepareStatement(
+        "select tampilkan_ppnobat_ralan from set_nota"
+    );
+
+    try {
+        rs = ps.executeQuery();
+
+        if (rs.next()) {
+            tampilkan_ppnobat_ralan = rs.getString("tampilkan_ppnobat_ralan");
+        } else {
+            tampilkan_ppnobat_ralan = "No";
+    }
+    
+    } catch (Exception e) {
+        System.out.println("Notif Query PPN : " + e);
+        tampilkan_ppnobat_ralan = "No";
+
+    } finally {
+        if (rs != null) {
+            rs.close();
+        }
+
+        if (ps != null) {
+            ps.close();
+        }
+    }
+
+} catch (Exception e) {
+    System.out.println("Notif Koneksi PPN : " + e);
+    tampilkan_ppnobat_ralan = "No";
+}
+
+/* =======================
+   SET NILAI PPN
+   ======================= */
+PersenppnObat.setText("11");
     }
     
 
@@ -430,9 +471,6 @@ public class DlgPenjualan extends javax.swing.JDialog {
 
         Popup.setName("Popup"); // NOI18N
 
-        ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
         ppBersihkan.setText("Bersihkan Jumlah");
         ppBersihkan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -446,9 +484,6 @@ public class DlgPenjualan extends javax.swing.JDialog {
         });
         Popup.add(ppBersihkan);
 
-        ppStok.setBackground(new java.awt.Color(255, 255, 254));
-        ppStok.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppStok.setForeground(new java.awt.Color(50, 50, 50));
         ppStok.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppStok.setText("Tampilkan Semua Stok");
         ppStok.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -462,8 +497,6 @@ public class DlgPenjualan extends javax.swing.JDialog {
         });
         Popup.add(ppStok);
 
-        ppStok1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppStok1.setForeground(new java.awt.Color(50, 50, 50));
         ppStok1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppStok1.setText("Cek Stok Lokasi");
         ppStok1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -753,6 +786,11 @@ public class DlgPenjualan extends javax.swing.JDialog {
         PersenppnObat.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         PersenppnObat.setName("PersenppnObat"); // NOI18N
         PersenppnObat.setPreferredSize(new java.awt.Dimension(150, 23));
+        PersenppnObat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PersenppnObatActionPerformed(evt);
+            }
+        });
         PersenppnObat.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 PersenppnObatKeyPressed(evt);
@@ -990,7 +1028,6 @@ public class DlgPenjualan extends javax.swing.JDialog {
 
         TabRawat.setBackground(new java.awt.Color(255, 255, 253));
         TabRawat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)));
-        TabRawat.setForeground(new java.awt.Color(50, 50, 50));
         TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1060,7 +1097,7 @@ public class DlgPenjualan extends javax.swing.JDialog {
         Scroll3.setName("Scroll3"); // NOI18N
         Scroll3.setOpaque(true);
 
-        tbDetailObatRacikan.setAutoCreateRowSorter(false);
+        tbDetailObatRacikan.setAutoCreateRowSorter(true);
         tbDetailObatRacikan.setName("tbDetailObatRacikan"); // NOI18N
         tbDetailObatRacikan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1415,11 +1452,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     ppn=0;
                     ongkir=0;
                     ppnobat=0;
-                    if(tampilkan_ppnobat_ralan.equals("Yes")){
                         PersenppnObat.setText("11");
-                    }else{
-                        PersenppnObat.setText("0");
-                    }
                     LTotal.setText("0");
                     Bayar.setText("0");
                     Ongkir.setText("0");
@@ -2425,6 +2458,10 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         cariPPN(); 
         isKembali();
     }//GEN-LAST:event_BtnAll1ActionPerformed
+
+    private void PersenppnObatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PersenppnObatActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PersenppnObatActionPerformed
 
     /**
     * @param args the command line arguments
@@ -4340,6 +4377,19 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
     }
     
+    private void setDefaultAkunBayarCash() {
+        try {
+            for (int i = 0; i < AkunBayar.getItemCount(); i++) {
+                String item = AkunBayar.getItemAt(i).toString().trim();
+                if (item.equalsIgnoreCase("Bayar Cash")) {
+                    AkunBayar.setSelectedIndex(i);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+
     private void tampilAkunBayar() {         
          try{      
              file=new File("./cache/akunbayar.iyem");
@@ -4373,6 +4423,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             
              fileWriter.close();
              iyembuilder=null;
+             setDefaultAkunBayarCash();
         } catch (Exception e) {
             System.out.println("Notifikasi : "+e);
         } finally {
@@ -4391,6 +4442,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                     AkunBayar.addItem(list.path("NamaAkun").asText().replaceAll("\"",""));
                 }
             }
+            setDefaultAkunBayarCash();
             myObj.close();
         } catch (Exception ex) {
             if(ex.toString().contains("java.io.FileNotFoundException")){

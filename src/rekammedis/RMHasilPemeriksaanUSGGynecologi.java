@@ -27,7 +27,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.nio.file.Files;
 import java.sql.ResultSet;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +48,6 @@ import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 import kepegawaian.DlgCariDokter;
-import java.nio.file.Files;
-import java.util.Base64;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
@@ -74,8 +74,8 @@ public final class RMHasilPemeriksaanUSGGynecologi extends javax.swing.JDialog {
     private StringBuilder htmlContent;
     private String finger="";
     private JsonNode root;
-    private String TANGGALMUNDUR="yes";
     private ObjectMapper mapper= new ObjectMapper();
+    private String TANGGALMUNDUR="yes";
     
     /** Creates new form DlgRujuk
      * @param parent
@@ -564,7 +564,7 @@ public final class RMHasilPemeriksaanUSGGynecologi extends javax.swing.JDialog {
         label11.setBounds(538, 40, 52, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-04-2026 14:53:49" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026 17:43:16" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -757,7 +757,7 @@ public final class RMHasilPemeriksaanUSGGynecologi extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-04-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -771,7 +771,7 @@ public final class RMHasilPemeriksaanUSGGynecologi extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-04-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -1392,6 +1392,50 @@ public final class RMHasilPemeriksaanUSGGynecologi extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnDicomActionPerformed
 
+    private void btnUploudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploudActionPerformed
+        if(tabModeDicom.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
+            TCari.requestFocus();
+        }else {
+            if(tbListDicom.getSelectedRow()!= -1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                Sequel.queryu2("delete from hasil_pemeriksaan_usg_gynecologi_gambar where no_rawat=?",1,new String[]{tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()});
+                ApiOrthanc orthanc=new ApiOrthanc();
+                orthanc.AmbilJpg2(tbListDicom.getValueAt(tbListDicom.getSelectedRow(),2).toString());
+                try {
+                    CloseableHttpClient httpClient = HttpClients.createDefault();
+                    HttpPost post = new HttpPost("http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanusggynecologi/pages/upload/service.php");
+                    System.out.println("http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanusggynecologi/pages/upload/service.php");
+                    post.setHeader("Content-Type", "application/json");
+                    post.addHeader("username", koneksiDB.USERHYBRIDWEB());
+                    post.addHeader("password", koneksiDB.PASHYBRIDWEB());
+                    File f = new File("./gambarradiologi/"+tbListDicom.getValueAt(tbListDicom.getSelectedRow(),2).toString()+".jpg");
+                    byte[] fileContent = Files.readAllBytes(f.toPath());
+                    String json="{" +
+                                    "\"file\":\""+Base64.getEncoder().encodeToString(fileContent)+"\"," +
+                                    "\"namafile\":\""+tbListDicom.getValueAt(tbListDicom.getSelectedRow(),2).toString()+".jpg\"," +
+                                    "\"norawat\":\""+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"\"" +
+                                "}";
+                    post.setEntity(new StringEntity(json));
+                    try (CloseableHttpResponse response = httpClient.execute(post)) {
+                        json=EntityUtils.toString(response.getEntity());
+                        root = mapper.readTree(json);
+                        JOptionPane.showMessageDialog(null,root.path("metadata").path("message").asText());
+                    } catch (IOException a) {
+                        System.out.println("Notifikasi : " + a);
+                        JOptionPane.showMessageDialog(null,""+a);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Notifikasi : " + e);
+                    JOptionPane.showMessageDialog(null,""+e);
+                }
+                this.setCursor(Cursor.getDefaultCursor());
+            }else{
+                JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data..!!");
+            }
+        }
+    }//GEN-LAST:event_btnUploudActionPerformed
+
     private void TabDataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabDataMouseClicked
         tampilOrthanc();
     }//GEN-LAST:event_TabDataMouseClicked
@@ -1436,50 +1480,6 @@ public final class RMHasilPemeriksaanUSGGynecologi extends javax.swing.JDialog {
             });
         }
     }//GEN-LAST:event_formWindowOpened
-
-    private void btnUploudActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploudActionPerformed
-        if(tabModeDicom.getRowCount()==0){
-            JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
-            TCari.requestFocus();
-        }else {
-            if(tbListDicom.getSelectedRow()!= -1){
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                Sequel.queryu2("delete from hasil_pemeriksaan_usg_gynecologi_gambar where no_rawat=?",1,new String[]{tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()});
-                ApiOrthanc orthanc=new ApiOrthanc();
-                orthanc.AmbilJpg2(tbListDicom.getValueAt(tbListDicom.getSelectedRow(),2).toString());
-                try {
-                    CloseableHttpClient httpClient = HttpClients.createDefault();
-                    HttpPost post = new HttpPost("http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanusggynecologi/pages/upload/service.php");
-                    System.out.println("http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/hasilpemeriksaanusggynecologi/pages/upload/service.php");
-                    post.setHeader("Content-Type", "application/json");
-                    post.addHeader("username", koneksiDB.USERHYBRIDWEB());
-                    post.addHeader("password", koneksiDB.PASHYBRIDWEB());
-                    File f = new File("./gambarradiologi/"+tbListDicom.getValueAt(tbListDicom.getSelectedRow(),2).toString()+".jpg");
-                    byte[] fileContent = Files.readAllBytes(f.toPath());
-                    String json="{" +
-                                    "\"file\":\""+Base64.getEncoder().encodeToString(fileContent)+"\"," +
-                                    "\"namafile\":\""+tbListDicom.getValueAt(tbListDicom.getSelectedRow(),2).toString()+".jpg\"," +
-                                    "\"norawat\":\""+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"\"" +
-                                "}";
-                    post.setEntity(new StringEntity(json));
-                    try (CloseableHttpResponse response = httpClient.execute(post)) {
-                        json=EntityUtils.toString(response.getEntity());
-                        root = mapper.readTree(json);
-                        JOptionPane.showMessageDialog(null,root.path("metadata").path("message").asText());
-                    } catch (IOException a) {
-                        System.out.println("Notifikasi : " + a);
-                        JOptionPane.showMessageDialog(null,""+a);
-                    }
-                } catch (Exception e) {
-                    System.out.println("Notifikasi : " + e);
-                    JOptionPane.showMessageDialog(null,""+e);
-                }
-                this.setCursor(Cursor.getDefaultCursor());
-            }else{
-                JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data..!!");
-            }
-        }
-    }//GEN-LAST:event_btnUploudActionPerformed
 
     /**
     * @param args the command line arguments
@@ -1747,29 +1747,59 @@ public final class RMHasilPemeriksaanUSGGynecologi extends javax.swing.JDialog {
         }
     }
 
-    private void ganti() {
-        if(Sequel.mengedittf("hasil_pemeriksaan_usg_gynecologi","no_rawat=?","no_rawat=?,tanggal=?,kd_dokter=?,diagnosa_klinis=?,kiriman_dari=?,uterus=?,parametrium=?,ovarium=?,doppler=?,kesimpulan=?",11,new String[]{
-                TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),KdDokter.getText(),NmDokter.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),
-                KirimanDari.getText(),DiagnosaKlinis.getText(),Uterus.getText(),Parametrium.getText(),Ovarium.getText(),Doppler.getText(),Kesimpulan.getText(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
-            })==true){
-                tbObat.setValueAt(TNoRw.getText(),tbObat.getSelectedRow(),0);
-                tbObat.setValueAt(TNoRM.getText(),tbObat.getSelectedRow(),1);
-                tbObat.setValueAt(TPasien.getText(),tbObat.getSelectedRow(),2);
-                tbObat.setValueAt(TglLahir.getText(),tbObat.getSelectedRow(),3);
-                tbObat.setValueAt(KdDokter.getText(),tbObat.getSelectedRow(),4);
-                tbObat.setValueAt(NmDokter.getText(),tbObat.getSelectedRow(),5);
-                tbObat.setValueAt(Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),tbObat.getSelectedRow(),6);
-                tbObat.setValueAt(KirimanDari.getText(),tbObat.getSelectedRow(),7);
-                tbObat.setValueAt(DiagnosaKlinis.getText(),tbObat.getSelectedRow(),8);
-                tbObat.setValueAt(Uterus.getText(),tbObat.getSelectedRow(),9);
-                tbObat.setValueAt(Parametrium.getText(),tbObat.getSelectedRow(),10);
-                tbObat.setValueAt(Ovarium.getText(),tbObat.getSelectedRow(),11);
-                tbObat.setValueAt(Doppler.getText(),tbObat.getSelectedRow(),12);
-                tbObat.setValueAt(Kesimpulan.getText(),tbObat.getSelectedRow(),13);
-                emptTeks();
-                TabRawat.setSelectedIndex(1);
+   private void ganti() {
+
+    if(Sequel.mengedittf(
+        "hasil_pemeriksaan_usg_gynecologi",
+        "no_rawat=?",
+
+        "no_rawat=?,tanggal=?,kd_dokter=?,diagnosa_klinis=?,kiriman_dari=?,uterus=?,parametrium=?,ovarium=?,doppler=?,kesimpulan=?",
+
+        11,
+
+        new String[]{
+            TNoRw.getText(),
+            Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),
+            KdDokter.getText(),
+            DiagnosaKlinis.getText(),
+            KirimanDari.getText(),
+            Uterus.getText(),
+            Parametrium.getText(),
+            Ovarium.getText(),
+            Doppler.getText(),
+            Kesimpulan.getText(),
+
+            // where no_rawat=?
+            tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
         }
+
+    )==true){
+
+        tbObat.setValueAt(TNoRw.getText(),tbObat.getSelectedRow(),0);
+        tbObat.setValueAt(TNoRM.getText(),tbObat.getSelectedRow(),1);
+        tbObat.setValueAt(TPasien.getText(),tbObat.getSelectedRow(),2);
+        tbObat.setValueAt(TglLahir.getText(),tbObat.getSelectedRow(),3);
+        tbObat.setValueAt(KdDokter.getText(),tbObat.getSelectedRow(),4);
+        tbObat.setValueAt(NmDokter.getText(),tbObat.getSelectedRow(),5);
+
+        tbObat.setValueAt(
+            Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+
+            Tanggal.getSelectedItem().toString().substring(11,19),
+            tbObat.getSelectedRow(),6
+        );
+
+        tbObat.setValueAt(KirimanDari.getText(),tbObat.getSelectedRow(),7);
+        tbObat.setValueAt(DiagnosaKlinis.getText(),tbObat.getSelectedRow(),8);
+        tbObat.setValueAt(Uterus.getText(),tbObat.getSelectedRow(),9);
+        tbObat.setValueAt(Parametrium.getText(),tbObat.getSelectedRow(),10);
+        tbObat.setValueAt(Ovarium.getText(),tbObat.getSelectedRow(),11);
+        tbObat.setValueAt(Doppler.getText(),tbObat.getSelectedRow(),12);
+        tbObat.setValueAt(Kesimpulan.getText(),tbObat.getSelectedRow(),13);
+
+        emptTeks();
+        TabRawat.setSelectedIndex(1);
     }
+}
     
     private void isPhoto(){
         if(ChkAccor.isSelected()==true){

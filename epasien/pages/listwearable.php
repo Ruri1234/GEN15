@@ -366,7 +366,8 @@
         </div>
     </div>
 </div>
-<script src="plugins/jquery/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.4.1/jquery-migrate.min.js"></script>
 <script src="plugins/flot-charts/jquery.flot.js"></script>
 <script src="plugins/flot-charts/jquery.flot.resize.js"></script>
 <script src="plugins/flot-charts/jquery.flot.categories.js"></script>

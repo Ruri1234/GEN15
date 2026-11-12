@@ -17,8 +17,8 @@ import javax.swing.plaf.basic.BasicMenuItemUI;
 
 public class MenuItem extends JMenuItem {
     private static final long serialVersionUID = 1L;
-    static final Color AKSEN       = new Color(22, 160, 93);  
-    static final Color PILIH_PASIF = new Color(220, 234, 226); 
+    static final Color AKSEN       = new Color(45, 85, 125);  
+    static final Color PILIH_PASIF = new Color(220, 228, 238); 
     static final Color TEKS        = new Color(50, 50, 50);
     static final Color SHORTCUT    = new Color(120, 120, 120);
     static final Color LATAR       = new Color(255, 255, 254);   

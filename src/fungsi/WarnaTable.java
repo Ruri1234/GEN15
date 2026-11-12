@@ -1,22 +1,37 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package fungsi;
 
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
-import javax.swing.plaf.UIResource;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class WarnaTable extends DefaultTableCellRenderer implements UIResource {
-    private static final long serialVersionUID = 4L;
-    private static final Color PUTIH = new Color(255, 255, 255);
-    private static final Color ZEBRA = new Color(245, 250, 245); 
-
+/**
+ *
+ * @author Owner
+ */
+public class WarnaTable extends DefaultTableCellRenderer {
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
         Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        if (!isSelected) {
-            component.setBackground(row % 2 == 1 ? ZEBRA : PUTIH);
+        if (row % 2 == 1){
+            component.setBackground(new Color(225,235,249));
+        }else{
+            component.setBackground(new Color(255,255,255));
+        } 
+        component.setForeground(new Color(50,50,50)); // Wajib diatur agar tidak "nyangkut" putih setelah baris dipilih
+
+        // Penanganan jika baris sedang dipilih
+        if (isSelected) {
+            component.setBackground(new Color(80,129,227)); // Warna biru untuk baris yang dipilih
+            component.setForeground(Color.WHITE);           // Warna teks putih agar kontras
         }
+
         return component;
     }
+
 }

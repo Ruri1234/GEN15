@@ -43,6 +43,10 @@ public class cacherawatinap {
     public static String getKamar(){return Kamar;}
     
     public static void setDataPasien(Object[] baris) { DataPasien.add(baris); }
+    public static void SetDataPasien(ArrayList<Object[]> data) {
+        DataPasien.clear();
+        if (data != null) { DataPasien.addAll(data); }
+    }
     public static ArrayList<Object[]> getDataPasien() { return DataPasien; }
     public static void clearDataPasien() { DataPasien.clear(); }
     public static void reset() {

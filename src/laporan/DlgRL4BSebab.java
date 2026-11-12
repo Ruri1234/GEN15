@@ -15,9 +15,12 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
@@ -85,6 +88,7 @@ public class DlgRL4BSebab extends javax.swing.JDialog {
         btnCari = new widget.Button();
         label9 = new widget.Label();
         BtnAll = new widget.Button();
+        BtnRekap = new widget.Button();
         BtnPrint = new widget.Button();
         BtnKeluar = new widget.Button();
         Scroll = new widget.ScrollPane();
@@ -189,6 +193,24 @@ public class DlgRL4BSebab extends javax.swing.JDialog {
             }
         });
         panelisi1.add(BtnAll);
+
+        BtnRekap.setIcon(RekapSebabRalan.ikonTabel());
+        BtnRekap.setMnemonic('R');
+        BtnRekap.setText("Rekap");
+        BtnRekap.setToolTipText("Rekap 10 besar sebab penyakit rawat jalan (kasus baru) berdasarkan tanggal registrasi  Alt+R");
+        BtnRekap.setName("BtnRekap"); // NOI18N
+        BtnRekap.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnRekap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRekapActionPerformed(evt);
+            }
+        });
+        BtnRekap.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnRekapKeyPressed(evt);
+            }
+        });
+        panelisi1.add(BtnRekap);
 
         BtnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
         BtnPrint.setMnemonic('T');
@@ -532,6 +554,18 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             Valid.pindah(evt,Tgl2,BtnKeluar);
         }
     }//GEN-LAST:event_BtnPrintKeyPressed
+
+    private void BtnRekapActionPerformed(java.awt.event.ActionEvent evt) {
+        runBackground(() ->prosesRekap());
+    }
+
+    private void BtnRekapKeyPressed(java.awt.event.KeyEvent evt) {
+        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+            BtnRekapActionPerformed(null);
+        }else{
+            Valid.pindah(evt,Tgl2,BtnPrint);
+        }
+    }
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
         dispose();
@@ -887,6 +921,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
     private widget.Button BtnAll;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
+    private widget.Button BtnRekap;
     private widget.Button BtnSeek2;
     private widget.Button BtnSeek3;
     private widget.Button BtnSeek4;
@@ -1237,6 +1272,110 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
         } 
     }
     
+    private boolean tanpaFilter() {
+        return nmpoli.getText().trim().equals("")&&nmdokter.getText().trim().equals("")&&nmpenjab.getText().trim().equals("")&&
+               nmkabupaten.getText().trim().equals("")&&nmkecamatan.getText().trim().equals("")&&nmkelurahan.getText().trim().equals("");
+    }
+
+    /**
+     * 10 besar SEBAB penyakit (penyebab luar, kode ICD-10 V/W/X/Y) rawat jalan (kasus baru, status 'Ralan')
+     * berdasarkan tanggal registrasi. Mengikuti filter yang sedang aktif di form (poli, dokter, cara bayar,
+     * kabupaten, kecamatan, kelurahan).
+     * Diagnosa yang mirip DISATUKAN per kelompok ICD-10 3 karakter (mis. W19.0, W19.9 -> W19).
+     * Dihitung per no_rawat (distinct), per jenis kelamin; "meninggal" = pasien tercatat di pasien_mati (sama dengan acuan tab RL 4B).
+     */
+    private List<RekapSebabRalan.Baris> ambilTop10() {
+        List<RekapSebabRalan.Baris> data = new ArrayList<>();
+        boolean semua = tanpaFilter();
+        try (PreparedStatement pst = koneksi.prepareStatement(
+                "select left(diagnosa_pasien.kd_penyakit,3) as kelompok,"+
+                "count(distinct case when pasien.jk='L' then diagnosa_pasien.no_rawat end) as lk,"+
+                "count(distinct case when pasien.jk='P' then diagnosa_pasien.no_rawat end) as pr,"+
+                "count(distinct case when pasien.jk='L' and pasien_mati.no_rkm_medis is not null then diagnosa_pasien.no_rawat end) as mati_lk,"+
+                "count(distinct case when pasien.jk='P' and pasien_mati.no_rkm_medis is not null then diagnosa_pasien.no_rawat end) as mati_pr,"+
+                "count(distinct diagnosa_pasien.no_rawat) as total "+
+                "from diagnosa_pasien "+
+                "inner join penyakit on diagnosa_pasien.kd_penyakit=penyakit.kd_penyakit "+
+                "inner join reg_periksa on reg_periksa.no_rawat=diagnosa_pasien.no_rawat "+
+                "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                "inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter "+
+                "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli "+
+                "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
+                "inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab "+
+                "inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec "+
+                "inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel "+
+                "left join pasien_mati on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
+                "where diagnosa_pasien.status='Ralan' and diagnosa_pasien.status_penyakit='Baru' "+
+                "and reg_periksa.tgl_registrasi between ? and ? "+
+                (semua?"":"and poliklinik.nm_poli like ? and dokter.nm_dokter like ? and penjab.png_jawab like ? and kabupaten.nm_kab like ? and kecamatan.nm_kec like ? and kelurahan.nm_kel like ? ")+
+                "and left(diagnosa_pasien.kd_penyakit,1) in ('V','W','X','Y') "+
+                "group by left(diagnosa_pasien.kd_penyakit,3) "+
+                "order by total desc,kelompok limit 10")) {
+            pst.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
+            pst.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
+            if(!semua){
+                pst.setString(3,"%"+nmpoli.getText().trim()+"%");
+                pst.setString(4,"%"+nmdokter.getText().trim()+"%");
+                pst.setString(5,"%"+nmpenjab.getText().trim()+"%");
+                pst.setString(6,"%"+nmkabupaten.getText().trim()+"%");
+                pst.setString(7,"%"+nmkecamatan.getText().trim()+"%");
+                pst.setString(8,"%"+nmkelurahan.getText().trim()+"%");
+            }
+            try (ResultSet rst = pst.executeQuery()) {
+                while(rst.next()){
+                    String kelompok = rst.getString("kelompok");
+                    data.add(new RekapSebabRalan.Baris(kelompok,namaKelompok(kelompok),
+                            rst.getInt("lk"),rst.getInt("pr"),rst.getInt("mati_lk"),rst.getInt("mati_pr")));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("laporan.DlgRL4BSebab.ambilTop10 : "+e);
+        }
+        return data;
+    }
+
+    /**
+     * Nama untuk satu kelompok ICD-10 3 karakter: pakai nama kode induknya (mis. "W19") bila ada di tabel penyakit,
+     * jika tidak ada pakai nama sub-kode pertama dalam kelompok tersebut.
+     */
+    private String namaKelompok(String kelompok) {
+        String nama = null;
+        try (PreparedStatement p1 = koneksi.prepareStatement(
+                "select SUBSTRING(nm_penyakit,1,80) from penyakit where kd_penyakit=?")) {
+            p1.setString(1,kelompok);
+            try (ResultSet r1 = p1.executeQuery()) {
+                if(r1.next()) nama = r1.getString(1);
+            }
+        } catch (Exception e) {
+            System.out.println("laporan.DlgRL4BSebab.namaKelompok 1 : "+e);
+        }
+        if(nama==null || nama.trim().isEmpty()){
+            try (PreparedStatement p2 = koneksi.prepareStatement(
+                    "select SUBSTRING(nm_penyakit,1,80) from penyakit where kd_penyakit like ? order by kd_penyakit limit 1")) {
+                p2.setString(1,kelompok+"%");
+                try (ResultSet r2 = p2.executeQuery()) {
+                    if(r2.next()) nama = r2.getString(1);
+                }
+            } catch (Exception e) {
+                System.out.println("laporan.DlgRL4BSebab.namaKelompok 2 : "+e);
+            }
+        }
+        return nama==null ? "" : nama;
+    }
+
+    /** Tombol Rekap: rekap 10 besar sebab penyakit rawat jalan (kasus baru) berdasarkan tanggal registrasi. */
+    private void prosesRekap() {
+        final List<RekapSebabRalan.Baris> data = ambilTop10();
+        final String periode = Tgl1.getSelectedItem()+" s.d. "+Tgl2.getSelectedItem();
+        SwingUtilities.invokeLater(() -> {
+            if(data.isEmpty()){
+                JOptionPane.showMessageDialog(this,"Tidak ada data sebab penyakit (kode V-Y) pada periode tersebut.");
+            }else{
+                RekapSebabRalan.tampil(this,data,periode);
+            }
+        });
+    }
+
     public void isCek(){
         BtnPrint.setEnabled(akses.getrl4bsebab());
     }

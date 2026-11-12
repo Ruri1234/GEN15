@@ -46,6 +46,7 @@ public class DlgPemesanan extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs;
+    private DlgCariBangsal bangsal=new DlgCariBangsal(null,false);
     private DlgCariPetugas petugas;
     private double hargakonversi=0,meterai=0,ttl=0,y=0,w=0,ttldisk=0,
             sbttl=0,ppn=0,jmlkonversi=0,hargappn=0,hargadiskon=0;
@@ -148,11 +149,11 @@ public class DlgPemesanan extends javax.swing.JDialog {
         warna.kolom=0;
         tbDokter.setDefaultRenderer(Object.class,warna);
 
-        NoFaktur.setDocument(new batasInput((byte)20).getKata(NoFaktur));
-        NoOrder.setDocument(new batasInput((byte)20).getKata(NoOrder));
+        NoFaktur.setDocument(new batasInput((byte)30).getKata(NoFaktur));
+        NoOrder.setDocument(new batasInput((byte)30).getKata(NoOrder));
         kdsup.setDocument(new batasInput((byte)5).getKata(kdsup));
         kdptg.setDocument(new batasInput((byte)25).getKata(kdptg));
-        tppn.setDocument(new batasInput((byte)5).getOnlyAngka(tppn));
+        tppn.setDocument(new batasInput((byte)5).getKata(tppn));
         Meterai.setDocument(new batasInput((byte)15).getOnlyAngka(Meterai));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
     }
@@ -1250,9 +1251,13 @@ private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 }//GEN-LAST:event_btnPetugasActionPerformed
 
 private void kdgudangKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdgudangKeyPressed
-       if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
+    if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
+            nmgudang.setText(bangsal.tampil3(kdgudang.getText()));       
+        }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
+            nmgudang.setText(bangsal.tampil3(kdgudang.getText())); 
             kdptg.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            nmgudang.setText(bangsal.tampil3(kdgudang.getText())); 
             TCari.requestFocus();    
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             btnGudangActionPerformed(null);

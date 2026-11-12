@@ -232,15 +232,15 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         HasilLaborat.setDocument(new batasInput((int)2000).getKata(HasilLaborat));
         TindakanSelamaDiRS.setDocument(new batasInput((int)2000).getKata(TindakanSelamaDiRS));
         ObatSelamaDiRS.setDocument(new batasInput((int)2000).getKata(ObatSelamaDiRS));
-        DiagnosaUtama.setDocument(new batasInput((int)80).getKata(DiagnosaUtama));
-        DiagnosaSekunder1.setDocument(new batasInput((int)80).getKata(DiagnosaSekunder1));
+        DiagnosaUtama.setDocument(new batasInput((int)200).getKata(DiagnosaUtama));
+        DiagnosaSekunder1.setDocument(new batasInput((int)200).getKata(DiagnosaSekunder1));
         DiagnosaSekunder2.setDocument(new batasInput((int)80).getKata(DiagnosaSekunder2));
         DiagnosaSekunder3.setDocument(new batasInput((int)80).getKata(DiagnosaSekunder3));
         DiagnosaSekunder4.setDocument(new batasInput((int)80).getKata(DiagnosaSekunder4));
-        ProsedurUtama.setDocument(new batasInput((int)80).getKata(ProsedurUtama));
-        ProsedurSekunder1.setDocument(new batasInput((int)80).getKata(ProsedurSekunder1));
-        ProsedurSekunder2.setDocument(new batasInput((int)80).getKata(ProsedurSekunder2));
-        ProsedurSekunder3.setDocument(new batasInput((int)80).getKata(ProsedurSekunder3));
+        ProsedurUtama.setDocument(new batasInput((int)200).getKata(ProsedurUtama));
+        ProsedurSekunder1.setDocument(new batasInput((int)200).getKata(ProsedurSekunder1));
+        ProsedurSekunder2.setDocument(new batasInput((int)200).getKata(ProsedurSekunder2));
+        ProsedurSekunder3.setDocument(new batasInput((int)200).getKata(ProsedurSekunder3));
         KodeDiagnosaUtama.setDocument(new batasInput((int)10).getKata(KodeDiagnosaUtama));
         KodeDiagnosaSekunder1.setDocument(new batasInput((int)10).getKata(KodeDiagnosaSekunder1));
         KodeDiagnosaSekunder2.setDocument(new batasInput((int)10).getKata(KodeDiagnosaSekunder2));
@@ -836,7 +836,7 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-09-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setPreferredSize(new java.awt.Dimension(95, 23));
@@ -849,7 +849,7 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-09-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setPreferredSize(new java.awt.Dimension(95, 23));
@@ -1701,7 +1701,7 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         KetDilanjutkan.setBounds(236, 1081, 270, 23);
 
         Kontrol.setForeground(new java.awt.Color(50, 70, 50));
-        Kontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-09-2026 09:42:12" }));
+        Kontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026 17:35:55" }));
         Kontrol.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         Kontrol.setName("Kontrol"); // NOI18N
         Kontrol.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -2767,7 +2767,6 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
     private void BtnDokter6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDokter6ActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         RMRiwayatPerawatan resume=new RMRiwayatPerawatan(null,true);
-        resume.setNoRawat(TNoRw.getText());
         resume.setNoRm(TNoRM.getText(),TPasien.getText());
         resume.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
         resume.setLocationRelativeTo(internalFrame1);
@@ -3434,6 +3433,23 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
     }
     
     private void isRawat() {
+         Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat='"+TNoRw.getText()+"' ",TNoRM);
+          if(Sequel.cariInteger("select count(no_rawat) from penilaian_medis_ranap where no_rawat='"+TNoRw.getText()+"' ")>0){
+            KeluhanUtama.setText(Sequel.cariIsi("select keluhan_utama from penilaian_medis_ranap where no_rawat=?",TNoRw.getText())); 
+            PemeriksaanFisik.setText(Sequel.cariIsi("select ket_fisik from penilaian_medis_ranap where no_rawat=?",TNoRw.getText())); 
+            HasilLaborat.setText(Sequel.cariIsi("select lab from penilaian_medis_ranap where no_rawat=?",TNoRw.getText())); 
+            Alergi.setText(Sequel.cariIsi("select alergi from penilaian_medis_ranap where no_rawat=?",TNoRw.getText())); 
+            PemeriksaanRad.setText(Sequel.cariIsi("select rad from penilaian_medis_ranap where no_rawat=?",TNoRw.getText())); 
+            Diet.setText(Sequel.cariIsi("select nama_diet from diet inner join detail_beri_diet on detail_beri_diet.kd_diet=diet.kd_diet where no_rawat=?",TNoRw.getText()));  
+    
+        }else if(Sequel.cariInteger("select count(no_rawat) from penilaian_medis_ranap_kandungan where no_rawat='"+TNoRw.getText()+"' ")>0){ 
+           KeluhanUtama.setText(Sequel.cariIsi("select keluhan_utama from penilaian_medis_ranap_kandungan where no_rawat=?",TNoRw.getText())); 
+            PemeriksaanFisik.setText(Sequel.cariIsi("select ket_fisik from penilaian_medis_ranap_kandungan where no_rawat=?",TNoRw.getText())); 
+            HasilLaborat.setText(Sequel.cariIsi("select lab from penilaian_medis_ranap_kandungan where no_rawat=?",TNoRw.getText())); 
+            Alergi.setText(Sequel.cariIsi("select alergi from penilaian_medis_ranap_kandungan where no_rawat=?",TNoRw.getText())); 
+            PemeriksaanRad.setText(Sequel.cariIsi("select ultra from penilaian_medis_ranap_kandungan where no_rawat=?",TNoRw.getText())); 
+            Diet.setText(Sequel.cariIsi("select nama_diet from diet inner join detail_beri_diet on detail_beri_diet.kd_diet=diet.kd_diet where no_rawat=?",TNoRw.getText()));  
+         }  
         try {
             ps=koneksi.prepareStatement(
                     "select reg_periksa.no_rkm_medis,concat(pasien.nm_pasien,' (',reg_periksa.umurdaftar,' ',reg_periksa.sttsumur,')') as nm_pasien,"+

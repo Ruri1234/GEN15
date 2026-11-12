@@ -108,23 +108,28 @@ public class koneksiDB {
                 connection=dataSource.getConnection();
                 connection.setAutoCommit(true);
                 connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+final String teks = "Modifikasi Oleh SIMRS RSU Bethesda Serukam 2021-2026";
+
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < teks.length() + 4; i++) {
+    sb.append("-");
+}
+final String garis = sb.toString();
+
                 System.out.println(
-                    "  Koneksi Berhasil. Sorry bro loading, silahkan baca dulu.... \n\n"+
-                    "	Software ini adalah Software Menejemen Rumah Sakit/Klinik/\n" +
-                    "  Puskesmas yang  gratis dan boleh digunakan siapa saja tanpa dikenai \n" +
-                    "  biaya apapun. Dilarang keras memperjualbelikan/mengambil \n" +
-                    "  keuntungan dari Software ini dalam bentuk apapun tanpa seijin pembuat \n" +
-                    "  software (Khanza.Soft Media). Bagi yang sengaja memperjualbelikan/\n"+
-                    "  mengambil keuntangan dari softaware ini tanpa ijin, kami  sumpahi sial\n"+
-                    "  1000 turunan, miskin sampai 500 turunan.\n"+
-                    "                                                                           \n"+
-                    "  #    ____  ___  __  __  ____   ____    _  __ _                              \n" +
-                    "  #   / ___||_ _||  \\/  ||  _ \\ / ___|  | |/ /| |__    __ _  _ __   ____ __ _ \n" +
-                    "  #   \\___ \\ | | | |\\/| || |_) |\\___ \\  | ' / | '_ \\  / _` || '_ \\ |_  // _` |\n" +
-                    "  #    ___) || | | |  | ||  _ <  ___) | | . \\ | | | || (_| || | | | / /| (_| |\n" +
-                    "  #   |____/|___||_|  |_||_| \\_\\|____/  |_|\\_\\|_| |_| \\__,_||_| |_|/___|\\__,_|\n" +
-                    "  #                                                                           \n"+
-                    "                                                                           \n"+
+    "\n  Koneksi ke SERVER SIMKES KHANZA RSUB Berhasil. Sedang loading...\n" +
+    "\n  No ERM No Claim, Melayani bukan dilayani\n" +
+    "\n" +
+    "   _  __ _                                  ____   ____   _   _  ____  \n" +
+    "  | |/ /| |__    __ _  _ __   ____ __ _    |  _ \\ / ___| | | | || __ ) \n" +
+    "  | ' / | '_ \\  / _` || '_ \\ |_  // _` |   | |_) |\\___ \\ | | | ||  _ \\ \n" +
+    "  | . \\ | | | || (_| || | | | / /| (_| |   |  _ <  ___) || |_| || |_) |\n" +
+    "  |_|\\_\\|_| |_| \\__,_||_| |_|/___|\\__,_|   |_| \\_\\|____/  \\___/ |____/ \n" +
+    "\n" +
+    "  +" + garis + "+\n" +
+    "  |  " + teks + "  |\n" +
+    "  +" + garis + "+\n" +
+    "\n" +
                     "  Licensi yang dianut di software ini https://en.wikipedia.org/wiki/Aladdin_Free_Public_License \n"+
                     "  Informasi dan panduan bisa dicek di halaman https://github.com/mas-elkhanza/SIMRS-Khanza/wiki \n"+
                     "  Bagi yang ingin berdonasi untuk pengembangan aplikasi ini bisa ke BSI 1015369872 atas nama Windiarto\n"+
@@ -133,10 +138,10 @@ public class koneksiDB {
                 return;
             } catch (SQLException e) {
                 retries--;
-                JOptionPane.showMessageDialog(null,"Gagal koneksi ke database. Sisa percobaan : " + retries);
+                JOptionPane.showMessageDialog(null,"Gagal koneksi ke SERVER SIMKES KHANZA RSUB. Sisa percobaan : " + retries);
                 if (retries == 0) {
-                    JOptionPane.showMessageDialog(null, "Koneksi ke database gagal. Silakan periksa koneksi jaringan atau konfigurasi database.");
-                    throw new SQLException("Gagal koneksi ke database setelah beberapa percobaan.", e);
+                    JOptionPane.showMessageDialog(null, "Koneksi ke SERVER SIMKES KHANZA RSUB gagal. Silakan hubungi SIMRS untuk periksa koneksi jaringan atau konfigurasi database.");
+                    throw new SQLException("Gagal koneksi ke SERVER SIMKES KHANZA RSUB setelah beberapa percobaan.", e);
                 }
                 try {
                     Thread.sleep(2000);
@@ -157,6 +162,67 @@ public class koneksiDB {
             Logger.getLogger(koneksiDB.class.getName()).log(Level.SEVERE, null, e);
         }
         connection = null;
+    }
+    
+    // DokterTeknoRIS MWL API Configuration Methods
+    public static String MWLAPIURL() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = prop.getProperty("MWLAPIURL");
+        } catch (Exception e) {
+            var = "http://192.168.1.6:5001";
+        }
+        return var;
+    }
+
+    public static String PORTAPIORTHANC() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = EnkripsiAES.decrypt(prop.getProperty("PORTAPIORTHANC"));
+        } catch (Exception e) {
+            var = "5001";
+        }
+        return var;
+    }
+
+    public static String USERAPIORTHANC() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = EnkripsiAES.decrypt(prop.getProperty("USERAPIORTHANC"));
+        } catch (Exception e) {
+            var = "admin";
+        }
+        return var;
+    }
+
+    public static String PASSAPIORTHANC() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = EnkripsiAES.decrypt(prop.getProperty("PASSAPIORTHANC"));
+        } catch (Exception e) {
+            var = "admin123";
+        }
+        return var;
+    }
+
+    public static String MWLAPIUSERNAME() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = EnkripsiAES.decrypt(prop.getProperty("MWLAPIUSERNAME"));
+        } catch (Exception e) {
+            var = "admin";
+        }
+        return var;
+    }
+
+    public static String MWLAPIPASSWORD() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = EnkripsiAES.decrypt(prop.getProperty("MWLAPIPASSWORD"));
+        } catch (Exception e) {
+            var = "admin123";
+        }
+        return var;
     }
     
     public static String HOST(){

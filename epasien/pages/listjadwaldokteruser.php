@@ -23,7 +23,7 @@
                         </thead>
                         <tbody>
                         <?php 
-                            $queryjadwal = bukaquery("select dokter.nm_dokter,jadwal.hari_kerja,jadwal.jam_mulai,jadwal.jam_selesai,poliklinik.nm_poli from jadwal inner join poliklinik inner join dokter on jadwal.kd_dokter=dokter.kd_dokter and jadwal.kd_poli=poliklinik.kd_poli where dokter.status='1' order by jadwal.hari_kerja,jadwal.kd_dokter");
+                            $queryjadwal = bukaquery("select dokter.nm_dokter,jadwal.hari_kerja,jadwal.jam_mulai,jadwal.jam_selesai,poliklinik.nm_poli from jadwal inner join poliklinik inner join dokter on jadwal.kd_dokter=dokter.kd_dokter and jadwal.kd_poli=poliklinik.kd_poli where dokter.status='1' and dokter.kd_dokter<>' -' and dokter.kd_dokter<>'-' and dokter.nm_dokter<>'-' and trim(dokter.nm_dokter)<>'' and dokter.nm_dokter not like '-%' and dokter.nm_dokter not like '%Humisar%' and dokter.nm_dokter not like '%Marianne%' and poliklinik.nm_poli not like '%MARJORIE%' and poliklinik.nm_poli not like '%PROMO%' and poliklinik.nm_poli not like '%APOTEK%' and poliklinik.nm_poli not like '%LABORATORIUM%' and poliklinik.nm_poli not like '%Medical Check Up%' and poliklinik.nm_poli not like '%MCU AKPER%' and poliklinik.nm_poli not in ('APOTEK','MCU AKPER/KARYAWAN','POLI DOTS','POLI GINEKOLOGI','POLI NEONATAL','PROMO LIBUR SEKOLAH','UNIT LABORATORIUM','Medical Check Up','PROMO KEMERDEKAAN','KLINIK MARJORIE') order by jadwal.hari_kerja,jadwal.kd_dokter");
                             while($rsqueryjadwal = mysqli_fetch_array($queryjadwal)) {
                                 echo "<tr>
                                         <td align='left'>".$rsqueryjadwal["nm_dokter"]."</td>

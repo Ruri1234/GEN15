@@ -18,7 +18,7 @@ public class WarnaTablePEWSD extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
         Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         if (row % 2 == 1){
-            component.setBackground(new Color(255,246,244));
+            component.setBackground(new Color(225,235,249));
             component.setForeground(new Color(50,50,50));
         }else{
             component.setBackground(new Color(255,255,255));

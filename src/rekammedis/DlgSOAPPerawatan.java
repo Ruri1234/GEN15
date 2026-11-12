@@ -2,21 +2,33 @@ package rekammedis;
 import fungsi.koneksiDB;
 import fungsi.validasi;
 import fungsi.akses;
+import fungsi.sekuel;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
+import javax.swing.text.Element;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
@@ -27,6 +39,8 @@ public class DlgSOAPPerawatan extends javax.swing.JDialog {
     private ResultSet rs,rs2;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
+    private String selectedSOAPId = null; // menyimpan id baris SOAP yang diklik-kanan (jenis|no_rawat|tgl_perawatan|jam_rawat)
+    private final sekuel Sequel = new sekuel();
     
     /** Creates new form DlgProgramStudi
      * @param parent
@@ -51,6 +65,8 @@ public class DlgSOAPPerawatan extends javax.swing.JDialog {
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
         LoadHTML.setDocument(doc);
+        
+        setupPopupSOAP();
     }
 
     /** This method is called from within the constructor to
@@ -443,7 +459,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                             rs2.beforeFirst();
                             while(rs2.next()){
                                  htmlContent.append(                             
-                                    "<tr class='isi'>"+
+                                    "<tr class='isi' id='RALAN|"+rs.getString("no_rawat")+"|"+rs2.getString("tgl_perawatan")+"|"+rs2.getString("jam_rawat")+"'>"+
                                         "<td align='center'>"+rs2.getString("tgl_perawatan")+"<br>"+rs2.getString("jam_rawat")+"</td>"+
                                         "<td align='center'>"+rs2.getString("nip")+"<br>"+rs2.getString("nama")+"</td>"+
                                         "<td align='left'>"+rs2.getString("keluhan").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
@@ -503,7 +519,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                             rs2.beforeFirst();
                             while(rs2.next()){
                                  htmlContent.append(                             
-                                    "<tr class='isi'>"+
+                                    "<tr class='isi' id='RANAP|"+rs.getString("no_rawat")+"|"+rs2.getString("tgl_perawatan")+"|"+rs2.getString("jam_rawat")+"'>"+
                                         "<td align='center'>"+rs2.getString("tgl_perawatan")+"<br>"+rs2.getString("jam_rawat")+"</td>"+
                                         "<td align='center'>"+rs2.getString("nip")+"<br>"+rs2.getString("nama")+"</td>"+
                                         "<td align='left'>"+rs2.getString("keluhan").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
@@ -566,6 +582,165 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
     
     public void isCek(){
         BtnPrint.setEnabled(akses.getsoap_perawatan());
+    }
+    
+    /** Menyiapkan popup menu klik-kanan pada LoadHTML untuk cetak SOAP Dokter per baris */
+    private void setupPopupSOAP() {
+        JPopupMenu popup = new JPopupMenu();
+        JMenuItem miCetak = new JMenuItem("Cetak SOAP Dokter");
+        miCetak.addActionListener(e -> {
+            if (selectedSOAPId != null) {
+                cetakSOAPDokter(selectedSOAPId);
+            }
+        });
+        popup.add(miCetak);
+
+        LoadHTML.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                maybeShowPopup(e);
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                maybeShowPopup(e);
+            }
+            private void maybeShowPopup(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    selectedSOAPId = cariIdPadaTitik(e.getPoint());
+                    if (selectedSOAPId != null) {
+                        popup.show(LoadHTML, e.getX(), e.getY());
+                    } else {
+                        JOptionPane.showMessageDialog(LoadHTML, "Maaf, silahkan klik kanan tepat pada baris SOAP...!!!");
+                    }
+                }
+            }
+        });
+    }
+
+    /** Mencari atribut id (RALAN|no_rawat|tgl|jam atau RANAP|...) pada elemen HTML di titik klik */
+    private String cariIdPadaTitik(Point p) {
+        try {
+            int pos = LoadHTML.viewToModel2D(p);
+            if (pos < 0) return null;
+            Document d = LoadHTML.getDocument();
+            if (!(d instanceof HTMLDocument)) return null;
+            HTMLDocument hdoc = (HTMLDocument) d;
+            Element elem = hdoc.getCharacterElement(pos);
+            while (elem != null) {
+                Object idAttr = elem.getAttributes().getAttribute(HTML.Attribute.ID);
+                if (idAttr != null) {
+                    return idAttr.toString();
+                }
+                elem = elem.getParentElement();
+            }
+        } catch (Exception e) {
+            System.out.println("Notifikasi cariIdPadaTitik : " + e);
+        }
+        return null;
+    }
+
+    /** Cetak laporan SOAP Dokter (Jasper) berdasarkan id baris yang diklik-kanan */
+    private void cetakSOAPDokter(String rowId) {
+        String[] bagian = rowId.split("\\|");
+        if (bagian.length != 4) {
+            JOptionPane.showMessageDialog(this, "Maaf, data baris tidak valid...!!!");
+            return;
+        }
+        String jenis = bagian[0];          // RALAN atau RANAP
+        String noRawat = bagian[1];
+        String tglPerawatan = bagian[2];
+        String jamRawat = bagian[3];
+
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        try {
+            String tabel = jenis.equals("RANAP") ? "pemeriksaan_ranap" : "pemeriksaan_ralan";
+
+            String queryNip =
+                "select "+tabel+".nip,pegawai.jbtn,pegawai.nama from "+tabel+" inner join pegawai on "+tabel+".nip=pegawai.nik "+
+                "where "+tabel+".no_rawat=? and "+tabel+".tgl_perawatan=? and "+tabel+".jam_rawat=?";
+            String nip = "";
+            String jabatan = "";
+            String namaNakes = "";
+            try (PreparedStatement psNip = koneksi.prepareStatement(queryNip)) {
+                psNip.setString(1, noRawat);
+                psNip.setString(2, tglPerawatan);
+                psNip.setString(3, jamRawat);
+                try (ResultSet rsNip = psNip.executeQuery()) {
+                    if (rsNip.next()) {
+                        nip = rsNip.getString("nip");
+                        jabatan = rsNip.getString("jbtn");
+                        namaNakes = rsNip.getString("nama");
+                    }
+                }
+            }
+
+            if (nip == null || nip.trim().equals("")) {
+                JOptionPane.showMessageDialog(this, "Maaf, dokter pemeriksa tidak ditemukan...!!!");
+                return;
+            }
+            if (jabatan == null) {
+                jabatan = "";
+            }
+            // Sesuaikan kata kunci "dokter" ini dengan penamaan jabatan di tabel pegawai Anda
+            if (!jabatan.toLowerCase().contains("dokter")) {
+                JOptionPane.showMessageDialog(this, "Maaf, data pemeriksaan ini bukan pemeriksaan dokter...!!!");
+                return;
+            }
+
+            Map<String, Object> param = new HashMap<>();
+            param.put("namars", akses.getnamars());
+            param.put("alamatrs", akses.getalamatrs());
+            param.put("kotars", akses.getkabupatenrs());
+            param.put("propinsirs", akses.getpropinsirs());
+            param.put("kontakrs", akses.getkontakrs());
+            param.put("emailrs", akses.getemailrs());
+            param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+
+            if (namaNakes == null || namaNakes.trim().equals("")) {
+                namaNakes = Sequel.cariIsi("select nama from pegawai where nik=?", nip);
+            }
+            String finger = Sequel.cariIsi(
+                "select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",
+                nip);
+            param.put("finger",
+                "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs() +
+                "\nDitandatangani secara elektronik oleh " + namaNakes +
+                "\nID " + (finger == null || finger.trim().equals("") ? nip : finger) +
+                "\n" + tglPerawatan + " " + jamRawat);
+
+            // ====================================================
+            // QUERY UTAMA REPORT
+            // Catatan: sengaja TIDAK difilter per tgl_perawatan/jam_rawat,
+            // supaya semua SOAP dokter dalam kunjungan (no_rawat) yang
+            // sama ikut tercetak sebagai baris berulang (Detail band).
+            // Hanya entri milik dokter yang ditampilkan.
+            // ====================================================
+            String query =
+                "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.tgl_lahir,pasien.jk," +
+                "concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat," +
+                tabel+".tgl_perawatan,"+tabel+".jam_rawat,"+
+                tabel+".tensi,"+tabel+".suhu_tubuh,"+tabel+".nadi,"+tabel+".respirasi,"+tabel+".spo2,"+tabel+".gcs,"+
+                tabel+".tinggi,"+tabel+".berat,"+tabel+".lingkar_perut,"+tabel+".kesadaran,"+tabel+".alergi,"+
+                tabel+".keluhan,"+tabel+".pemeriksaan,"+tabel+".penilaian,"+tabel+".rtl,"+tabel+".instruksi,"+tabel+".evaluasi,"+
+                tabel+".nip,pegawai.nama " +
+                "from reg_periksa inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis " +
+                "left join kelurahan on pasien.kd_kel=kelurahan.kd_kel " +
+                "left join kecamatan on pasien.kd_kec=kecamatan.kd_kec " +
+                "left join kabupaten on pasien.kd_kab=kabupaten.kd_kab " +
+                "inner join "+tabel+" on "+tabel+".no_rawat=reg_periksa.no_rawat " +
+                "inner join pegawai on "+tabel+".nip=pegawai.nik " +
+                "where reg_periksa.no_rawat='" + noRawat.replace("'", "''") + "' " +
+                "and lower(pegawai.jbtn) like '%dokter%' " +
+                "order by "+tabel+".tgl_perawatan,"+tabel+".jam_rawat";
+
+            Valid.MyReportqry("rptJalanPemeriksaan.jasper", "report", "::[ Formulir SOAP Dokter ]::", query, param);
+
+        } catch (Exception e) {
+            System.out.println("Notifikasi cetakSOAPDokter : " + e);
+            JOptionPane.showMessageDialog(this, "Gagal mencetak Formulir SOAP Dokter :\n" + e.getMessage());
+        } finally {
+            this.setCursor(Cursor.getDefaultCursor());
+        }
     }
     
     private void runBackground(Runnable task) {

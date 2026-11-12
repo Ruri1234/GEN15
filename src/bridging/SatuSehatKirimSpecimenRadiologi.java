@@ -193,15 +193,14 @@ public final class SatuSehatKirimSpecimenRadiologi extends javax.swing.JDialog {
         DTPCari1 = new widget.Tanggal();
         jLabel17 = new widget.Label();
         DTPCari2 = new widget.Tanggal();
+        jLabel12 = new widget.Label();
+        cmbStatus = new widget.ComboBox();
         jLabel16 = new widget.Label();
         TCari = new widget.TextBox();
         BtnCari = new widget.Button();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
-        ppPilihSemua.setBackground(new java.awt.Color(255, 255, 254));
-        ppPilihSemua.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppPilihSemua.setForeground(new java.awt.Color(50, 50, 50));
         ppPilihSemua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppPilihSemua.setText("Pilih Semua");
         ppPilihSemua.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -215,9 +214,6 @@ public final class SatuSehatKirimSpecimenRadiologi extends javax.swing.JDialog {
         });
         jPopupMenu1.add(ppPilihSemua);
 
-        ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkan.setText("Hilangkan Pilihan");
         ppBersihkan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -369,7 +365,6 @@ public final class SatuSehatKirimSpecimenRadiologi extends javax.swing.JDialog {
         DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
-        DTPCari1.setOpaque(false);
         DTPCari1.setPreferredSize(new java.awt.Dimension(95, 23));
         panelGlass9.add(DTPCari1);
 
@@ -382,9 +377,18 @@ public final class SatuSehatKirimSpecimenRadiologi extends javax.swing.JDialog {
         DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
-        DTPCari2.setOpaque(false);
         DTPCari2.setPreferredSize(new java.awt.Dimension(95, 23));
         panelGlass9.add(DTPCari2);
+
+        jLabel12.setText("Status Kirim :");
+        jLabel12.setName("jLabel12"); // NOI18N
+        jLabel12.setPreferredSize(new java.awt.Dimension(120, 23));
+        panelGlass9.add(jLabel12);
+
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Semua", "Terkirim", "Belum Terkirim" }));
+        cmbStatus.setName("cmbStatus"); // NOI18N
+        cmbStatus.setPreferredSize(new java.awt.Dimension(150, 23));
+        panelGlass9.add(cmbStatus);
 
         jLabel16.setText("Key Word :");
         jLabel16.setName("jLabel16"); // NOI18N
@@ -744,7 +748,9 @@ public final class SatuSehatKirimSpecimenRadiologi extends javax.swing.JDialog {
     private widget.editorpane LoadHTML;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
+    private widget.ComboBox cmbStatus;
     private widget.InternalFrame internalFrame1;
+    private widget.Label jLabel12;
     private widget.Label jLabel15;
     private widget.Label jLabel16;
     private widget.Label jLabel17;
@@ -759,24 +765,55 @@ public final class SatuSehatKirimSpecimenRadiologi extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
     private void tampil() {
         Valid.tabelKosong(tabMode);
-        try{
-            ps=koneksi.prepareStatement(
-                   "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,permintaan_radiologi.noorder,"+
-                   "permintaan_radiologi.tgl_sampel,permintaan_radiologi.jam_sampel,jns_perawatan_radiologi.nm_perawatan,"+
-                   "satu_sehat_mapping_radiologi.sampel_code,satu_sehat_mapping_radiologi.sampel_system,satu_sehat_mapping_radiologi.sampel_display,satu_sehat_servicerequest_radiologi.id_servicerequest,"+
-                   "permintaan_pemeriksaan_radiologi.kd_jenis_prw,ifnull(satu_sehat_specimen_radiologi.id_specimen,'') as id_specimen "+
-                   "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis inner join permintaan_radiologi on permintaan_radiologi.no_rawat=reg_periksa.no_rawat "+
-                   "inner join permintaan_pemeriksaan_radiologi on permintaan_pemeriksaan_radiologi.noorder=permintaan_radiologi.noorder "+
-                   "inner join jns_perawatan_radiologi on jns_perawatan_radiologi.kd_jenis_prw=permintaan_pemeriksaan_radiologi.kd_jenis_prw "+
-                   "inner join satu_sehat_mapping_radiologi on satu_sehat_mapping_radiologi.kd_jenis_prw=jns_perawatan_radiologi.kd_jenis_prw "+
-                   "inner join satu_sehat_servicerequest_radiologi on satu_sehat_servicerequest_radiologi.noorder=permintaan_pemeriksaan_radiologi.noorder "+
-                   "and satu_sehat_servicerequest_radiologi.kd_jenis_prw=permintaan_pemeriksaan_radiologi.kd_jenis_prw "+
-                   "left join satu_sehat_specimen_radiologi on satu_sehat_servicerequest_radiologi.noorder=satu_sehat_specimen_radiologi.noorder "+
-                   "and satu_sehat_servicerequest_radiologi.kd_jenis_prw=satu_sehat_specimen_radiologi.kd_jenis_prw "+
-                   "where reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or jns_perawatan_radiologi.nm_perawatan like ? or "+
-                   "satu_sehat_mapping_radiologi.sampel_code like ? or permintaan_radiologi.noorder like ?)"));
+
+            try {
+
+       String statusKirim = "";
+
+// cmbStatus: Semua / Terkirim / Belum Terkirim
+if (cmbStatus.getSelectedItem().toString().equals("Terkirim")) {
+    statusKirim =
+        " and ifnull(satu_sehat_specimen_radiologi.id_specimen,'')<>'' ";
+} else if (cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")) {
+    statusKirim =
+        " and ifnull(satu_sehat_servicerequest_radiologi.id_servicerequest,'')<>'' " +
+        " and ifnull(satu_sehat_specimen_radiologi.id_specimen,'')='' ";
+}
+
+ps = koneksi.prepareStatement(
+    "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis," +
+    "pasien.nm_pasien,pasien.no_ktp," +
+    "permintaan_radiologi.noorder," +
+    "permintaan_radiologi.tgl_sampel,permintaan_radiologi.jam_sampel," +
+    "jns_perawatan_radiologi.nm_perawatan," +
+    "satu_sehat_mapping_radiologi.sampel_code," +
+    "satu_sehat_mapping_radiologi.sampel_system," +
+    "satu_sehat_mapping_radiologi.sampel_display," +
+    "ifnull(satu_sehat_servicerequest_radiologi.id_servicerequest,'') as id_servicerequest," +
+    "permintaan_pemeriksaan_radiologi.kd_jenis_prw," +
+    "ifnull(satu_sehat_specimen_radiologi.id_specimen,'') as id_specimen " +
+    "from reg_periksa " +
+    "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+    "inner join permintaan_radiologi on permintaan_radiologi.no_rawat=reg_periksa.no_rawat " +
+    "inner join permintaan_pemeriksaan_radiologi on permintaan_pemeriksaan_radiologi.noorder=permintaan_radiologi.noorder " +
+    "inner join jns_perawatan_radiologi on jns_perawatan_radiologi.kd_jenis_prw=permintaan_pemeriksaan_radiologi.kd_jenis_prw " +
+    "inner join satu_sehat_mapping_radiologi on satu_sehat_mapping_radiologi.kd_jenis_prw=jns_perawatan_radiologi.kd_jenis_prw " +
+    "inner join satu_sehat_servicerequest_radiologi on satu_sehat_servicerequest_radiologi.noorder=permintaan_pemeriksaan_radiologi.noorder " +
+    "and satu_sehat_servicerequest_radiologi.kd_jenis_prw=permintaan_pemeriksaan_radiologi.kd_jenis_prw " +
+    "left join satu_sehat_specimen_radiologi on satu_sehat_servicerequest_radiologi.noorder=satu_sehat_specimen_radiologi.noorder " +
+    "and satu_sehat_servicerequest_radiologi.kd_jenis_prw=satu_sehat_specimen_radiologi.kd_jenis_prw " +
+    "where reg_periksa.tgl_registrasi between ? and ? " +
+    statusKirim +
+    (TCari.getText().equals("") ? "" :
+    "and (" +
+    "reg_periksa.no_rawat like ? or " +
+    "reg_periksa.no_rkm_medis like ? or " +
+    "pasien.nm_pasien like ? or " +
+    "pasien.no_ktp like ? or " +
+    "jns_perawatan_radiologi.nm_perawatan like ? or " +
+    "satu_sehat_mapping_radiologi.sampel_code like ? or " +
+    "permintaan_radiologi.noorder like ?)")
+);
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -808,23 +845,40 @@ public final class SatuSehatKirimSpecimenRadiologi extends javax.swing.JDialog {
                 }
             }
             
-            ps=koneksi.prepareStatement(
-                   "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,permintaan_radiologi.noorder,"+
-                   "permintaan_radiologi.tgl_sampel,permintaan_radiologi.jam_sampel,jns_perawatan_radiologi.nm_perawatan,"+
-                   "satu_sehat_mapping_radiologi.sampel_code,satu_sehat_mapping_radiologi.sampel_system,satu_sehat_mapping_radiologi.sampel_display,satu_sehat_servicerequest_radiologi.id_servicerequest,"+
-                   "permintaan_pemeriksaan_radiologi.kd_jenis_prw,ifnull(satu_sehat_specimen_radiologi.id_specimen,'') as id_specimen "+
-                   "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis inner join permintaan_radiologi on permintaan_radiologi.no_rawat=reg_periksa.no_rawat "+
-                   "inner join permintaan_pemeriksaan_radiologi on permintaan_pemeriksaan_radiologi.noorder=permintaan_radiologi.noorder "+
-                   "inner join jns_perawatan_radiologi on jns_perawatan_radiologi.kd_jenis_prw=permintaan_pemeriksaan_radiologi.kd_jenis_prw "+
-                   "inner join satu_sehat_mapping_radiologi on satu_sehat_mapping_radiologi.kd_jenis_prw=jns_perawatan_radiologi.kd_jenis_prw "+
-                   "inner join satu_sehat_servicerequest_radiologi on satu_sehat_servicerequest_radiologi.noorder=permintaan_pemeriksaan_radiologi.noorder "+
-                   "and satu_sehat_servicerequest_radiologi.kd_jenis_prw=permintaan_pemeriksaan_radiologi.kd_jenis_prw "+
-                   "left join satu_sehat_specimen_radiologi on satu_sehat_servicerequest_radiologi.noorder=satu_sehat_specimen_radiologi.noorder "+
-                   "and satu_sehat_servicerequest_radiologi.kd_jenis_prw=satu_sehat_specimen_radiologi.kd_jenis_prw "+
-                   "where reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or jns_perawatan_radiologi.nm_perawatan like ? or "+
-                   "satu_sehat_mapping_radiologi.sampel_code like ? or permintaan_radiologi.noorder like ?)"));
+           ps = koneksi.prepareStatement(
+    "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis," +
+    "pasien.nm_pasien,pasien.no_ktp," +
+    "permintaan_radiologi.noorder," +
+    "permintaan_radiologi.tgl_sampel,permintaan_radiologi.jam_sampel," +
+    "jns_perawatan_radiologi.nm_perawatan," +
+    "satu_sehat_mapping_radiologi.sampel_code," +
+    "satu_sehat_mapping_radiologi.sampel_system," +
+    "satu_sehat_mapping_radiologi.sampel_display," +
+    "ifnull(satu_sehat_servicerequest_radiologi.id_servicerequest,'') as id_servicerequest," +
+    "permintaan_pemeriksaan_radiologi.kd_jenis_prw," +
+    "ifnull(satu_sehat_specimen_radiologi.id_specimen,'') as id_specimen " +
+    "from reg_periksa " +
+    "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+    "inner join permintaan_radiologi on permintaan_radiologi.no_rawat=reg_periksa.no_rawat " +
+    "inner join permintaan_pemeriksaan_radiologi on permintaan_pemeriksaan_radiologi.noorder=permintaan_radiologi.noorder " +
+    "inner join jns_perawatan_radiologi on jns_perawatan_radiologi.kd_jenis_prw=permintaan_pemeriksaan_radiologi.kd_jenis_prw " +
+    "inner join satu_sehat_mapping_radiologi on satu_sehat_mapping_radiologi.kd_jenis_prw=jns_perawatan_radiologi.kd_jenis_prw " +
+    "inner join satu_sehat_servicerequest_radiologi on satu_sehat_servicerequest_radiologi.noorder=permintaan_pemeriksaan_radiologi.noorder " +
+    "and satu_sehat_servicerequest_radiologi.kd_jenis_prw=permintaan_pemeriksaan_radiologi.kd_jenis_prw " +
+    "left join satu_sehat_specimen_radiologi on satu_sehat_servicerequest_radiologi.noorder=satu_sehat_specimen_radiologi.noorder " +
+    "and satu_sehat_servicerequest_radiologi.kd_jenis_prw=satu_sehat_specimen_radiologi.kd_jenis_prw " +
+    "where reg_periksa.tgl_registrasi between ? and ? " +
+    statusKirim +
+    (TCari.getText().equals("") ? "" :
+    "and (" +
+    "reg_periksa.no_rawat like ? or " +
+    "reg_periksa.no_rkm_medis like ? or " +
+    "pasien.nm_pasien like ? or " +
+    "pasien.no_ktp like ? or " +
+    "jns_perawatan_radiologi.nm_perawatan like ? or " +
+    "satu_sehat_mapping_radiologi.sampel_code like ? or " +
+    "permintaan_radiologi.noorder like ?)")
+);
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));

@@ -20,7 +20,7 @@ import javax.swing.plaf.basic.BasicTextFieldUI;
 
 public class TextBox extends JTextField {
     private static final long serialVersionUID = 2L;
-    static final Color AKSEN_DEFAULT = new Color(0x16A05D);
+    static final Color AKSEN_DEFAULT = new Color(0x1E88E5);
     private Color warnaAksen;
     private Color warnaBorder;
     private Color warnaNonAktif;
@@ -31,17 +31,17 @@ public class TextBox extends JTextField {
     public TextBox() {
         super();
         warnaAksen = AKSEN_DEFAULT;
-        warnaBorder = new Color(0x96BEA5);   
-        warnaNonAktif = new Color(0xFAFCFB);   
+        warnaBorder = new Color(0xA9B6C4);
+        warnaNonAktif = new Color(0xFAFBFD);  
         radius = 6;
 
         setFont(new Font("Tahoma", Font.PLAIN, 11));
-        setForeground(new Color(0x1C2520));
+        setForeground(new Color(0x1C2430));
         setBackground(Color.WHITE);
-        setSelectionColor(new Color(0xCDEBDA));
-        setSelectedTextColor(new Color(0x0E3B24));
+        setSelectionColor(new Color(0xD2E8FC));
+        setSelectedTextColor(new Color(0x0B3A6B));
         setCaretColor(warnaAksen);
-        setDisabledTextColor(new Color(0x55625B));   
+        setDisabledTextColor(new Color(0x55606B));   
         setHorizontalAlignment(LEFT);
         setOpaque(false);
         setBorder(new BorderModern());
@@ -69,14 +69,24 @@ public class TextBox extends JTextField {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);   
+        Graphics2D g2 = (Graphics2D) g.create();
+        try {
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            Color latar = (!isEnabled() || !isEditable()) ? warnaNonAktif : getBackground();
+            g2.setColor(latar);
+            g2.fill(new RoundRectangle2D.Float(1, 1, getWidth() - 2, getHeight() - 2, radius * 2f, radius * 2f));
+        } finally {
+            g2.dispose();
+        }
 
+        super.paintComponent(g);  
+        
         if (placeholder != null && !placeholder.isEmpty() && getText().isEmpty() && !isFocusOwner()) {
             Graphics2D gp = (Graphics2D) g.create();
             try {
                 gp.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                 gp.setFont(getFont().deriveFont(Font.ITALIC));
-                gp.setColor(new Color(0xA3ADA8));
+                gp.setColor(new Color(0xA3ABB5));
                 Insets in = getInsets();
                 FontMetrics fm = gp.getFontMetrics();
                 int y = in.top + (getHeight() - in.top - in.bottom - fm.getHeight()) / 2 + fm.getAscent();
@@ -112,7 +122,7 @@ public class TextBox extends JTextField {
                 } else if (fokus) {
                     garis = warnaAksen;
                 } else if (hover && aktif) {
-                    garis = new Color(0x5A9170);
+                    garis = new Color(0x6F8299);
                 } else {
                     garis = warnaBorder;
                 }

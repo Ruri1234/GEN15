@@ -1,0 +1,39 @@
+# ==============================================================================
+# SECURITY HARDENING & WEBSERVER PROTECTION (.htaccess) - KLAUSUL 2.4
+# SIMRS KHANZA E-PASIEN / DORS BETHESDA SERUKAM
+# ==============================================================================
+
+# 1. Matikan Signature Web Server (Mencegah Pembocoran Versi Apache/LiteSpeed)
+ServerSignature Off
+
+# 2. Matikan Directory Browsing / Listing (Mencegah Pengunjung Melihat Isi Folder)
+Options -Indexes
+
+# 3. Kunci Berkas Sensitif Konfigurasi Database dan Berkas Tersembunyi
+<FilesMatch "^(conf\.php|\.htaccess|\.htpasswd|\.git|\.env|.*\.log|.*\.sql|.*\.bak)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Dukungan MIME Type PWA Manifest
+<IfModule mod_mime.c>
+    AddType application/manifest+json json
+    AddType application/manifest+json .webmanifest
+</IfModule>
+
+# 4. Paksa Seluruh Trafik Menggunakan Jalur Enkripsi HTTPS (Klausul 2.2 & 2.4)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# 5. Pasang HTTP Security Headers di Tingkat Web Server
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    Header unset X-Powered-By
+</IfModule>

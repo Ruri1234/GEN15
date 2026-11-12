@@ -50,7 +50,7 @@ public final class DlgResepPulang extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
-    private PreparedStatement ps;
+    private PreparedStatement ps,psbarang;
     private ResultSet rs;
     private double jumlahtotal=0;
     private riwayatobat Trackobat=new riwayatobat();
@@ -799,7 +799,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
                 Valid.MyReportqry("rptItemResepPulang.jasper","report","::[ Aturan Pakai Obat ]::",
                     "select resep_pulang.no_rawat,resep_pulang.tanggal, "+
-                    "reg_periksa.no_rkm_medis,pasien.nm_pasien,databarang.nama_brng,"+
+                    "reg_periksa.no_rkm_medis,pasien.nm_pasien,databarang.nama_brng,pasien.jk,reg_periksa.umurdaftar,reg_periksa.sttsumur, "+
                     "resep_pulang.dosis,resep_pulang.jml_barang,kodesatuan.satuan "+
                     "from resep_pulang inner join reg_periksa on resep_pulang.no_rawat=reg_periksa.no_rawat "+
                     "inner join databarang on resep_pulang.kode_brng=databarang.kode_brng "+

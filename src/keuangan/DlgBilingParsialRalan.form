@@ -13,7 +13,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanTindakanDr">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanTindakanDr">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -38,7 +38,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanTindakanDrActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaTindakanDr">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaTindakanDr">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -76,7 +76,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanTindakanDrBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanTindakanDrBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -101,7 +101,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanTindakanDrBayarActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaTindakanDrBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaTindakanDrBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -139,7 +139,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanTindakanPr">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanTindakanPr">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -164,7 +164,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanTindakanPrActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaTindakanPr">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaTindakanPr">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -202,7 +202,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanTindakanPrBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanTindakanPrBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -227,7 +227,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanTindakanPrBayarActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaTindakanPrBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaTindakanPrBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -265,7 +265,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanTindakanDrPr">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanTindakanDrPr">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -290,7 +290,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanTindakanDrPrActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaTindakanDrPr">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaTindakanDrPr">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -328,7 +328,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanTindakanDrPrBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanTindakanDrPrBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -353,7 +353,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanTindakanDrPrBayarActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaTindakanDrPrBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaTindakanDrPrBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -391,7 +391,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanRadiologi">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanRadiologi">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -416,7 +416,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanRadiologiActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaRadiologi">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaRadiologi">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -454,7 +454,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanRadiologiBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanRadiologiBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -479,7 +479,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanRadiologiBayarActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaRadiologiBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaRadiologiBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -517,7 +517,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanLaborat">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanLaborat">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -542,7 +542,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanLaboratActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaLaborat">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaLaborat">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -580,7 +580,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanDetailLaborat">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanDetailLaborat">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -605,7 +605,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanDetailLaboratActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaDetailLaborat">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaDetailLaborat">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -643,7 +643,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanLaboratBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanLaboratBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -668,7 +668,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanLaboratBayarActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaLaboratBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaLaboratBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -706,7 +706,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanDetailLaboratBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanDetailLaboratBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -731,7 +731,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanDetailLaboratBayarActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaDetailLaboratBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaDetailLaboratBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -769,7 +769,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanObat">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanObat">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -794,7 +794,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanObatActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaObat">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaObat">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -832,7 +832,7 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="widget.MenuItem" name="ppBersihkanObatBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppBersihkanObatBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -857,7 +857,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ppBersihkanObatBayarActionPerformed"/>
           </Events>
         </MenuItem>
-        <MenuItem class="widget.MenuItem" name="ppSemuaObatBayar">
+        <MenuItem class="javax.swing.JMenuItem" name="ppSemuaObatBayar">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
@@ -907,7 +907,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,28,0,0,4,-61"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-6,0,0,4,-61"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -1031,7 +1031,7 @@
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="1">
-                    <StringItem index="0" value="26-03-2026 14:00:40"/>
+                    <StringItem index="0" value="17-09-2026 16:53:06"/>
                   </StringArray>
                 </Property>
                 <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy HH:mm:ss"/>
@@ -1405,7 +1405,7 @@
             </Component>
           </SubComponents>
         </Container>
-        <Container class="widget.TabPane" name="TabRawat">
+        <Container class="javax.swing.JTabbedPane" name="TabRawat">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fd" green="ff" red="ff" type="rgb"/>
@@ -2343,7 +2343,7 @@
                     <Property name="verticalGap" type="int" value="1"/>
                   </Layout>
                   <SubComponents>
-                    <Container class="widget.TabPane" name="TabRawatLaborat">
+                    <Container class="javax.swing.JTabbedPane" name="TabRawatLaborat">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="fd" green="ff" red="ff" type="rgb"/>
@@ -2472,7 +2472,7 @@
                     <Property name="verticalGap" type="int" value="1"/>
                   </Layout>
                   <SubComponents>
-                    <Container class="widget.TabPane" name="TabRawatLaboratBayar">
+                    <Container class="javax.swing.JTabbedPane" name="TabRawatLaboratBayar">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="fd" green="ff" red="ff" type="rgb"/>

@@ -13,9 +13,12 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
@@ -77,9 +80,10 @@ public class DlgRL4A extends javax.swing.JDialog {
         Tgl2 = new widget.Tanggal();
         btnCari = new widget.Button();
         label9 = new widget.Label();
+        BtnRekap = new widget.Button();
         BtnPrint = new widget.Button();
         BtnKeluar = new widget.Button();
-        TabRawat = new widget.TabPane();
+        TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
         LoadHTML = new widget.editorpane();
         Scroll1 = new widget.ScrollPane();
@@ -142,6 +146,24 @@ public class DlgRL4A extends javax.swing.JDialog {
         label9.setName("label9"); // NOI18N
         label9.setPreferredSize(new java.awt.Dimension(100, 30));
         panelisi1.add(label9);
+
+        BtnRekap.setIcon(RekapPenyakitRanap.ikonTabel());
+        BtnRekap.setMnemonic('R');
+        BtnRekap.setText("Rekap");
+        BtnRekap.setToolTipText("Rekap 10 besar penyakit rawat inap per bulan, berdasarkan tanggal keluar  Alt+R");
+        BtnRekap.setName("BtnRekap"); // NOI18N
+        BtnRekap.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnRekap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRekapActionPerformed(evt);
+            }
+        });
+        BtnRekap.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnRekapKeyPressed(evt);
+            }
+        });
+        panelisi1.add(BtnRekap);
 
         BtnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
         BtnPrint.setMnemonic('T');
@@ -240,35 +262,22 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             
             File f = new File("rl4a.html");            
             BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-            if(TabRawat.getSelectedIndex()==0){
-                bw.write(LoadHTML.getText().replaceAll("<head>","<head><link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" />"+
-                            "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
-                                "<tr class='isi2'>"+
-                                    "<td valign='top' align='center'>"+
-                                        "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
-                                        akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
-                                        akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
-                                        "<font size='2' face='Tahoma'>DATA KEADAAN MORBIDITAS PASIEN RAWAT INAP RUMAH SAKIT PENYEBAB KECELAKAN<br>PERIODE "+Tgl1.getSelectedItem()+" s.d. "+Tgl2.getSelectedItem()+"<br><br></font>"+        
-                                    "</td>"+
-                               "</tr>"+
-                            "</table>")
-                );
-                bw.close();
-            }else if(TabRawat.getSelectedIndex()==1){
-                bw.write(LoadHTML1.getText().replaceAll("<head>","<head><link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" />"+
-                            "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
-                                "<tr class='isi2'>"+
-                                    "<td valign='top' align='center'>"+
-                                        "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
-                                        akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
-                                        akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
-                                        "<font size='2' face='Tahoma'>DATA KEADAAN MORBIDITAS PASIEN RAWAT INAP RUMAH SAKIT PENYEBAB KECELAKAN<br>PERIODE "+Tgl1.getSelectedItem()+" s.d. "+Tgl2.getSelectedItem()+"<br><br></font>"+        
-                                    "</td>"+
-                               "</tr>"+
-                            "</table>")
-                );
-                bw.close();
-            }                
+            int tab=TabRawat.getSelectedIndex();
+            String isi=tab==0?LoadHTML.getText():LoadHTML1.getText();
+            String judul="DATA KEADAAN MORBIDITAS PASIEN RAWAT INAP RUMAH SAKIT PENYEBAB KECELAKAN";
+            bw.write(isi.replaceAll("<head>","<head><link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" />"+
+                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
+                            "<tr class='isi2'>"+
+                                "<td valign='top' align='center'>"+
+                                    "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
+                                    akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
+                                    akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
+                                    "<font size='2' face='Tahoma'>"+judul+"<br>PERIODE "+Tgl1.getSelectedItem()+" s.d. "+Tgl2.getSelectedItem()+"<br><br></font>"+        
+                                "</td>"+
+                           "</tr>"+
+                        "</table>")
+            );
+            bw.close();
             Desktop.getDesktop().browse(f.toURI());
         } catch (Exception e) {
             System.out.println("Notifikasi : "+e);
@@ -284,6 +293,19 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             Valid.pindah(evt,Tgl2,BtnKeluar);
         }
     }//GEN-LAST:event_BtnPrintKeyPressed
+
+    private void BtnRekapActionPerformed(java.awt.event.ActionEvent evt) {
+        java.time.LocalDate hari=java.time.LocalDate.now();
+        RekapPenyakitRanap.tampil(this,(dari,sampai)->ambilTop10(dari,sampai),hari.getMonthValue(),hari.getYear());
+    }
+
+    private void BtnRekapKeyPressed(java.awt.event.KeyEvent evt) {
+        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+            BtnRekapActionPerformed(null);
+        }else{
+            Valid.pindah(evt,Tgl2,BtnPrint);
+        }
+    }
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
         dispose();
@@ -336,6 +358,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private widget.Button BtnRekap;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
     private widget.TextBox Kd2;
@@ -343,7 +366,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
     private widget.editorpane LoadHTML1;
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll1;
-    private widget.TabPane TabRawat;
+    private javax.swing.JTabbedPane TabRawat;
     private widget.Tanggal Tgl1;
     private widget.Tanggal Tgl2;
     private widget.Button btnCari;
@@ -867,6 +890,80 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
     
     
     
+    /**
+     * 10 besar penyakit rawat inap untuk satu bulan, berdasarkan tanggal keluar (kamar_inap.tgl_keluar
+     * antara dari dan sampai). Dipanggil dari dialog rekap di thread latar belakang; filter tanggal
+     * pada form tidak dipakai karena bulan dipilih di dalam dialog rekap.
+     * Diagnosa yang mirip DISATUKAN per kelompok ICD-10 3 karakter (mis. A09.0, A09.9 -> A09;
+     * K35.2, K35.8 -> K35), sesuai pengelompokan RL 4.2 Kemenkes.
+     * Dihitung per no_rawat (distinct, jadi pasien dengan beberapa sub-kode dalam satu kelompok tidak terhitung ganda),
+     * diagnosa utama (prioritas 1), per jenis kelamin; "mati" = pasien tercatat di pasien_mati
+     * (sama dengan acuan tab RL 4A lainnya). Kode V-Y (penyebab luar) serta awalan Z, R, O dan KG (bukan penyakit) tidak ikut.
+     * Baris kamar_inap berstatus "Pindah Kamar" tidak dihitung sebagai pasien keluar.
+     */
+    private List<RekapPenyakitRanap.Baris> ambilTop10(java.time.LocalDate dari, java.time.LocalDate sampai) throws java.sql.SQLException {
+        List<RekapPenyakitRanap.Baris> data = new ArrayList<>();
+        try (PreparedStatement pst = koneksi.prepareStatement(
+                "select left(diagnosa_pasien.kd_penyakit,3) as kelompok,"+
+                "count(distinct case when pasien.jk='L' then diagnosa_pasien.no_rawat end) as lk,"+
+                "count(distinct case when pasien.jk='P' then diagnosa_pasien.no_rawat end) as pr,"+
+                "count(distinct case when pasien.jk='L' and pasien_mati.no_rkm_medis is not null then diagnosa_pasien.no_rawat end) as mati_lk,"+
+                "count(distinct case when pasien.jk='P' and pasien_mati.no_rkm_medis is not null then diagnosa_pasien.no_rawat end) as mati_pr,"+
+                "count(distinct diagnosa_pasien.no_rawat) as total "+
+                "from diagnosa_pasien "+
+                "inner join reg_periksa on reg_periksa.no_rawat=diagnosa_pasien.no_rawat "+
+                "inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis "+
+                "inner join kamar_inap on kamar_inap.no_rawat=diagnosa_pasien.no_rawat "+
+                "left join pasien_mati on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
+                "where diagnosa_pasien.status='Ranap' and diagnosa_pasien.prioritas='1' "+
+                "and kamar_inap.tgl_keluar between ? and ? "+
+                "and kamar_inap.stts_pulang<>'Pindah Kamar' "+
+                "and left(diagnosa_pasien.kd_penyakit,1) not in ('V','W','X','Y','Z','R','O') "+
+                "and left(diagnosa_pasien.kd_penyakit,2)<>'KG' "+
+                "group by left(diagnosa_pasien.kd_penyakit,3) "+
+                "order by total desc,kelompok limit 10")) {
+            pst.setString(1,dari.toString());
+            pst.setString(2,sampai.toString());
+            try (ResultSet rst = pst.executeQuery()) {
+                while(rst.next()){
+                    String kelompok = rst.getString("kelompok");
+                    data.add(new RekapPenyakitRanap.Baris(kelompok,namaKelompok(kelompok),
+                            rst.getInt("lk"),rst.getInt("pr"),rst.getInt("mati_lk"),rst.getInt("mati_pr")));
+                }
+            }
+        }
+        return data;
+    }
+
+    /**
+     * Nama untuk satu kelompok ICD-10 3 karakter: pakai nama kode induknya (mis. "A09") bila ada di tabel penyakit,
+     * jika tidak ada pakai nama sub-kode pertama dalam kelompok tersebut.
+     */
+    private String namaKelompok(String kelompok) {
+        String nama = null;
+        try (PreparedStatement p1 = koneksi.prepareStatement(
+                "select SUBSTRING(nm_penyakit,1,80) from penyakit where kd_penyakit=?")) {
+            p1.setString(1,kelompok);
+            try (ResultSet r1 = p1.executeQuery()) {
+                if(r1.next()) nama = r1.getString(1);
+            }
+        } catch (Exception e) {
+            System.out.println("laporan.DlgRL4A.namaKelompok 1 : "+e);
+        }
+        if(nama==null || nama.trim().isEmpty()){
+            try (PreparedStatement p2 = koneksi.prepareStatement(
+                    "select SUBSTRING(nm_penyakit,1,80) from penyakit where kd_penyakit like ? order by kd_penyakit limit 1")) {
+                p2.setString(1,kelompok+"%");
+                try (ResultSet r2 = p2.executeQuery()) {
+                    if(r2.next()) nama = r2.getString(1);
+                }
+            } catch (Exception e) {
+                System.out.println("laporan.DlgRL4A.namaKelompok 2 : "+e);
+            }
+        }
+        return nama==null ? "" : nama;
+    }
+
     public void isCek(){
         BtnPrint.setEnabled(akses.getrl4asebab());
     }

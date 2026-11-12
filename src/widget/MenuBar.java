@@ -22,6 +22,7 @@ public class MenuBar extends JMenuBar {
 
     private static final long serialVersionUID = 2L;
     public enum Tema {
+        KLASIK(new Color(0x82A9EE), new Color(0x5283E4), new Color(0x3764C3), Color.WHITE, 0),
         EXCEL(new Color(69, 122, 85), new Color(59, 114, 75), new Color(47, 95, 62), Color.WHITE, 10),
         HIJAU(new Color(0x1CB06C), new Color(0x0B8A4F), new Color(0x077242), Color.WHITE, 45),
         BIRU (new Color(0x3C8FF0), new Color(0x1D6DCE), new Color(0x165AAD), Color.WHITE, 45),
@@ -70,7 +71,7 @@ public class MenuBar extends JMenuBar {
         setOpaque(true);
         setBorderPainted(false);
         setBorder(BorderFactory.createEmptyBorder(5, 6, 6, 6));
-        setTema(Tema.HIJAU);
+        setTema(Tema.KLASIK);
 
         addContainerListener(new ContainerAdapter() {
             @Override

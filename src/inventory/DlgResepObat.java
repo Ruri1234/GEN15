@@ -67,7 +67,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
     private double total=0,jumlahtotal=0;
     private int i=0,getno=0;
     private DateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-    private String TANGGALMUNDUR="yes",norawat="";
+    private String TANGGALMUNDUR="yes",norawat="",statusclosingparsial="";
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
 
@@ -1192,12 +1192,15 @@ public final class DlgResepObat extends javax.swing.JDialog {
             Valid.textKosong(KdDokter,"Dokter");
         }else if(NoResep.getText().trim().equals("")){
             Valid.textKosong(NoResep,"No.Resep");
+        }else if((statusclosingparsial=Sequel.cariIsi("select reg_periksa.status_closing_parsial from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText())).equals("Sudah Closing")){
+            JOptionPane.showMessageDialog(null,"Pasien Reguler Sudah Closing Kasir ..!!\nResep tidak dapat ditambahkan lagi.\nSilahkan hubungi bagian kasir/keuangan ..!!");
         }else{
             if(Sequel.menyimpantf2("resep_obat","?,?,?,?,?,?,?,?,?,?","Nomer Resep",10,new String[]{
                     NoResep.getText(),Valid.SetTgl(DTPBeri.getSelectedItem()+""),
                     cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
                     TNoRw.getText(),KdDokter.getText(),"0000-00-00","00:00:00",status,"0000-00-00","00:00:00"
                 })==true){
+                Sequel.queryu("insert ignore into resep_manual_apoteker(no_resep,nip) values('"+NoResep.getText()+"','"+akses.getkode()+"')");
                 runBackground(() -> tampil());
                 if(lembarobat.equals("yes")){
                     ppLembarObatActionPerformed(null);
@@ -1210,6 +1213,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
                         cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
                         TNoRw.getText(),KdDokter.getText(),"0000-00-00","00:00:00",status,"0000-00-00","00:00:00"
                     })==true){
+                    Sequel.queryu("insert ignore into resep_manual_apoteker(no_resep,nip) values('"+NoResep.getText()+"','"+akses.getkode()+"')");
                     runBackground(() -> tampil());
                     if(lembarobat.equals("yes")){
                         ppLembarObatActionPerformed(null);
@@ -1969,6 +1973,18 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             param.put("norm",TNoRm.getText());
             param.put("peresep",NmDokter.getText());
             param.put("noresep",NoResep.getText());
+            String status = Sequel.cariIsi("SELECT status FROM resep_obat WHERE no_resep=?", NoResep.getText());
+
+           if ("ralan".equalsIgnoreCase(status)) {
+             status = "RAWAT JALAN";
+           } else if ("ranap".equalsIgnoreCase(status)) {
+              status = "RAWAT INAP";
+              }
+
+             param.put("status", status);
+            param.put("no_sep",Sequel.cariIsi("select no_sep from bridging_sep where no_rawat=?",TNoRw.getText()));
+            param.put("alamat",Sequel.cariIsi("select almt_pj from reg_periksa where no_rawat=?",TNoRw.getText())); 
+            param.put("jk",Sequel.cariIsi("select jk from pasien where no_rkm_medis=?",TNoRm.getText())); 
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",KdDokter.getText());
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+NmDokter.getText()+"\nID "+(finger.equals("")?KdDokter.getText():finger)+"\n"+DTPBeri.getSelectedItem());  
             param.put("jam",cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem());

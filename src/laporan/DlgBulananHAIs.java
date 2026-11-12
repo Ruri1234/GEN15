@@ -34,8 +34,8 @@ public class DlgBulananHAIs extends javax.swing.JDialog {
     private PreparedStatement ps;
     private ResultSet rs;
     private int i=0,deku=0,urine=0,sputum=0,darah=0,pasien=0,jmlpasien=0,ETT=0,CVL=0,IVL=0,UC=0,VAP=0,IAD=0,PLEB=0,
-                ISK=0,ILO=0,ANTIBIOTIK=0,jmlHAP,jmlTinea,jmlScabies,jmlETT,jmlCVL,jmlIVL,jmlUC,jmlVAP,jmlIAD,jmlPLEB,jmlISK,
-                HAP,Tinea,Scabies,jmlILO,jmldeku,jmlsputum,jmldarah,jmlurine,jmlANTIBIOTIK;
+                ISK=0,ILO=0,ANTIBIOTIK=0,OPERASI=0,jmlHAP,jmlTinea,jmlScabies,jmlETT,jmlCVL,jmlIVL,jmlUC,jmlVAP,jmlIAD,jmlPLEB,jmlISK,
+                HAP,Tinea,Scabies,jmlILO,jmldeku,jmlsputum,jmldarah,jmlurine,jmlANTIBIOTIK,jmloperasi;
     private StringBuilder htmlContent;
     
     /** Creates new form DlgProgramStudi
@@ -383,13 +383,13 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>IVL</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>UC</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>VAP</td>").append(
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>IAD</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Clabsi</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Pleb</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>ISK</td>").append(
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>ILO</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>IDO</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>HAP</td>").append(
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tinea</td>").append(
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Scabies</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Plabsi</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tirah Baring</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sputum</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Darah</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Urine</td>").append(
@@ -557,6 +557,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                     "<td valign='middle' bgcolor='#FFFAFA' align='center' width='4%' rowspan='2'>Deku</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center' width='17%' colspan='3'>Hasil Kultur</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center' width='5%' rowspan='2'>Antibiotik</td>").append(
+                            "<td valign='middle' bgcolor='#FFFAFA' align='center' width='5%' rowspan='2'>Operasi</td>").append(
                 "</tr>").append(
                 "<tr class='isi'>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>ETT</td>").append(
@@ -564,13 +565,13 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>IVL</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>UC</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>VAP</td>").append(
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>IAD</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Clabsi</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Pleb</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>ISK</td>").append(
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>ILO</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>IDO</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>HAP</td>").append(
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tinea</td>").append(
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Scabies</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Plabsi</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tirah Baring</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sputum</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Darah</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Urine</td>").append(
@@ -582,7 +583,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                 i=1;
                 jmlETT=0;jmlCVL=0;jmlIVL=0;jmlUC=0;jmlVAP=0;jmlIAD=0;jmlPLEB=0;
                 jmlpasien=0;jmlISK=0;jmlILO=0;jmldeku=0;jmlsputum=0;jmldarah=0;
-                jmlurine=0;jmlHAP=0;jmlTinea=0;jmlScabies=0;jmlANTIBIOTIK=0;                        
+                 jmlurine=0;jmlHAP=0;jmlTinea=0;jmlScabies=0;jmlANTIBIOTIK=0;jmloperasi=0;                        
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
                 ps.setString(3,"%"+NmKamar.getText().trim()+"%");
@@ -625,6 +626,8 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                     jmlurine=jmlurine+urine;
                     ANTIBIOTIK=Sequel.cariInteger("select count(data_HAIs.no_rawat) from data_HAIs inner join reg_periksa inner join kamar inner join bangsal inner join penjab on data_HAIs.kd_kamar=kamar.kd_kamar and kamar.kd_bangsal=bangsal.kd_bangsal and data_HAIs.no_rawat=reg_periksa.no_rawat and reg_periksa.kd_pj=penjab.kd_pj where data_HAIs.ANTIBIOTIK<>'' and tanggal=? and bangsal.nm_bangsal like ? and penjab.png_jawab like ?",rs.getString("tanggal"),"%"+NmKamar.getText().trim()+"%","%"+NmPenjab.getText().trim()+"%");
                     jmlANTIBIOTIK=jmlANTIBIOTIK+ANTIBIOTIK;
+                    OPERASI=Sequel.cariInteger("select count(data_HAIs.no_rawat) from data_HAIs inner join reg_periksa inner join kamar inner join bangsal inner join penjab on data_HAIs.kd_kamar=kamar.kd_kamar and kamar.kd_bangsal=bangsal.kd_bangsal and data_HAIs.no_rawat=reg_periksa.no_rawat and reg_periksa.kd_pj=penjab.kd_pj where data_HAIs.OPERASI<>'' and tanggal=? and bangsal.nm_bangsal like ? and penjab.png_jawab like ?",rs.getString("tanggal"),"%"+NmKamar.getText().trim()+"%","%"+NmPenjab.getText().trim()+"%");
+                    jmloperasi=jmloperasi+OPERASI;
                     htmlContent.append(                             
                         "<tr class='isi'>").append(
                             "<td valign='middle' align='center'>").append(i).append("</td>").append(
@@ -647,6 +650,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                             "<td valign='middle' align='center'>").append(darah).append("</td>").append(
                             "<td valign='middle' align='center'>").append(urine).append("</td>").append(
                             "<td valign='middle' align='center'>").append(ANTIBIOTIK).append("</td>").append(
+                             "<td valign='middle' align='center'>").append(OPERASI).append("</td>").append(
                         "</tr>"
                     ); 
                     i++;
@@ -672,6 +676,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                         "<td valign='middle' align='center'>").append(jmldarah).append("</td>").append(
                         "<td valign='middle' align='center'>").append(jmlurine).append("</td>").append(
                         "<td valign='middle' align='center'>").append(jmlANTIBIOTIK).append("</td>").append(
+                                "<td valign='middle' align='center'>").append(jmloperasi).append("</td>").append(
                     "</tr>"
                 ); 
             } catch (Exception e) {

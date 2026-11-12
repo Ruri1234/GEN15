@@ -1,0 +1,9 @@
+/build/
+/dist/
+/nbproject/private/
+ *.sql
+   *.zip
+   *.env
+   setting.xml
+   database.xml
+   backup/

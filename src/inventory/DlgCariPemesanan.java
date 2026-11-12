@@ -60,7 +60,7 @@ public class DlgCariPemesanan extends javax.swing.JDialog {
     private Jurnal jur=new Jurnal();
     private String aktifkanbatch="no";
     private boolean sukses=true;
-    private int i=0;
+    private int i=0,jumlahFaktur = 0;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
 
@@ -173,6 +173,8 @@ public class DlgCariPemesanan extends javax.swing.JDialog {
         BtnCari = new widget.Button();
         label9 = new widget.Label();
         LTotal = new widget.Label();
+        label11 = new widget.Label();
+        LFaktur = new widget.Label();
         BtnAll = new widget.Button();
         BtnPrint = new widget.Button();
         BtnKeluar = new widget.Button();
@@ -228,9 +230,6 @@ public class DlgCariPemesanan extends javax.swing.JDialog {
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
-        ppHapus.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppHapus.setForeground(new java.awt.Color(50, 50, 50));
         ppHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapus.setText("Hapus Data Penerimaan");
         ppHapus.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -244,9 +243,6 @@ public class DlgCariPemesanan extends javax.swing.JDialog {
         });
         jPopupMenu1.add(ppHapus);
 
-        ppBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBayar.setText("Bayar Tagihan");
         ppBayar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -260,9 +256,6 @@ public class DlgCariPemesanan extends javax.swing.JDialog {
         });
         jPopupMenu1.add(ppBayar);
 
-        ppUbah.setBackground(new java.awt.Color(255, 255, 254));
-        ppUbah.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppUbah.setForeground(new java.awt.Color(50, 50, 50));
         ppUbah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppUbah.setText("Ubah Penerimaan");
         ppUbah.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -339,6 +332,17 @@ public class DlgCariPemesanan extends javax.swing.JDialog {
         LTotal.setName("LTotal"); // NOI18N
         LTotal.setPreferredSize(new java.awt.Dimension(155, 30));
         panelisi1.add(LTotal);
+
+        label11.setText("Total Faktur :");
+        label11.setName("label11"); // NOI18N
+        label11.setPreferredSize(new java.awt.Dimension(65, 30));
+        panelisi1.add(label11);
+
+        LFaktur.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        LFaktur.setText("0");
+        LFaktur.setName("LFaktur"); // NOI18N
+        LFaktur.setPreferredSize(new java.awt.Dimension(50, 30));
+        panelisi1.add(LFaktur);
 
         BtnAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
         BtnAll.setMnemonic('M');
@@ -779,7 +783,6 @@ public class DlgCariPemesanan extends javax.swing.JDialog {
 
         TabRawat.setBackground(new java.awt.Color(255, 255, 253));
         TabRawat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)));
-        TabRawat.setForeground(new java.awt.Color(50, 50, 50));
         TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1526,6 +1529,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private widget.PanelBiasa FormPass2;
     private widget.PanelBiasa FormPhoto;
     private widget.TextBox KdIF;
+    private widget.Label LFaktur;
     private widget.Label LTotal;
     private widget.editorpane LoadHTML;
     private widget.editorpane LoadHTML2;
@@ -1558,6 +1562,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private widget.TextBox kdptg;
     private widget.TextBox kdsup;
     private widget.Label label10;
+    private widget.Label label11;
     private widget.Label label12;
     private widget.Label label13;
     private widget.Label label14;
@@ -1641,7 +1646,9 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             try {
                 rs=ps.executeQuery();
                 tagihan=0;
+                jumlahFaktur=0;
                 while(rs.next()){
+                    jumlahFaktur++;
                     tabMode.addRow(new Object[]{rs.getString(2),rs.getString(3)+", "+rs.getString(4),
                           rs.getString(5)+", "+rs.getString(6),"Pengadaan di "+rs.getString(7) +" :","","","","","","",""
                     });  
@@ -1723,6 +1730,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 }
             }                                
             LTotal.setText(Valid.SetAngka(tagihan));
+            LFaktur.setText(String.valueOf(jumlahFaktur));
         }catch(SQLException e){
             System.out.println("Notifikasi : "+e);
         }        
@@ -1938,6 +1946,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             ppUbah.setEnabled(false);
         }        
         ppBayar.setEnabled(akses.getbayar_pemesanan_obat());
+        ppUbah.setEnabled(akses.getpemesanan_obat());
     }
     
     private void isPhoto(){

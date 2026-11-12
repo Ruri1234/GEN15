@@ -67,7 +67,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
 
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.R.M.","Nama Pasien","Umur","JK","Tgl.Lahir","Tgl.Obser","Jam Obser","GCS (E,V,M)","TD(mmHg)",
-            "HR(x/menit)","RR(x/menit)","Suhu(°C)","SpO2(%)","Kontraksi/HIS","BJJ","PPV","VT","NIP","Nama Petugas"
+            "HR(x/menit)","RR(x/menit)","Suhu(°C)","SpO2(%)","Kontraksi/HIS","DJJ","PPV","VT","NIP","Nama Petugas"
         }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -132,7 +132,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
         Suhu.setDocument(new batasInput((byte)5).getKata(Suhu));
         SPO.setDocument(new batasInput((byte)3).getKata(SPO));
         Kontraksi.setDocument(new batasInput((byte)15).getKata(Kontraksi));
-        BJJ.setDocument(new batasInput((byte)5).getKata(BJJ));
+        BJJ.setDocument(new batasInput((byte)20).getKata(BJJ));
         PPV.setDocument(new batasInput((byte)15).getKata(PPV));
         VT.setDocument(new batasInput((byte)30).getKata(VT));
         TCari.setDocument(new batasInput((int)100).getKata(TCari));
@@ -264,7 +264,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Catatan Observasi Rawat Inap Kebidanan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Lembar THF Kebidanan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
@@ -430,7 +430,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "24-04-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -444,7 +444,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "24-04-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -540,7 +540,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
         TPasien.setBounds(336, 10, 285, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2026" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "24-04-2026" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -794,7 +794,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
         jLabel24.setText("BJJ :");
         jLabel24.setName("jLabel24"); // NOI18N
         FormInput.add(jLabel24);
-        jLabel24.setBounds(267, 100, 40, 23);
+        jLabel24.setBounds(260, 100, 30, 23);
 
         BJJ.setFocusTraversalPolicyProvider(true);
         BJJ.setName("BJJ"); // NOI18N
@@ -804,7 +804,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
             }
         });
         FormInput.add(BJJ);
-        BJJ.setBounds(311, 100, 60, 23);
+        BJJ.setBounds(291, 100, 130, 23);
 
         PPV.setFocusTraversalPolicyProvider(true);
         PPV.setName("PPV"); // NOI18N
@@ -814,17 +814,17 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
             }
         });
         FormInput.add(PPV);
-        PPV.setBounds(430, 100, 100, 23);
+        PPV.setBounds(460, 100, 110, 23);
 
         jLabel30.setText("PPV :");
         jLabel30.setName("jLabel30"); // NOI18N
         FormInput.add(jLabel30);
-        jLabel30.setBounds(386, 100, 40, 23);
+        jLabel30.setBounds(415, 100, 40, 23);
 
         jLabel31.setText("VT :");
         jLabel31.setName("jLabel31"); // NOI18N
         FormInput.add(jLabel31);
-        jLabel31.setBounds(536, 100, 40, 23);
+        jLabel31.setBounds(565, 100, 40, 23);
 
         VT.setFocusTraversalPolicyProvider(true);
         VT.setName("VT"); // NOI18N
@@ -834,7 +834,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
             }
         });
         FormInput.add(VT);
-        VT.setBounds(580, 100, 209, 23);
+        VT.setBounds(609, 100, 209, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -1006,7 +1006,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
             param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
             
             if(TCari.getText().trim().equals("")){
-                Valid.MyReportqry("rptDataCatatanObservasiRanapKebidanan.jasper","report","::[ Data Catatan Observasi Rawat Inap Kebidanan ]::",
+                Valid.MyReportqry("rptDataCatatanObservasiRanapKebidanan.jasper","report","::[ Data Lembar THF Kebidanan ]::",
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"+
                     "pasien.jk,pasien.tgl_lahir,catatan_observasi_ranap_kebidanan.tgl_perawatan,catatan_observasi_ranap_kebidanan.jam_rawat,catatan_observasi_ranap_kebidanan.gcs,"+
                     "catatan_observasi_ranap_kebidanan.td,catatan_observasi_ranap_kebidanan.hr,catatan_observasi_ranap_kebidanan.rr,catatan_observasi_ranap_kebidanan.suhu,catatan_observasi_ranap_kebidanan.spo2,"+
@@ -1016,7 +1016,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
                     "inner join petugas on catatan_observasi_ranap_kebidanan.nip=petugas.nip where "+
                     "catatan_observasi_ranap_kebidanan.tgl_perawatan between '"+Valid.SetTgl(DTPCari1.getSelectedItem()+"")+"' and '"+Valid.SetTgl(DTPCari2.getSelectedItem()+"")+"' order by catatan_observasi_ranap_kebidanan.tgl_perawatan,catatan_observasi_ranap_kebidanan.jam_rawat",param);
             }else{
-                Valid.MyReportqry("rptDataCatatanObservasiRanapKebidanan.jasper","report","::[ Data Catatan Observasi Rawat Inap Kebidanan ]::",
+                Valid.MyReportqry("rptDataCatatanObservasiRanapKebidanan.jasper","report","::[ Data Lembar THF Kebidanan ]::",
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"+
                     "pasien.jk,pasien.tgl_lahir,catatan_observasi_ranap_kebidanan.tgl_perawatan,catatan_observasi_ranap_kebidanan.jam_rawat,catatan_observasi_ranap_kebidanan.gcs,"+
                     "catatan_observasi_ranap_kebidanan.td,catatan_observasi_ranap_kebidanan.hr,catatan_observasi_ranap_kebidanan.rr,catatan_observasi_ranap_kebidanan.suhu,catatan_observasi_ranap_kebidanan.spo2,"+
@@ -1184,7 +1184,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
             }
             param.put("dpjp",dpjp);   
             param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
-            Valid.MyReportqry("rptFormulirCatatanObservasiRanapKebidanan.jasper","report","::[ Formulir Catatan Observasi Rawat Inap Kebidanan ]::",
+            Valid.MyReportqry("rptFormulirCatatanObservasiRanapKebidanan.jasper","report","::[ Formulir Lembar THF Kebidanan ]::",
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
                     "pasien.jk,pasien.tgl_lahir,catatan_observasi_ranap_kebidanan.tgl_perawatan,catatan_observasi_ranap_kebidanan.jam_rawat,catatan_observasi_ranap_kebidanan.gcs,"+
                     "catatan_observasi_ranap_kebidanan.td,catatan_observasi_ranap_kebidanan.hr,catatan_observasi_ranap_kebidanan.rr,catatan_observasi_ranap_kebidanan.suhu,catatan_observasi_ranap_kebidanan.spo2,"+
@@ -1395,7 +1395,7 @@ public final class RMDataCatatanObservasiRanapKebidanan extends javax.swing.JDia
                 while(rs.next()){
                     tabMode.addRow(new Object[]{
                         rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),
-                        rs.getString("umurdaftar")+" "+rs.getString("sttsumur"),rs.getString("jk"),rs.getDate("tgl_lahir"),
+                        rs.getString("umurdaftar")+" "+rs.getString("sttsumur"),rs.getString("jk"),rs.getString("tgl_lahir"),
                         rs.getString("tgl_perawatan"),rs.getString("jam_rawat"),rs.getString("gcs"),rs.getString("td"),
                         rs.getString("hr"),rs.getString("rr"),rs.getString("suhu"),rs.getString("spo2"),rs.getString("kontraksi"),
                         rs.getString("bjj"),rs.getString("ppv"),rs.getString("vt"),rs.getString("nip"),rs.getString("nama")

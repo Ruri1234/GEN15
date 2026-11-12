@@ -485,27 +485,27 @@ public class DlgBilingRalan extends javax.swing.JDialog {
     private void initComponents() {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnInputTindakan = new widget.MenuItem();
-        MnInputObat = new widget.MenuItem();
-        MnPeriksaLab = new widget.MenuItem();
-        MnPeriksaLabPA = new widget.MenuItem();
-        MnPeriksaLabMB = new widget.MenuItem();
-        MnPeriksaRadiologi = new widget.MenuItem();
-        MnTambahan = new widget.MenuItem();
-        MnPotongan = new widget.MenuItem();
-        MnOperasi = new widget.MenuItem();
-        MnObatLangsung = new widget.MenuItem();
-        MnPoli = new widget.MenuItem();
-        MnDokter = new widget.MenuItem();
-        MnPenjab = new widget.MenuItem();
-        MnRawatJalan = new widget.MenuItem();
-        MnPemberianObat = new widget.MenuItem();
-        MnCariPeriksaLab = new widget.MenuItem();
-        MnCariPeriksaLabPA = new widget.MenuItem();
-        MnCariPeriksaLabMB = new widget.MenuItem();
-        MnCariRadiologi = new widget.MenuItem();
-        MnPenjualan = new widget.MenuItem();
-        MnHapusTagihan = new widget.MenuItem();
+        MnInputTindakan = new javax.swing.JMenuItem();
+        MnInputObat = new javax.swing.JMenuItem();
+        MnPeriksaLab = new javax.swing.JMenuItem();
+        MnPeriksaLabPA = new javax.swing.JMenuItem();
+        MnPeriksaLabMB = new javax.swing.JMenuItem();
+        MnPeriksaRadiologi = new javax.swing.JMenuItem();
+        MnTambahan = new javax.swing.JMenuItem();
+        MnPotongan = new javax.swing.JMenuItem();
+        MnOperasi = new javax.swing.JMenuItem();
+        MnObatLangsung = new javax.swing.JMenuItem();
+        MnPoli = new javax.swing.JMenuItem();
+        MnDokter = new javax.swing.JMenuItem();
+        MnPenjab = new javax.swing.JMenuItem();
+        MnRawatJalan = new javax.swing.JMenuItem();
+        MnPemberianObat = new javax.swing.JMenuItem();
+        MnCariPeriksaLab = new javax.swing.JMenuItem();
+        MnCariPeriksaLabPA = new javax.swing.JMenuItem();
+        MnCariPeriksaLabMB = new javax.swing.JMenuItem();
+        MnCariRadiologi = new javax.swing.JMenuItem();
+        MnPenjualan = new javax.swing.JMenuItem();
+        MnHapusTagihan = new javax.swing.JMenuItem();
         WindowGantiDokterPoli = new javax.swing.JDialog();
         internalFrame3 = new widget.InternalFrame();
         BtnCloseIn1 = new widget.Button();
@@ -560,9 +560,9 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         nmpenjab = new widget.TextBox();
         btnPenjab = new widget.Button();
         PopupBayar = new javax.swing.JPopupMenu();
-        ppBersihkan = new widget.MenuItem();
+        ppBersihkan = new javax.swing.JMenuItem();
         PopupPiutang = new javax.swing.JPopupMenu();
-        ppBersihkan1 = new widget.MenuItem();
+        ppBersihkan1 = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
         panelGlass1 = new widget.panelisi();
         jLabel3 = new widget.Label();
@@ -572,7 +572,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         BtnCari = new widget.Button();
         jLabel4 = new widget.Label();
         DTPTgl = new widget.Tanggal();
-        TabRawat = new widget.TabPane();
+        TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
         tbBilling = new widget.Table();
         scrollPane8 = new widget.ScrollPane();
@@ -2836,7 +2836,7 @@ private void MnHapusTagihanActionPerformed(java.awt.event.ActionEvent evt) {//GE
                 }
 
                 if(sukses==true){
-                    Valid.editTable(tabModeRwJlDr,"reg_periksa","no_rawat",TNoRw,"status_bayar='Belum Bayar'");
+                    Valid.editTable(tabModeRwJlDr,"reg_periksa","no_rawat",TNoRw,"status_bayar='Belum Bayar',status_closing_parsial='Belum Closing'");
                     Sequel.queryu2("delete from piutang_pasien where no_rawat='"+TNoRw.getText()+"'");
                     Sequel.queryu2("delete from detail_piutang_pasien where no_rawat='"+TNoRw.getText()+"'");
                     Sequel.queryu2("delete from nota_jalan where no_rawat='"+TNoRw.getText()+"'");            
@@ -3961,27 +3961,27 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private widget.Button BtnTambahPotongan;
     private widget.Button BtnView;
     private widget.Tanggal DTPTgl;
-    private widget.MenuItem MnCariPeriksaLab;
-    private widget.MenuItem MnCariPeriksaLabMB;
-    private widget.MenuItem MnCariPeriksaLabPA;
-    private widget.MenuItem MnCariRadiologi;
-    private widget.MenuItem MnDokter;
-    private widget.MenuItem MnHapusTagihan;
-    private widget.MenuItem MnInputObat;
-    private widget.MenuItem MnInputTindakan;
-    private widget.MenuItem MnObatLangsung;
-    private widget.MenuItem MnOperasi;
-    private widget.MenuItem MnPemberianObat;
-    private widget.MenuItem MnPenjab;
-    private widget.MenuItem MnPenjualan;
-    private widget.MenuItem MnPeriksaLab;
-    private widget.MenuItem MnPeriksaLabMB;
-    private widget.MenuItem MnPeriksaLabPA;
-    private widget.MenuItem MnPeriksaRadiologi;
-    private widget.MenuItem MnPoli;
-    private widget.MenuItem MnPotongan;
-    private widget.MenuItem MnRawatJalan;
-    private widget.MenuItem MnTambahan;
+    private javax.swing.JMenuItem MnCariPeriksaLab;
+    private javax.swing.JMenuItem MnCariPeriksaLabMB;
+    private javax.swing.JMenuItem MnCariPeriksaLabPA;
+    private javax.swing.JMenuItem MnCariRadiologi;
+    private javax.swing.JMenuItem MnDokter;
+    private javax.swing.JMenuItem MnHapusTagihan;
+    private javax.swing.JMenuItem MnInputObat;
+    private javax.swing.JMenuItem MnInputTindakan;
+    private javax.swing.JMenuItem MnObatLangsung;
+    private javax.swing.JMenuItem MnOperasi;
+    private javax.swing.JMenuItem MnPemberianObat;
+    private javax.swing.JMenuItem MnPenjab;
+    private javax.swing.JMenuItem MnPenjualan;
+    private javax.swing.JMenuItem MnPeriksaLab;
+    private javax.swing.JMenuItem MnPeriksaLabMB;
+    private javax.swing.JMenuItem MnPeriksaLabPA;
+    private javax.swing.JMenuItem MnPeriksaRadiologi;
+    private javax.swing.JMenuItem MnPoli;
+    private javax.swing.JMenuItem MnPotongan;
+    private javax.swing.JMenuItem MnRawatJalan;
+    private javax.swing.JMenuItem MnTambahan;
     private javax.swing.JPopupMenu PopupBayar;
     private javax.swing.JPopupMenu PopupPiutang;
     private widget.ScrollPane Scroll;
@@ -3992,7 +3992,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private widget.TextBox TNoRM;
     public widget.TextBox TNoRw;
     private widget.TextBox TPasien;
-    private widget.TabPane TabRawat;
+    private javax.swing.JTabbedPane TabRawat;
     private widget.TextBox TagihanPPn;
     private widget.TextBox TotalObat;
     private widget.TextBox TtlSemua;
@@ -4049,8 +4049,8 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private widget.panelisi panelPermintaan;
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi2;
-    private widget.MenuItem ppBersihkan;
-    private widget.MenuItem ppBersihkan1;
+    private javax.swing.JMenuItem ppBersihkan;
+    private javax.swing.JMenuItem ppBersihkan1;
     private widget.ScrollPane scrollPane1;
     private widget.ScrollPane scrollPane2;
     private widget.ScrollPane scrollPane3;
@@ -5815,7 +5815,6 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                     psnota.setString(3,Valid.SetTgl(DTPTgl.getSelectedItem()+""));
                     psnota.setString(4,DTPTgl.getSelectedItem().toString().substring(11,19));
                     psnota.executeUpdate();
-                    Sequel.SimpanTrack("insert into nota_jalan values('"+TNoRw.getText()+"','"+no_nota+"','"+Valid.SetTgl(DTPTgl.getSelectedItem()+"")+"','"+DTPTgl.getSelectedItem().toString().substring(11,19)+"')");
                 } catch (Exception e) {
                     nota_jalan=Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(nota_jalan.no_nota,4),signed)),0) from nota_jalan where nota_jalan.tanggal='"+Valid.SetTgl(DTPTgl.getSelectedItem()+"").substring(0,10)+"' ",Valid.SetTgl(DTPTgl.getSelectedItem()+"").substring(0,10).replaceAll("-","/")+"/RJ",4);
                     Sequel.meghapus("nota_jalan","no_rawat",TNoRw.getText());               
@@ -5826,7 +5825,6 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                     psnota.setString(3,Valid.SetTgl(DTPTgl.getSelectedItem()+""));
                     psnota.setString(4,DTPTgl.getSelectedItem().toString().substring(11,19));
                     psnota.executeUpdate();
-                    Sequel.SimpanTrack("insert into nota_jalan values('"+TNoRw.getText()+"','"+no_nota+"','"+Valid.SetTgl(DTPTgl.getSelectedItem()+"")+"','"+DTPTgl.getSelectedItem().toString().substring(11,19)+"')");
                 } finally{
                     if(psnota != null){
                         psnota.close();
@@ -6176,7 +6174,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 }
                     
                 if(sukses==true){
-                    Valid.editTable(tabModeRwJlDr,"reg_periksa","no_rawat",TNoRw,"status_bayar='Sudah Bayar'");
+                    Valid.editTable(tabModeRwJlDr,"reg_periksa","no_rawat",TNoRw,"status_bayar='Sudah Bayar',status_closing_parsial='Sudah Closing'");
                     Sequel.Commit();    
                 }else{
                     JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");

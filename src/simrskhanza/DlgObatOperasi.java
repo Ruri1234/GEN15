@@ -89,7 +89,7 @@ public final class DlgObatOperasi extends javax.swing.JDialog {
 
         TKd.setDocument(new batasInput((byte)15).getKata(TKd));
         THarga.setDocument(new batasInput((byte)15).getOnlyAngka(THarga));
-        TNama.setDocument(new batasInput((byte)50).getKata(TNama));
+        TNama.setDocument(new batasInput((byte)100).getKata(TNama));
         kdsat.setDocument(new batasInput((byte)4).getKata(kdsat));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
         TKd.requestFocus();

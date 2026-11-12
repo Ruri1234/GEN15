@@ -2,18 +2,18 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <comment>KhanzaHMS</comment> 
-    <entry key="HOST">5k7+C7EnUw9nUv2Nix+DBA==</entry>
-    <entry key="DATABASE">AZHNccBwSmSho84f+X8GyQ==</entry>
+    <entry key="HOST">tC7Y7MjgJqhhXgD5w4Eltw==</entry>
+    <entry key="DATABASE">CcbqYAkPkD1fTbU0L70pDQ==</entry>
     <entry key="PORT">nioxtijcpDaKSUiUiP5FAg==</entry>
-    <entry key="USER">kMR3WfAwUK6MbhCyydxa0g==</entry>
-    <entry key="PAS">l4nh5eVYrLAER/I2A4b3Tw==</entry>
+    <entry key="USER">Y1wbz3n8QWhBulEOWg3vvw==</entry>
+    <entry key="PAS">Z0fdj0gav43+Or/4IS1x1Q==</entry>
     <entry key="CARICEPAT">aktif</entry>
-    <entry key="HOSTHYBRIDWEB">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOSTHYBRIDWEB">tC7Y7MjgJqhhXgD5w4Eltw==</entry>
     <entry key="USERHYBRIDWEB">nmXqCKzrz9i8GTZlq7JruQ==</entry>
     <entry key="PASHYBRIDWEB">AsJ/0/gCnYnD+gK4fw9uKA==</entry>
-    <entry key="HYBRIDWEB">webapps</entry>
+    <entry key="HYBRIDWEB">webappsGEN</entry>
     <entry key="PORTWEB">80</entry>
-    <entry key="AKTIFKANWARNARALAN">no</entry>
+    <entry key="AKTIFKANWARNARALAN">yes</entry>
     <entry key="ANTRIAN">player</entry>
     <entry key="LOKETANTRIAN">1</entry>
     <entry key="ALARMAPOTEK">yes</entry>
@@ -35,7 +35,7 @@
     <entry key="ALARMBOOKINGPERIKSA">yes</entry>
     <entry key="ALARMPENGADUANPASIEN">yes</entry>
     <entry key="ALARMPERMINTAANRANAP">yes</entry>
-    <entry key="MENUTRANSPARAN">yes</entry>
+    <entry key="MENUTRANSPARAN">no</entry>
     <entry key="TANGGALMUNDUR">yes</entry>
     <entry key="URLAPIBPJS">https://tanyabpjs.go.id/vclaim-rest-dev</entry>
     <entry key="SECRETKEYAPIBPJS">l4nh5eVYrLAER/I2A4b3Tw==</entry>
@@ -96,12 +96,12 @@
     <entry key="URLAPICORONA">http://sirs.kemkes.go.id/fo/index.php</entry>
     <entry key="IDCORONA">l4nh5eVYrLAER/I2A4b3Tw==</entry>
     <entry key="PASSCORONA">l4nh5eVYrLAER/I2A4b3Tw==</entry>
-    <entry key="CLIENTIDSATUSEHAT">l4nh5eVYrLAER</entry>
-    <entry key="SECRETKEYSATUSEHAT">pHpIVf8/l4nh5eVYrLAER/yycBhfqp8=</entry>
-    <entry key="URLAUTHSATUSEHAT">https://tanyakemkes/oauth2/v1</entry> 
-    <entry key="URLFHIRSATUSEHAT">https://tanyakemnkes/fhir-r4/v1</entry>
-    <entry key="IDSATUSEHAT">l4nh5eVYrLAER</entry>
-    <entry key="URLAPPLINKSATUSEHAT">https://tanyakemkes/ssm/tte</entry>
+    <entry key="CLIENTIDSATUSEHAT">l4nh5eVYrLAER/I2A4b3Tw==</entry>
+    <entry key="SECRETKEYSATUSEHAT">l4nh5eVYrLAER/I2A4b3Tw==</entry>
+    <entry key="URLAUTHSATUSEHAT">https://tanyakemkes.kemkes.go.id/oauth2/v1</entry> 
+    <entry key="URLFHIRSATUSEHAT">https://tanyakemkes.kemkes.go.id/fhir-r4/v1</entry>
+    <entry key="IDSATUSEHAT">l4nh5eVYrLAER/I2A4b3Tw==</entry>
+    <entry key="URLAPPLINKSATUSEHAT">https://tanyakemkes.kemkes.go.id/ssm/tte</entry>
     <entry key="IDORGBPJSSATUSEHAT">100071505</entry>
     <entry key="KELURAHANSATUSEHAT">3522162006</entry>
     <entry key="KECAMATANSATUSEHAT">352216</entry>
@@ -137,11 +137,13 @@
     <entry key="AKTIFKANTRACKSQL">cj8o6eBdSn+TiUrBgGoElQ==</entry>
     <entry key="HOSTWSLICA">http://localhost/bridging-lica/public</entry>
     <entry key="KEYWSLICA">yLT3/8b0KAb5QK1ueFkW7g==</entry>
+
     <entry key="HOSTFUJI">5k7+C7EnUw9nUv2Nix+DBA==</entry>
     <entry key="DATABASEFUJI">278SCM7uDvhfdwppyMpg5OAy0jN9F3pCdgukirLsgKA=</entry>
     <entry key="PORTFUJI">nioxtijcpDaKSUiUiP5FAg==</entry>
     <entry key="USERFUJI">kMR3WfAwUK6MbhCyydxa0g==</entry>
     <entry key="PASFUJI">l4nh5eVYrLAER/I2A4b3Tw==</entry>
+
     <entry key="URLCARESTREAM">http://192.168.55.187:10110/pacs</entry>
     <entry key="HOSTSYSMEX">5k7+C7EnUw9nUv2Nix+DBA==</entry>
     <entry key="DATABASESYSMEX">o4cUZDSdQxLPdcZer/pr1PnCrQNrd08+Hrx8Y/fi7Os=</entry>
@@ -176,10 +178,21 @@
     <entry key="PORTSLIMS">nioxtijcpDaKSUiUiP5FAg==</entry>
     <entry key="USERSLIMS">kMR3WfAwUK6MbhCyydxa0g==</entry>
     <entry key="PASSLIMS">l4nh5eVYrLAER/I2A4b3Tw==</entry>
-    <entry key="URLORTHANC">http://192.168.1.250</entry>
-    <entry key="PORTORTHANC">gie5pRePkRsFe+dOh84P4A==</entry>
+
+    <entry key="URLORTHANC">http://192.168.1.6</entry>
+    <entry key="PORTORTHANC">4xOkFa6gxM9Bc/dkpEtJ+A==</entry>
     <entry key="USERORTHANC">V9bi0P2HgAq8Nn8lUyS6/A==</entry>
-    <entry key="PASSORTHANC">pS57Q/xSab0BaYY0lvvHiA==</entry>
+    <entry key="PASSORTHANC">V9bi0P2HgAq8Nn8lUyS6/A==</entry>
+
+    <entry key="PORTAPIORTHANC">dFsYf3OwsI/gZxrC86AniQ==</entry>
+    <entry key="USERAPIORTHANC">AqOU3p5RZEIAk8HazTrV+Q==</entry>
+    <entry key="PASSAPIORTHANC">vOHu993Hus1U6dGgdINSqQ==</entry>
+    
+    <!-- DokterTeknoRIS MWL API Configuration -->
+    <entry key="MWLAPIURL">http://192.168.1.6:5001</entry>
+    <entry key="MWLAPIUSERNAME">AqOU3p5RZEIAk8HazTrV+Q==</entry>
+    <entry key="MWLAPIPASSWORD">vOHu993Hus1U6dGgdINSqQ==</entry>
+
     <entry key="SFTPMANDIRIPATHPEMBAYARANPIHAKKETIGA">l4nh5eVYrLAER/I2A4b3Tw==</entry>
     <entry key="SFTPMANDIRIPATHPEMBAYARANPAJAK">l4nh5eVYrLAER/I2A4b3Tw==</entry>
     <entry key="SFTPMANDIRIPATHPEMBAYARANVIRTUALACCOUNT">l4nh5eVYrLAER/I2A4b3Tw==</entry>

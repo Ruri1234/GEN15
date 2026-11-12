@@ -173,8 +173,8 @@ public final class SatuSehatKirimAllergyIntolerance extends javax.swing.JDialog 
     private void initComponents() {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
-        ppPilihSemua = new widget.MenuItem();
-        ppBersihkan = new widget.MenuItem();
+        ppPilihSemua = new javax.swing.JMenuItem();
+        ppBersihkan = new javax.swing.JMenuItem();
         LoadHTML = new widget.editorpane();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
@@ -193,6 +193,8 @@ public final class SatuSehatKirimAllergyIntolerance extends javax.swing.JDialog 
         DTPCari1 = new widget.Tanggal();
         jLabel17 = new widget.Label();
         DTPCari2 = new widget.Tanggal();
+        jLabel12 = new widget.Label();
+        cmbStatus = new widget.ComboBox();
         jLabel16 = new widget.Label();
         TCari = new widget.TextBox();
         BtnCari = new widget.Button();
@@ -366,7 +368,7 @@ public final class SatuSehatKirimAllergyIntolerance extends javax.swing.JDialog 
         jLabel15.setPreferredSize(new java.awt.Dimension(85, 23));
         panelGlass9.add(jLabel15);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-04-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-04-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -379,12 +381,22 @@ public final class SatuSehatKirimAllergyIntolerance extends javax.swing.JDialog 
         jLabel17.setPreferredSize(new java.awt.Dimension(24, 23));
         panelGlass9.add(jLabel17);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-04-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-04-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
         DTPCari2.setPreferredSize(new java.awt.Dimension(95, 23));
         panelGlass9.add(DTPCari2);
+
+        jLabel12.setText("Status Kirim :");
+        jLabel12.setName("jLabel12"); // NOI18N
+        jLabel12.setPreferredSize(new java.awt.Dimension(120, 23));
+        panelGlass9.add(jLabel12);
+
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Semua", "Terkirim", "Belum Terkirim" }));
+        cmbStatus.setName("cmbStatus"); // NOI18N
+        cmbStatus.setPreferredSize(new java.awt.Dimension(150, 23));
+        panelGlass9.add(cmbStatus);
 
         jLabel16.setText("Key Word :");
         jLabel16.setName("jLabel16"); // NOI18N
@@ -840,7 +852,9 @@ public final class SatuSehatKirimAllergyIntolerance extends javax.swing.JDialog 
     private widget.editorpane LoadHTML;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
+    private widget.ComboBox cmbStatus;
     private widget.InternalFrame internalFrame1;
+    private widget.Label jLabel12;
     private widget.Label jLabel15;
     private widget.Label jLabel16;
     private widget.Label jLabel17;
@@ -849,106 +863,169 @@ public final class SatuSehatKirimAllergyIntolerance extends javax.swing.JDialog 
     private javax.swing.JPopupMenu jPopupMenu1;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
-    private widget.MenuItem ppBersihkan;
-    private widget.MenuItem ppPilihSemua;
+    private javax.swing.JMenuItem ppBersihkan;
+    private javax.swing.JMenuItem ppPilihSemua;
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
     
     private void tampil() {
-        Valid.tabelKosong(tabMode);
-        try{
-            ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
-                   "pasien.nm_pasien,pasien.no_ktp,satu_sehat_encounter.id_encounter,pemeriksaan_ralan.alergi,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,"+
-                   "ifnull(satu_sehat_allergy_intolerance.id_allergy_intolerance,'') as satu_sehat_allergy_intolerance "+
-                   "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
-                   "left join satu_sehat_allergy_intolerance on satu_sehat_allergy_intolerance.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_allergy_intolerance.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_allergy_intolerance.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "where pemeriksaan_ralan.alergi<>'' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ?) "));
-            try {
-                ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
-                ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
-                if(!TCari.getText().equals("")){
-                    ps.setString(3,"%"+TCari.getText()+"%");
-                    ps.setString(4,"%"+TCari.getText()+"%");
-                    ps.setString(5,"%"+TCari.getText()+"%");
-                    ps.setString(6,"%"+TCari.getText()+"%");
-                    ps.setString(7,"%"+TCari.getText()+"%");
-                    ps.setString(8,"%"+TCari.getText()+"%");
-                }
-                rs=ps.executeQuery();
-                while(rs.next()){
-                    tabMode.addRow(new Object[]{
-                        false,rs.getString("tgl_registrasi")+" "+rs.getString("jam_reg"),rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),
-                        rs.getString("no_ktp"),rs.getString("id_encounter"),rs.getString("alergi"),rs.getString("nama"),rs.getString("ktppraktisi"),
-                        rs.getString("tgl_perawatan")+" "+rs.getString("jam_rawat"),rs.getString("satu_sehat_allergy_intolerance"),"Ralan"
-                    });
-                }
-            } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            } finally{
-                if(rs!=null){
-                    rs.close();
-                }
-                if(ps!=null){
-                    ps.close();
-                }
-            }
+    Valid.tabelKosong(tabMode);
+
+    try {
+
+        String statusRalan = "";
+        String statusRanap = "";
+
+        // Filter status
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusRalan = " and satu_sehat_allergy_intolerance.id_allergy_intolerance<>'' ";
+            statusRanap = " and satu_sehat_allergy_intolerance.id_allergy_intolerance<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusRalan = " and (satu_sehat_allergy_intolerance.id_allergy_intolerance='' "+
+                           "or satu_sehat_allergy_intolerance.id_allergy_intolerance is null) ";
             
-            ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
-                   "pasien.nm_pasien,pasien.no_ktp,satu_sehat_encounter.id_encounter,pemeriksaan_ranap.alergi,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,"+
-                   "ifnull(satu_sehat_allergy_intolerance.id_allergy_intolerance,'') as satu_sehat_allergy_intolerance "+
-                   "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik "+
-                   "left join satu_sehat_allergy_intolerance on satu_sehat_allergy_intolerance.no_rawat=pemeriksaan_ranap.no_rawat "+
-                   "and satu_sehat_allergy_intolerance.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_allergy_intolerance.jam_rawat=pemeriksaan_ranap.jam_rawat "+
-                   "where pemeriksaan_ranap.alergi<>'' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ?) "));
-            try {
-                ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
-                ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
-                if(!TCari.getText().equals("")){
-                    ps.setString(3,"%"+TCari.getText()+"%");
-                    ps.setString(4,"%"+TCari.getText()+"%");
-                    ps.setString(5,"%"+TCari.getText()+"%");
-                    ps.setString(6,"%"+TCari.getText()+"%");
-                    ps.setString(7,"%"+TCari.getText()+"%");
-                    ps.setString(8,"%"+TCari.getText()+"%");
-                }
-                rs=ps.executeQuery();
-                while(rs.next()){
-                    tabMode.addRow(new Object[]{
-                        false,rs.getString("tgl_registrasi")+" "+rs.getString("jam_reg"),rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),
-                        rs.getString("no_ktp"),rs.getString("id_encounter"),rs.getString("alergi"),rs.getString("nama"),rs.getString("ktppraktisi"),
-                        rs.getString("tgl_perawatan")+" "+rs.getString("jam_rawat"),rs.getString("satu_sehat_allergy_intolerance"),"Ranap"
-                    });
-                }
-            } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            } finally{
-                if(rs!=null){
-                    rs.close();
-                }
-                if(ps!=null){
-                    ps.close();
-                }
-            }
-        }catch(Exception e){
-            System.out.println("Notifikasi : "+e);
+            statusRanap = " and (satu_sehat_allergy_intolerance.id_allergy_intolerance='' "+
+                           "or satu_sehat_allergy_intolerance.id_allergy_intolerance is null) ";
         }
-        LCount.setText(""+tabMode.getRowCount());
+
+        // ===================== RALAN =====================
+        ps=koneksi.prepareStatement(
+               "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+               "pasien.nm_pasien,pasien.no_ktp,satu_sehat_encounter.id_encounter,pemeriksaan_ralan.alergi,"+
+               "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,"+
+               "ifnull(satu_sehat_allergy_intolerance.id_allergy_intolerance,'') as satu_sehat_allergy_intolerance "+
+               "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+               "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+               "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+               "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+               "left join satu_sehat_allergy_intolerance on satu_sehat_allergy_intolerance.no_rawat=pemeriksaan_ralan.no_rawat "+
+               "and satu_sehat_allergy_intolerance.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+               "and satu_sehat_allergy_intolerance.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+               "where pemeriksaan_ralan.alergi<>'' "+
+               "and reg_periksa.tgl_registrasi between ? and ? "+
+               statusRalan+
+               (TCari.getText().equals("") ? "" :
+               "and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
+               "pasien.nm_pasien like ? or pasien.no_ktp like ? or "+
+               "pegawai.no_ktp like ? or pegawai.nama like ?) ")
+        );
+
+        try {
+            ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
+            ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
+
+            if(!TCari.getText().equals("")){
+                ps.setString(3,"%"+TCari.getText()+"%");
+                ps.setString(4,"%"+TCari.getText()+"%");
+                ps.setString(5,"%"+TCari.getText()+"%");
+                ps.setString(6,"%"+TCari.getText()+"%");
+                ps.setString(7,"%"+TCari.getText()+"%");
+                ps.setString(8,"%"+TCari.getText()+"%");
+            }
+
+            rs=ps.executeQuery();
+
+            while(rs.next()){
+                tabMode.addRow(new Object[]{
+                    false,
+                    rs.getString("tgl_registrasi")+" "+rs.getString("jam_reg"),
+                    rs.getString("no_rawat"),
+                    rs.getString("no_rkm_medis"),
+                    rs.getString("nm_pasien"),
+                    rs.getString("no_ktp"),
+                    rs.getString("id_encounter"),
+                    rs.getString("alergi"),
+                    rs.getString("nama"),
+                    rs.getString("ktppraktisi"),
+                    rs.getString("tgl_perawatan")+" "+rs.getString("jam_rawat"),
+                    rs.getString("satu_sehat_allergy_intolerance"),
+                    "Ralan"
+                });
+            }
+
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
+        } finally{
+            if(rs!=null){
+                rs.close();
+            }
+            if(ps!=null){
+                ps.close();
+            }
+        }
+
+        // ===================== RANAP =====================
+        ps=koneksi.prepareStatement(
+               "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+               "pasien.nm_pasien,pasien.no_ktp,satu_sehat_encounter.id_encounter,pemeriksaan_ranap.alergi,"+
+               "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,"+
+               "ifnull(satu_sehat_allergy_intolerance.id_allergy_intolerance,'') as satu_sehat_allergy_intolerance "+
+               "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+               "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+               "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
+               "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik "+
+               "left join satu_sehat_allergy_intolerance on satu_sehat_allergy_intolerance.no_rawat=pemeriksaan_ranap.no_rawat "+
+               "and satu_sehat_allergy_intolerance.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "+
+               "and satu_sehat_allergy_intolerance.jam_rawat=pemeriksaan_ranap.jam_rawat "+
+               "where pemeriksaan_ranap.alergi<>'' "+
+               "and reg_periksa.tgl_registrasi between ? and ? "+
+               statusRanap+
+               (TCari.getText().equals("") ? "" :
+               "and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
+               "pasien.nm_pasien like ? or pasien.no_ktp like ? or "+
+               "pegawai.no_ktp like ? or pegawai.nama like ?) ")
+        );
+
+        try {
+            ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
+            ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
+
+            if(!TCari.getText().equals("")){
+                ps.setString(3,"%"+TCari.getText()+"%");
+                ps.setString(4,"%"+TCari.getText()+"%");
+                ps.setString(5,"%"+TCari.getText()+"%");
+                ps.setString(6,"%"+TCari.getText()+"%");
+                ps.setString(7,"%"+TCari.getText()+"%");
+                ps.setString(8,"%"+TCari.getText()+"%");
+            }
+
+            rs=ps.executeQuery();
+
+            while(rs.next()){
+                tabMode.addRow(new Object[]{
+                    false,
+                    rs.getString("tgl_registrasi")+" "+rs.getString("jam_reg"),
+                    rs.getString("no_rawat"),
+                    rs.getString("no_rkm_medis"),
+                    rs.getString("nm_pasien"),
+                    rs.getString("no_ktp"),
+                    rs.getString("id_encounter"),
+                    rs.getString("alergi"),
+                    rs.getString("nama"),
+                    rs.getString("ktppraktisi"),
+                    rs.getString("tgl_perawatan")+" "+rs.getString("jam_rawat"),
+                    rs.getString("satu_sehat_allergy_intolerance"),
+                    "Ranap"
+                });
+            }
+
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
+        } finally{
+            if(rs!=null){
+                rs.close();
+            }
+            if(ps!=null){
+                ps.close();
+            }
+        }
+
+    } catch(Exception e){
+        System.out.println("Notifikasi : "+e);
     }
+
+    LCount.setText(""+tabMode.getRowCount());
+}
 
     public void isCek(){
         BtnKirim.setEnabled(akses.getsatu_sehat_kirim_careplan());

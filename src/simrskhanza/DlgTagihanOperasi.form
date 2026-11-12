@@ -21,14 +21,8 @@
       <SubComponents>
         <MenuItem class="widget.MenuItem" name="ppBersihkan">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="fe" green="ff" red="ff" type="rgb"/>
-            </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="12" style="0"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="32" green="32" red="32" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/picture/stop_f2.png"/>
@@ -671,7 +665,7 @@
                     </Component>
                     <Component class="widget.Label" name="label11">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Mulai :"/>
+                        <Property name="text" type="java.lang.String" value="Tanggal :"/>
                         <Property name="name" type="java.lang.String" value="label11" noResource="true"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[70, 23]"/>
@@ -740,7 +734,7 @@
                     </Component>
                     <Component class="widget.Label" name="jLabel4">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Jenis Anasthesi :"/>
+                        <Property name="text" type="java.lang.String" value="Jenis Anestesi :"/>
                         <Property name="name" type="java.lang.String" value="jLabel4" noResource="true"/>
                       </Properties>
                       <Constraints>
@@ -1507,7 +1501,7 @@
                     <Component class="widget.ComboBox" name="Kategori">
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="24">
+                          <StringArray count="22">
                             <StringItem index="0" value="-"/>
                             <StringItem index="1" value="Ringan"/>
                             <StringItem index="2" value="Ringan Cito"/>
@@ -1530,8 +1524,6 @@
                             <StringItem index="19" value="Besar Khusus Ganda"/>
                             <StringItem index="20" value="Khusus"/>
                             <StringItem index="21" value="Kecil"/>
-                            <StringItem index="22" value="Elektive"/>
-                            <StringItem index="23" value="Emergency"/>
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="Kategori" noResource="true"/>

@@ -28,6 +28,13 @@ public class WarnaTable5 extends JTextArea implements TableCellRenderer {
         this.setForeground(new Color(50,50,50));
         this.setMargin(new Insets(2, 3, 2, 2));
         this.setFont(new java.awt.Font("Tahoma", 0, 11));
+
+        // Penanganan jika baris sedang dipilih
+        if (isSelected) {
+            this.setBackground(new Color(80,129,227)); // Warna biru untuk baris yang dipilih
+            this.setForeground(Color.WHITE);           // Warna teks putih agar kontras
+        }
+
         return this;
     }
 

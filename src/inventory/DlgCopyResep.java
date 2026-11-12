@@ -63,8 +63,7 @@ public class DlgCopyResep extends javax.swing.JDialog {
             }else if(i==5){
                 column.setPreferredWidth(300);
             }else if(i==6){
-                column.setMinWidth(0);
-                column.setMaxWidth(0);
+                column.setPreferredWidth(200);     
             }else if(i==7){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
@@ -611,31 +610,48 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }
 
     private void panggilform() {
-        DlgPeresepanDokter resep=new DlgPeresepanDokter(null,false);
-        resep.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
+         DlgPeresepanDokter resep = new DlgPeresepanDokter(null, false);
+    resep.setSize(internalFrame1.getWidth(), internalFrame1.getHeight());
         resep.setLocationRelativeTo(internalFrame1);
-        resep.setNoRm(norawat,tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),7).toString(),
-                tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),6).toString(), 
+
+    resep.setNoRm(
+        norawat,                                     // no rawat aktif
+        "",                                          // kode dokter kosong
+        "",                                          // nama dokter kosong
                 tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),4).toString()+" "+
-                tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),5).toString(), 
-                kode_pj,status);
+        tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),5).toString(), // pasien
+        kode_pj,                                    // penjamin
+        status                                      // status resep
+    );
+
+    // kosongkan dokter setelah setNoRm
+    resep.clearDokter();
+
         resep.isCek();
         resep.tampilobat4(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString());
         resep.setVisible(true);
     }
     
     private void panggilform2() {
-        DlgPeresepanDokter resep=new DlgPeresepanDokter(null,false);
-        resep.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
+        DlgPeresepanDokter resep = new DlgPeresepanDokter(null, false);
+    resep.setSize(internalFrame1.getWidth(), internalFrame1.getHeight());
         resep.setLocationRelativeTo(internalFrame1);
         resep.MatikanJam();
-        resep.setNoRm(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),3).toString(),
-                Valid.SetTgl2(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),1).toString()),
-                tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),2).toString().substring(0,2),
-                tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),2).toString().substring(3,5),
-                tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),2).toString().substring(6,8),
-                tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),7).toString(),
-                tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),6).toString(),status);
+
+    resep.setNoRm(
+        tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),3).toString(), // no rawat
+        Valid.SetTgl2(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),1).toString()), // tgl peresepan
+        tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),2).toString().substring(0,2), // jam HH
+        tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),2).toString().substring(3,5), // jam MM
+        tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),2).toString().substring(6,8), // jam SS
+        "",                                          // kode dokter kosong
+        "",                                          // nama dokter kosong
+        status                                       // status resep
+    );
+
+    // kosongkan dokter setelah setNoRm
+    resep.clearDokter();
+
         resep.isCek();
         resep.tampilobat3(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString());
         resep.setVisible(true);   

@@ -185,7 +185,7 @@ public final class SuratTidakHamil extends javax.swing.JDialog {
         Scroll.setOpaque(true);
         Scroll.setPreferredSize(new java.awt.Dimension(452, 200));
 
-        tbObat.setAutoCreateRowSorter(true);
+        tbObat.setAutoCreateRowSorter(false);
         tbObat.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbObat.setComponentPopupMenu(jPopupMenu1);
         tbObat.setName("tbObat"); // NOI18N
@@ -487,7 +487,7 @@ public final class SuratTidakHamil extends javax.swing.JDialog {
         FormInput.add(jLabel13);
         jLabel13.setBounds(227, 40, 65, 23);
 
-        HasilPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "tidak ditemukan tanda-tanda kehamilan", "ditemukan tanda-tanda kehamilan" }));
+        HasilPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Tidak Hamil", "Hamil" }));
         HasilPeriksa.setName("HasilPeriksa"); // NOI18N
         FormInput.add(HasilPeriksa);
         HasilPeriksa.setBounds(477, 40, 245, 23);

@@ -48,12 +48,12 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         
-        Object[] row={"Kode Barang","Nama Barang","Satuan","Jenis","Jumlah","Total","Kode Sat"};
+        Object[] row={"Kode Barang","Nama Barang","Satuan","Jenis","Jumlah","Total","Kode Sat","Asal Hibah"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
              Class[] types = new Class[] {
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
-                java.lang.Object.class, java.lang.Double.class, java.lang.Double.class,java.lang.Object.class
+                java.lang.Object.class, java.lang.Double.class, java.lang.Double.class,java.lang.Object.class,java.lang.Object.class
              };
              /*Class[] types = new Class[] {
                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
@@ -68,7 +68,7 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 7; i++) {
+        for (i = 0; i < 8; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(95);
@@ -85,6 +85,8 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
             }else if(i==6){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
+            }else if(i==7){
+                column.setPreferredWidth(300);
             }
         }
         tbDokter.setDefaultRenderer(Object.class, new WarnaTable());
@@ -111,6 +113,8 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         MnKodeBarangAsc = new widget.MenuItem();
         MnNamaBarangDesc = new widget.MenuItem();
         MnNamaBarangAsc = new widget.MenuItem();
+        MnAsalHibahAsc = new javax.swing.JMenuItem();
+        MnAsalHibahDesc = new javax.swing.JMenuItem();
         MnKategoriAsc = new widget.MenuItem();
         MnKategoriDesc = new widget.MenuItem();
         MnSatuanDesc = new widget.MenuItem();
@@ -163,9 +167,6 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
 
         Popup1.setName("Popup1"); // NOI18N
 
-        MnKodeBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKodeBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeBarangDesc.setText("Urutkan Berdasar Kode Barang Descending");
         MnKodeBarangDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -179,9 +180,6 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         });
         Popup1.add(MnKodeBarangDesc);
 
-        MnKodeBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKodeBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeBarangAsc.setText("Urutkan Berdasar Kode Barang Ascending");
         MnKodeBarangAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -195,9 +193,6 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         });
         Popup1.add(MnKodeBarangAsc);
 
-        MnNamaBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnNamaBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaBarangDesc.setText("Urutkan Berdasar Nama Barang Descending");
         MnNamaBarangDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -211,9 +206,6 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         });
         Popup1.add(MnNamaBarangDesc);
 
-        MnNamaBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnNamaBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaBarangAsc.setText("Urutkan Berdasar Nama Barang Ascending");
         MnNamaBarangAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -227,9 +219,38 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         });
         Popup1.add(MnNamaBarangAsc);
 
-        MnKategoriAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKategoriAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKategoriAsc.setForeground(new java.awt.Color(50, 50, 50));
+        MnAsalHibahAsc.setBackground(new java.awt.Color(255, 255, 254));
+        MnAsalHibahAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnAsalHibahAsc.setForeground(new java.awt.Color(50, 50, 50));
+        MnAsalHibahAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnAsalHibahAsc.setText("Urutkan Berdasar Asal Hibah Ascending");
+        MnAsalHibahAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnAsalHibahAsc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnAsalHibahAsc.setName("MnAsalHibahAsc"); // NOI18N
+        MnAsalHibahAsc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnAsalHibahAsc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnAsalHibahAscActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnAsalHibahAsc);
+
+        MnAsalHibahDesc.setBackground(new java.awt.Color(255, 255, 254));
+        MnAsalHibahDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnAsalHibahDesc.setForeground(new java.awt.Color(50, 50, 50));
+        MnAsalHibahDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnAsalHibahDesc.setText("Urutkan Berdasar Asal Hibah Descending");
+        MnAsalHibahDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnAsalHibahDesc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnAsalHibahDesc.setName("MnAsalHibahDesc"); // NOI18N
+        MnAsalHibahDesc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnAsalHibahDesc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnAsalHibahDescActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnAsalHibahDesc);
+
         MnKategoriAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKategoriAsc.setText("Urutkan Berdasar Jenis Ascending");
         MnKategoriAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -243,9 +264,6 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         });
         Popup1.add(MnKategoriAsc);
 
-        MnKategoriDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKategoriDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKategoriDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKategoriDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKategoriDesc.setText("Urutkan Berdasar Jenis Descending");
         MnKategoriDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -259,9 +277,6 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         });
         Popup1.add(MnKategoriDesc);
 
-        MnSatuanDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnSatuanDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnSatuanDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnSatuanDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSatuanDesc.setText("Urutkan Berdasar Satuan Descending");
         MnSatuanDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -275,9 +290,6 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         });
         Popup1.add(MnSatuanDesc);
 
-        MnSatuanAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnSatuanAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnSatuanAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnSatuanAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSatuanAsc.setText("Urutkan Berdasar Satuan Ascending");
         MnSatuanAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -291,9 +303,6 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         });
         Popup1.add(MnSatuanAsc);
 
-        MnTotalAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnTotalAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnTotalAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnTotalAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnTotalAsc.setText("Urutkan Berdasar Total Ascending");
         MnTotalAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -307,9 +316,6 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         });
         Popup1.add(MnTotalAsc);
 
-        MnTotalDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnTotalDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnTotalDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnTotalDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnTotalDesc.setText("Urutkan Berdasar Total Descending");
         MnTotalDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -323,9 +329,6 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         });
         Popup1.add(MnTotalDesc);
 
-        MnJumlahAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnJumlahAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnJumlahAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnJumlahAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJumlahAsc.setText("Urutkan Berdasar Jumlah Ascending");
         MnJumlahAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -339,9 +342,6 @@ public class InventoryRingkasanHibahBarangMedis extends javax.swing.JDialog {
         });
         Popup1.add(MnJumlahAsc);
 
-        MnJumlahDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnJumlahDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnJumlahDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnJumlahDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJumlahDesc.setText("Urutkan Berdasar Jumlah Descending");
         MnJumlahDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -1232,6 +1232,16 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         runBackground(() ->tampil());
     }//GEN-LAST:event_MnJumlahDescActionPerformed
 
+    private void MnAsalHibahAscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnAsalHibahAscActionPerformed
+        order="order by pemberihibah.nama_pemberi asc";
+        tampil();
+    }//GEN-LAST:event_MnAsalHibahAscActionPerformed
+
+    private void MnAsalHibahDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnAsalHibahDescActionPerformed
+        order="order by pemberihibah.nama_pemberi desc";
+        tampil();
+    }//GEN-LAST:event_MnAsalHibahDescActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1255,6 +1265,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private widget.Button BtnPrint;
     private widget.TextBox KdIF;
     private widget.Label LTotal;
+    private javax.swing.JMenuItem MnAsalHibahAsc;
+    private javax.swing.JMenuItem MnAsalHibahDesc;
     private widget.MenuItem MnJumlahAsc;
     private widget.MenuItem MnJumlahDesc;
     private widget.MenuItem MnKategoriAsc;
@@ -1308,15 +1320,33 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private void tampil() {
        Valid.tabelKosong(tabMode);
         try{     
-            ps=koneksi.prepareStatement(
-                    "select detailhibah_obat_bhp.kode_brng,databarang.nama_brng,databarang.kode_sat,kodesatuan.satuan,jenis.nama as namajenis,sum(detailhibah_obat_bhp.jumlah2) as jumlah,sum(detailhibah_obat_bhp.subtotaldiakui) as total "+
-                    "from hibah_obat_bhp inner join pemberihibah on hibah_obat_bhp.kode_pemberi=pemberihibah.kode_pemberi inner join petugas on hibah_obat_bhp.nip=petugas.nip inner join bangsal on hibah_obat_bhp.kd_bangsal=bangsal.kd_bangsal "+
-                    "inner join detailhibah_obat_bhp on hibah_obat_bhp.no_hibah=detailhibah_obat_bhp.no_hibah inner join databarang on detailhibah_obat_bhp.kode_brng=databarang.kode_brng inner join kodesatuan on databarang.kode_sat=kodesatuan.kode_sat "+
-                    "inner join jenis on databarang.kdjns=jenis.kdjns inner join industrifarmasi on databarang.kode_industri=industrifarmasi.kode_industri "+
-                    "where hibah_obat_bhp.tgl_hibah between ? and ? and hibah_obat_bhp.no_hibah like ? and pemberihibah.nama_pemberi like ? and petugas.nama like ?  and jenis.nama like ? and databarang.nama_brng like ? and industrifarmasi.nama_industri like ? "+
-                    (TCari.getText().trim().equals("")?"":"and (hibah_obat_bhp.no_hibah like ? or hibah_obat_bhp.kode_pemberi like ? or pemberihibah.nama_pemberi like ? or hibah_obat_bhp.nip like ? or petugas.nama like ? or bangsal.nm_bangsal like ? or "+
-                    "detailhibah_obat_bhp.kode_brng like ? or databarang.nama_brng like ? or databarang.kode_sat like ? or detailhibah_obat_bhp.no_batch like ? or industrifarmasi.nama_industri like ? or jenis.nama like ?) ")+
-                    "group by detailhibah_obat_bhp.kode_brng "+order);
+           ps = koneksi.prepareStatement(
+    "SELECT d.kode_brng, b.nama_brng, b.kode_sat, s.satuan, j.nama AS namajenis, " +
+    "SUM(d.jumlah2) AS jumlah, SUM(d.subtotaldiakui) AS total " +
+    "FROM hibah_obat_bhp h " +
+    "JOIN pemberihibah p ON h.kode_pemberi = p.kode_pemberi " +
+    "JOIN petugas t ON h.nip = t.nip " +
+    "JOIN bangsal g ON h.kd_bangsal = g.kd_bangsal " +
+    "JOIN detailhibah_obat_bhp d ON h.no_hibah = d.no_hibah " +
+    "JOIN databarang b ON d.kode_brng = b.kode_brng " +
+    "JOIN kodesatuan s ON b.kode_sat = s.kode_sat " +
+    "JOIN jenis j ON b.kdjns = j.kdjns " +
+    "JOIN industrifarmasi i ON b.kode_industri = i.kode_industri " +
+    "WHERE h.tgl_hibah BETWEEN ? AND ? " +
+    "AND h.no_hibah LIKE ? " +
+    "AND p.nama_pemberi LIKE ? " +
+    "AND t.nama LIKE ? " +
+    "AND j.nama LIKE ? " +
+    "AND b.nama_brng LIKE ? " +
+    "AND i.nama_industri LIKE ? " +
+    (TCari.getText().trim().equals("") ? "" :
+    "AND (h.no_hibah LIKE ? OR h.kode_pemberi LIKE ? OR p.nama_pemberi LIKE ? OR " +
+    "h.nip LIKE ? OR t.nama LIKE ? OR g.nm_bangsal LIKE ? OR " +
+    "d.kode_brng LIKE ? OR b.nama_brng LIKE ? OR b.kode_sat LIKE ? OR " +
+    "d.no_batch LIKE ? OR i.nama_industri LIKE ? OR j.nama LIKE ?) ") +
+    "GROUP BY d.kode_brng, b.nama_brng, b.kode_sat, s.satuan, j.nama " +
+    order
+);
             try {
                 ps.setString(1,Valid.SetTgl(TglBeli1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(TglBeli2.getSelectedItem()+""));

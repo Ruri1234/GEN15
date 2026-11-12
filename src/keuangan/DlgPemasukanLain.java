@@ -634,28 +634,73 @@ public final class DlgPemasukanLain extends javax.swing.JDialog {
         }else{
             Sequel.AutoComitFalse();
             sukses=true;       
-            if(Sequel.menyimpantf("pemasukan_lain","?,?,?,?,?,?,?","Pemasukan",7,new String[]{
-                Nomor.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),
-                KdKategori.getText(),pemasukan.getText(),KdPtg.getText(),Keterangan.getText(),Keperluan.getText()
+
+        try {
+            String tgl = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                    .format(Tanggal.getDate());
+
+            if(Sequel.menyimpantf(
+                    "pemasukan_lain",
+                    "?,?,?,?,?,?,?",
+                    "Pemasukan",
+                    7,
+                    new String[]{
+                        Nomor.getText(),
+                        tgl,
+                        KdKategori.getText(),
+                        pemasukan.getText(),
+                        KdPtg.getText(),
+                        Keterangan.getText(),
+                        Keperluan.getText()
             })==true){
+
                 Sequel.queryu("delete from tampjurnal");
+
                 try {
                     psakun=koneksi.prepareStatement(
-                        "select kategori_pemasukan_lain.kd_rek,kategori_pemasukan_lain.kd_rek2 from kategori_pemasukan_lain where kategori_pemasukan_lain.kode_kategori=?");
+                        "select kategori_pemasukan_lain.kd_rek,kategori_pemasukan_lain.kd_rek2 " +
+                        "from kategori_pemasukan_lain where kategori_pemasukan_lain.kode_kategori=?");
+
                     try {
                         psakun.setString(1,KdKategori.getText());
                         rs=psakun.executeQuery();
+
                         if(rs.next()){
-                            if(Sequel.menyimpantf2("tampjurnal","?,?,?,?",4,new String[]{rs.getString(1),"Akun","0",pemasukan.getText()})==false){
+                            if(Sequel.menyimpantf2(
+                                    "tampjurnal",
+                                    "?,?,?,?",
+                                    4,
+                                    new String[]{
+                                        rs.getString(1),
+                                        "Akun",
+                                        "0",
+                                        pemasukan.getText()
+                                    })==false){
                                 sukses=false;
                             }
-                            if(Sequel.menyimpantf2("tampjurnal","?,?,?,?",4,new String[]{rs.getString(2),"Kontra Akun",pemasukan.getText(),"0"})==false){
+
+                            if(Sequel.menyimpantf2(
+                                    "tampjurnal",
+                                    "?,?,?,?",
+                                    4,
+                                    new String[]{
+                                        rs.getString(2),
+                                        "Kontra Akun",
+                                        pemasukan.getText(),
+                                        "0"
+                                    })==false){
                                 sukses=false;
                             }
+
                             if(sukses==true){
-                                sukses=jur.simpanJurnal(Nomor.getText(),"U","PEMASUKAN LAIN-LAIN OLEH "+akses.getkode());
+                                sukses=jur.simpanJurnal(
+                                        Nomor.getText(),
+                                        "U",
+                                        "PEMASUKAN LAIN-LAIN OLEH "+akses.getkode()
+                                );
                             }
                         }
+
                     } catch (Exception e) {
                         sukses=false;
                         System.out.println("Jurnal : "+e);
@@ -663,17 +708,32 @@ public final class DlgPemasukanLain extends javax.swing.JDialog {
                         if(rs!=null){
                             rs.close();
                         }
+
                         if(psakun!=null){
                             psakun.close();
                         }
                     }
+
                     if(sukses==true){
-                        sukses=Sequel.menyimpantf2("tagihan_sadewa","'"+Nomor.getText()+"','-','"+Keterangan.getText().replaceAll("'","")+"','-',concat('"+Valid.SetTgl(Tanggal.getSelectedItem()+"")+"',' ',CURTIME()),'Pelunasan','"+total+"','"+pemasukan.getText()+"','Sudah','"+akses.getkode()+"'","No.Transaksi");
+                        sukses=Sequel.menyimpantf2(
+                            "tagihan_sadewa",
+                            "'"+Nomor.getText()+"','-','"+
+                            Keterangan.getText().replaceAll("'","")+"','-','"+
+                            tgl+
+                            "','Pelunasan','"+
+                            total+"','"+
+                            pemasukan.getText()+
+                            "','Sudah','"+
+                            akses.getkode()+"'",
+                            "No.Transaksi"
+                        );
                     }   
+
                 } catch (Exception e) {
                     sukses=false;
                     System.out.println("Notifikasi : "+e);
                 }  
+
             }else{
                 sukses=false;
             }
@@ -682,21 +742,41 @@ public final class DlgPemasukanLain extends javax.swing.JDialog {
                 Sequel.Commit();
             }else{
                 sukses=false;
-                JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\n"+
+                    "Foto Kotak Hitam SIMKES Khanza kirim ke GRUP WA..!!"
+                );
                 Sequel.RollBack();
             }
             
             Sequel.AutoComitTrue();
+
             if(sukses==true){
                 tabMode.addRow(new Object[]{
-                    Nomor.getText(),Tanggal.getSelectedItem().toString(),KdKategori.getText()+" "+NmKategori.getText(),KdPtg.getText()+" "+NmPtg.getText(),Double.parseDouble(pemasukan.getText()),Keterangan.getText(),Keperluan.getText(),KdKategori.getText(),KdPtg.getText()
+                    Nomor.getText(),
+                    tgl,
+                    KdKategori.getText()+" "+NmKategori.getText(),
+                    KdPtg.getText()+" "+NmPtg.getText(),
+                    Double.parseDouble(pemasukan.getText()),
+                    Keterangan.getText(),
+                    Keperluan.getText(),
+                    KdKategori.getText(),
+                    KdPtg.getText()
                 });
+
                 emptTeks();
                 hitung();
             }
+
+        } catch (Exception e) {
+            sukses=false;
+            System.out.println("Notifikasi : "+e);
         }
 }//GEN-LAST:event_BtnSimpanActionPerformed
 
+}                                         
+        
     private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             BtnSimpanActionPerformed(null);

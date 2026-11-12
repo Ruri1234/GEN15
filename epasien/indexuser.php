@@ -40,15 +40,24 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="css/style3.css" rel="stylesheet" type="text/css">
     <link href="css/style4.css" rel="stylesheet" type="text/css">
-    <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="plugins/node-waves/waves.css" rel="stylesheet" />
     <link href="plugins/animate-css/animate.css" rel="stylesheet" />
     <link href="plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
     <link href="plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
     <link href="css/style2.css" rel="stylesheet">
     <link href="css/themes/all-themes.css" rel="stylesheet" />
+    <link href="css/modern-blue.css" rel="stylesheet" />
+    <!-- PWA Meta Tags & Icons -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d47a1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="images/icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
 </head>
-<body class="theme-pink">
+<body class="theme-blue">
     <!--<div class="page-loader-wrapper">
         <div class="loader">
             <div class="preloader">
@@ -554,8 +563,9 @@
             <?php actionPages();?>
         </div>
     </section>
-    <script src="plugins/jquery/jquery.min.js"></script>
-    <script src="plugins/bootstrap/js/bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.4.1/jquery-migrate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
     <script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
     <script src="plugins/node-waves/waves.js"></script>
@@ -582,6 +592,7 @@
     <script src="js/pages/index.js"></script>
     <script src="js/demo.js"></script>
     <script src="conf/validator.js" type="text/javascript"></script>
+    <script src="js/pwa-installer.js"></script>
 </body>
 </html>
 

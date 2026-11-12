@@ -46,7 +46,7 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
     private DlgCariDokter dokter;
     private String kelas_operasi="Yes",kelas="",cara_bayar_operasi="Yes",kd_pj="",status="";
     private double ttljmdokter=0,ttljmpetugas=0,ttlpendapatan=0,ttlbhp=0;
-    private String norawatibu="";
+    private String norawatibu="",statusclosingparsial="";
     private double y=0,biayatindakan=0,biayaobat=0;
     private int jml=0,i=0,index=0;
     private boolean[] pilih; 
@@ -57,12 +57,107 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
                   perawat_luar, sewa_ok, alat,akomodasi,bagian_rs,omloop,omloop2,omloop3,omloop4,omloop5,sarpras,ttltindakan,jmlobat,hargasatuan,ttlobat;
 
 
+    // ===== Field Komplikasi/Perdarahan/Drain (di luar blok GEN agar tidak tertimpa GUI Builder) =====
+    private widget.TextBox Perdarahan, Drain;
+    private widget.TextArea Komplikasi;
+    private widget.ScrollPane scrollKomplikasi;
+    private widget.Label lblKomplikasi, lblPerdarahan, lblDrain, lblCcPerdarahan, lblCcDrain;
+
+    /** Dokumen teks yang hanya menerima angka 0-9 dengan panjang maksimal tertentu. */
+    private static class AngkaDocument extends javax.swing.text.PlainDocument {
+        private final int max;
+        AngkaDocument(int max) { this.max = max; }
+        @Override
+        public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws javax.swing.text.BadLocationException {
+            if (str == null) return;
+            String digit = str.replaceAll("[^0-9]", "");
+            int sisa = max - getLength();
+            if (sisa <= 0 || digit.isEmpty()) return;
+            if (digit.length() > sisa) digit = digit.substring(0, sisa);
+            super.insertString(offs, digit, a);
+        }
+    }
+
+    private void initFieldTambahan() {
+        // Pastikan isi combo Kategori selalu seperti ini (Elektive/Emergency sengaja tidak dimasukkan) (tidak tertimpa ulang oleh initComponents/.form)
+        Kategori.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "Ringan", "Ringan Cito", "Ringan Khusus", "Ringan Khusus Cito", "Ringan Khusus Cito Ganda", "Sedang", "Sedang Cito", "Sedang Ganda", "Sedang Khusus", "Sedang Khusus Cito", "Sedang Khusus Cito Ganda", "Sedang Khusus Ganda", "Besar", "Besar Cito", "Besar Ganda", "Besar Khusus", "Besar Khusus Cito", "Besar Khusus Cito Ganda", "Besar Khusus Ganda", "Khusus", "Kecil" }));
+        Kategori.setBounds(84, 40, 152, 23);
+        jLabel4.setBounds(249, 40, 90, 23);
+        jenis.setBounds(342, 40, 92, 23);
+
+        // Komplikasi (varchar 500) - kotak besar bertingkat seperti Laporan Operasi
+        lblKomplikasi = new widget.Label();
+        lblKomplikasi.setText("Komplikasi :");
+        FormInput.add(lblKomplikasi);
+        lblKomplikasi.setBounds(406, 580, 101, 23);
+
+        Komplikasi = new widget.TextArea();
+        Komplikasi.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        Komplikasi.setColumns(20);
+        Komplikasi.setRows(4);
+        Komplikasi.setLineWrap(true);
+        Komplikasi.setWrapStyleWord(true);
+        Komplikasi.setDocument(new batasInput((int)500).getKata(Komplikasi));
+        scrollKomplikasi = new widget.ScrollPane();
+        scrollKomplikasi.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        scrollKomplikasi.setViewportView(Komplikasi);
+        FormInput.add(scrollKomplikasi);
+        scrollKomplikasi.setBounds(510, 580, 320, 80);
+
+        // Perdarahan (maks 4 angka, selalu diikuti "cc")
+        lblPerdarahan = new widget.Label();
+        lblPerdarahan.setText("Perdarahan :");
+        FormInput.add(lblPerdarahan);
+        lblPerdarahan.setBounds(0, 580, 145, 23);
+
+        Perdarahan = new widget.TextBox();
+        Perdarahan.setHighlighter(null);
+        Perdarahan.setDocument(new AngkaDocument(4));
+        Perdarahan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                PerdarahanKeyPressed(evt);
+            }
+        });
+        FormInput.add(Perdarahan);
+        Perdarahan.setBounds(148, 580, 70, 23);
+
+        lblCcPerdarahan = new widget.Label();
+        lblCcPerdarahan.setText("cc");
+        FormInput.add(lblCcPerdarahan);
+        lblCcPerdarahan.setBounds(222, 580, 40, 23);
+
+        // Drain (maks 4 angka, selalu diikuti "cc")
+        lblDrain = new widget.Label();
+        lblDrain.setText("Drain :");
+        FormInput.add(lblDrain);
+        lblDrain.setBounds(0, 610, 145, 23);
+
+        Drain = new widget.TextBox();
+        Drain.setHighlighter(null);
+        Drain.setDocument(new AngkaDocument(4));
+        Drain.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                DrainKeyPressed(evt);
+            }
+        });
+        FormInput.add(Drain);
+        Drain.setBounds(148, 610, 70, 23);
+
+        lblCcDrain = new widget.Label();
+        lblCcDrain.setText("cc");
+        FormInput.add(lblCcDrain);
+        lblCcDrain.setBounds(222, 610, 40, 23);
+
+        FormInput.setPreferredSize(new java.awt.Dimension(89, 683));
+    }
+
     /** Creates new form DlgProgramStudi
      * @param parent
      * @param modal*/
     public DlgTagihanOperasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        initFieldTambahan();
 
         Object[] row={"P","Kode Paket","Nama Operasi","Kategori","Operator 1","Operator 2","Operator 3",
                       "Asisten Op 1","Asisten Op 2","Asisten Op 3","Instrumen","dr Anak","Perawat Resus","dr Anastesi",
@@ -195,8 +290,8 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
         kdonloop5.setDocument(new batasInput((byte)20).getKata(kdonloop5));
         kdpjanak.setDocument(new batasInput((byte)20).getKata(kdpjanak));        
         kddrumum.setDocument(new batasInput((byte)20).getKata(kddrumum));      
-        PreOp.setDocument(new batasInput((int)100).getKata(PreOp));      
-        PostOp.setDocument(new batasInput((int)100).getKata(PostOp));    
+        PreOp.setDocument(new batasInput((int)150).getKata(PreOp));      
+        PostOp.setDocument(new batasInput((int)200).getKata(PostOp));    
         NomorImplant.setDocument(new batasInput((int)50).getKata(NomorImplant));      
         Jaringan.setDocument(new batasInput((int)100).getKata(Jaringan));
         Laporan.setDocument(new batasInput((int)8000).getKata(Laporan));
@@ -373,9 +468,7 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
 
         Popup.setName("Popup"); // NOI18N
 
-        ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
         ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
         ppBersihkan.setText("Bersihkan Jumlah");
         ppBersihkan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -741,7 +834,7 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
         FormInput.add(BtnOperator1);
         BtnOperator1.setBounds(376, 70, 28, 23);
 
-        label11.setText("Mulai :");
+        label11.setText("Tanggal :");
         label11.setName("label11"); // NOI18N
         label11.setPreferredSize(new java.awt.Dimension(70, 23));
         FormInput.add(label11);
@@ -778,7 +871,7 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
         FormInput.add(TPasien);
         TPasien.setBounds(265, 10, 535, 23);
 
-        jLabel4.setText("Jenis Anasthesi :");
+        jLabel4.setText("Jenis Anestesi :");
         jLabel4.setName("jLabel4"); // NOI18N
         FormInput.add(jLabel4);
         jLabel4.setBounds(249, 40, 90, 23);
@@ -1204,7 +1297,7 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
         FormInput.add(jLabel5);
         jLabel5.setBounds(0, 40, 81, 23);
 
-        Kategori.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "Ringan", "Ringan Cito", "Ringan Khusus", "Ringan Khusus Cito", "Ringan Khusus Cito Ganda", "Sedang", "Sedang Cito", "Sedang Ganda", "Sedang Khusus", "Sedang Khusus Cito", "Sedang Khusus Cito Ganda", "Sedang Khusus Ganda", "Besar", "Besar Cito", "Besar Ganda", "Besar Khusus", "Besar Khusus Cito", "Besar Khusus Cito Ganda", "Besar Khusus Ganda", "Khusus", "Kecil", "Elektive", "Emergency" }));
+        Kategori.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "Ringan", "Ringan Cito", "Ringan Khusus", "Ringan Khusus Cito", "Ringan Khusus Cito Ganda", "Sedang", "Sedang Cito", "Sedang Ganda", "Sedang Khusus", "Sedang Khusus Cito", "Sedang Khusus Cito Ganda", "Sedang Khusus Ganda", "Besar", "Besar Cito", "Besar Ganda", "Besar Khusus", "Besar Khusus Cito", "Besar Khusus Cito Ganda", "Besar Khusus Ganda", "Khusus", "Kecil" }));
         Kategori.setName("Kategori"); // NOI18N
         Kategori.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -2904,7 +2997,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }else if(tgl.getSelectedItem().toString().equals(tgl2.getSelectedItem().toString())){
             JOptionPane.showMessageDialog(rootPane,"Kamu operasi apa bersin..? Cepat sekali...!!");
         }else{            
-            if(Sequel.cariRegistrasi(TNoRw.getText())>0){
+            statusclosingparsial=Sequel.cariIsi("select reg_periksa.status_closing_parsial from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+            if(statusclosingparsial.equals("Sudah Closing")){
+                JOptionPane.showMessageDialog(rootPane,"Pasien Reguler Sudah Closing Kasir ..!!\nTagihan operasi tidak dapat ditambahkan lagi.\nSilahkan hubungi bagian kasir/keuangan ..!!");
+                TCariPaket.requestFocus();
+            }else if(Sequel.cariRegistrasi(TNoRw.getText())>0){
                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi, data tidak boleh dihapus.\nSilahkan hubungi bagian kasir/keuangan ..!!");
                 TCariPaket.requestFocus();
             }else{
@@ -2996,10 +3093,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     
                 if(sukses==true){
                     if(!Laporan.getText().equals("")){
-                        if(Sequel.menyimpantf2("laporan_operasi","?,?,?,?,?,?,?,?,?","laporan operasi",9,new String[]{
+                        if(Sequel.menyimpantf2("laporan_operasi","?,?,?,?,?,?,?,?,?,?,?,?","laporan operasi",12,new String[]{
                                 TNoRw.getText(),Valid.SetTgl(tgl.getSelectedItem()+"")+" "+tgl.getSelectedItem().toString().substring(11,19),PreOp.getText(),
                                 PostOp.getText(),Jaringan.getText(),Valid.SetTgl(tgl2.getSelectedItem()+"")+" "+tgl2.getSelectedItem().toString().substring(11,19),
-                                DikirimPA.getSelectedItem().toString(),NomorImplant.getText(),Laporan.getText()
+                                DikirimPA.getSelectedItem().toString(),NomorImplant.getText(),Laporan.getText(),
+                                Komplikasi.getText(),Perdarahan.getText(),Drain.getText()
                             })==false){
                             sukses=false;
                         }
@@ -3100,6 +3198,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     Jaringan.setText("");
                     Laporan.setText("");
                     jenis.setText("");
+                    Komplikasi.setText("");
+                    Perdarahan.setText("");
+                    Drain.setText("");
                     JOptionPane.showMessageDialog(rootPane,"Proses simpan selesai...!");
                 }else{
                     JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
@@ -3323,6 +3424,14 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void NomorImplantKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NomorImplantKeyPressed
         Valid.pindah(evt,DikirimPA,Laporan);
     }//GEN-LAST:event_NomorImplantKeyPressed
+
+    private void PerdarahanKeyPressed(java.awt.event.KeyEvent evt) {
+        Valid.pindah(evt,NomorImplant,Drain);
+    }
+
+    private void DrainKeyPressed(java.awt.event.KeyEvent evt) {
+        Valid.pindah(evt,Perdarahan,Komplikasi);
+    }
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         if(akuntindakanoperasi.getSuspen_Piutang_Operasi_Ralan().equals("")||akuntindakanoperasi.getSuspen_Piutang_Operasi_Ranap().equals("")){

@@ -17,9 +17,19 @@ import fungsi.koneksiDB;
 import fungsi.sekuel;
 import fungsi.validasi;
 import fungsi.akses;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
@@ -34,7 +44,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
@@ -45,8 +64,6 @@ import simrskhanza.DlgKabupaten;
 import simrskhanza.DlgKecamatan;
 import simrskhanza.DlgKelurahan;
 import simrskhanza.DlgCariCaraBayar;
-import java.util.concurrent.RejectedExecutionException;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -61,6 +78,12 @@ public final class DlgKunjunganRalan extends javax.swing.JDialog {
     private ResultSet rs,rs2;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
+    private DlgCariPoli poli=new DlgCariPoli(null,false);
+    private DlgCariDokter dokter=new DlgCariDokter(null,false);
+    private DlgKabupaten kabupaten=new DlgKabupaten(null,false);
+    private DlgKecamatan kecamatan=new DlgKecamatan(null,false);
+    private DlgKelurahan kelurahan=new DlgKelurahan(null,false);
+    private DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
     private int i=0,lama=0,baru=0,laki=0,per=0;   
     private String setbaru="",setlama="",umurlk="",umurpr="",kddiangnosa="",diagnosa="",pilihan="",status="";
     private StringBuilder htmlContent;
@@ -70,10 +93,12 @@ public final class DlgKunjunganRalan extends javax.swing.JDialog {
     public DlgKunjunganRalan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        initTombolGrafik();
         this.setLocation(8,1);
         setSize(885,674);
+        initTombolRekap();
 
-        tabMode=new DefaultTableModel(null,new Object[]{"No.","Lama","Baru","Nama Pasien","L","P","Alamat","Kode","Diagnosa","Dokter Jaga"}){
+        tabMode=new DefaultTableModel(null,new Object[]{"No.","Lama","Baru","Nama Pasien","L","P","Alamat","Kode","Diagnosa","Poliklinik","Dokter Jaga","Tgl Registrasi"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         table1.setModel(tabMode);
@@ -81,7 +106,7 @@ public final class DlgKunjunganRalan extends javax.swing.JDialog {
         table1.setPreferredScrollableViewportSize(new Dimension(500,500));
         table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < 12; i++) {
             TableColumn column = table1.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(35);
@@ -102,12 +127,16 @@ public final class DlgKunjunganRalan extends javax.swing.JDialog {
             }else if(i==8){
                 column.setPreferredWidth(200);
             }else if(i==9){
-                column.setPreferredWidth(200);
+                column.setPreferredWidth(150);
+            }else if(i==10){
+                column.setPreferredWidth(250);
+            }else if(i==10){
+                column.setPreferredWidth(150);
             }
         }
         table1.setDefaultRenderer(Object.class, new WarnaTable());
         
-        tabMode2=new DefaultTableModel(null,new Object[]{"No.","Lama","Baru","Nama Pasien","L","P","Alamat","Kode","Diagnosa","Dokter Jaga"}){
+        tabMode2=new DefaultTableModel(null,new Object[]{"No.","Lama","Baru","Nama Pasien","L","P","Alamat","Kode","Diagnosa","Poliklinik","Dokter Jaga","Tgl Registrasi"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         table2.setModel(tabMode2);
@@ -115,7 +144,7 @@ public final class DlgKunjunganRalan extends javax.swing.JDialog {
         table2.setPreferredScrollableViewportSize(new Dimension(500,500));
         table2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < 12; i++) {
             TableColumn column = table2.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(35);
@@ -136,12 +165,239 @@ public final class DlgKunjunganRalan extends javax.swing.JDialog {
             }else if(i==8){
                 column.setPreferredWidth(200);
             }else if(i==9){
-                column.setPreferredWidth(200);
+                column.setPreferredWidth(150);
+            }else if(i==10){
+                column.setPreferredWidth(250);
+            }else if(i==11){
+                column.setPreferredWidth(150);
             }
         }
         table2.setDefaultRenderer(Object.class, new WarnaTable());
 
         TCari.setDocument(new batasInput((int)90).getKata(TCari));
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        tampil();
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        tampil();
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        tampil();
+                    }
+                }
+            });
+        }  
+        
+        poli.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(poli.getTable().getSelectedRow()!= -1){
+                    kdpoli.setText(poli.getTable().getValueAt(poli.getTable().getSelectedRow(),0).toString());
+                    nmpoli.setText(poli.getTable().getValueAt(poli.getTable().getSelectedRow(),1).toString());
+                }      
+                kdpoli.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {poli.emptTeks();}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });   
+        
+        penjab.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(penjab.getTable().getSelectedRow()!= -1){
+                    kdpenjab.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
+                    nmpenjab.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
+                }      
+                kdpenjab.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {penjab.emptTeks();}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });   
+        
+        penjab.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    penjab.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+        
+        kabupaten.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(kabupaten.getTable().getSelectedRow()!= -1){
+                    nmkabupaten.setText(kabupaten.getTable().getValueAt(kabupaten.getTable().getSelectedRow(),0).toString());
+                }      
+                nmkabupaten.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {kabupaten.emptTeks();}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });   
+        
+        kabupaten.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    kabupaten.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+        
+        kecamatan.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(kecamatan.getTable().getSelectedRow()!= -1){
+                    nmkecamatan.setText(kecamatan.getTable().getValueAt(kecamatan.getTable().getSelectedRow(),0).toString());
+                }      
+                nmkecamatan.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {kecamatan.emptTeks();}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });   
+        
+        kecamatan.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    kecamatan.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+        
+        kelurahan.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(kelurahan.getTable().getSelectedRow()!= -1){
+                    nmkelurahan.setText(kelurahan.getTable().getValueAt(kelurahan.getTable().getSelectedRow(),0).toString());
+                }      
+                nmkelurahan.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {kelurahan.emptTeks();}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });   
+        
+        kelurahan.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    kelurahan.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+        
+        dokter.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(dokter.getTable().getSelectedRow()!= -1){
+                    kddokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),0).toString());
+                    nmdokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),1).toString());
+                }      
+                kddokter.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {dokter.emptTeks();}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });   
+        
+        dokter.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    dokter.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+        
         ChkInput.setSelected(false);
         isForm();
         
@@ -1386,7 +1642,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             Valid.tabelKosong(tabMode);   
             if(nmpoli.getText().trim().equals("")&&nmdokter.getText().trim().equals("")&&nmpenjab.getText().trim().equals("")&&nmkabupaten.getText().trim().equals("")&&nmkecamatan.getText().trim().equals("")&&nmkelurahan.getText().trim().equals("")&&TCari.getText().trim().equals("")){
                 ps=koneksi.prepareStatement(
-                        "select reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.stts_daftar," +
+                        "select reg_periksa.no_rawat,DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y')as tgl_registrasi,reg_periksa.stts_daftar," +
                         "dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli,"+
                         "concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab)as almt_pj,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur) as umur,pasien.tgl_daftar " +
                         "from reg_periksa inner join dokter inner join pasien inner join poliklinik inner join penjab " +
@@ -1396,7 +1652,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                         "where reg_periksa.stts_daftar like '%"+status+"%' and reg_periksa.status_lanjut='Ralan' and reg_periksa.tgl_registrasi between ? and ? order by reg_periksa.tgl_registrasi,reg_periksa.jam_reg");
             }else{
                 ps=koneksi.prepareStatement(
-                        "select reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.stts_daftar," +
+                        "select reg_periksa.no_rawat,DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y')as tgl_registrasi,reg_periksa.stts_daftar," +
                         "dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli,"+
                         "concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab)as almt_pj,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur) as umur,pasien.tgl_daftar " +
                         "from reg_periksa inner join dokter inner join pasien inner join poliklinik inner join penjab " +
@@ -1475,7 +1731,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                         }
                     }                        
                     tabMode.addRow(new Object[]{
-                        i,setlama,setbaru,rs.getString("nm_pasien"),umurlk,umurpr,rs.getString("almt_pj"),kddiangnosa,diagnosa,rs.getString("nm_dokter")
+                        i,setlama,setbaru,rs.getString("nm_pasien"),umurlk,umurpr,rs.getString("almt_pj"),kddiangnosa,diagnosa,rs.getString("nm_poli"),rs.getString("nm_dokter"),rs.getString("tgl_registrasi")
                     });                
                     i++;
                 }
@@ -1506,7 +1762,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             Valid.tabelKosong(tabMode2);   
             if(nmpoli.getText().trim().equals("")&&nmdokter.getText().trim().equals("")&&nmpenjab.getText().trim().equals("")&&nmkabupaten.getText().trim().equals("")&&nmkecamatan.getText().trim().equals("")&&nmkelurahan.getText().trim().equals("")&&TCari.getText().trim().equals("")){
                 ps=koneksi.prepareStatement(
-                        "select reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.stts_daftar," +
+                        "select reg_periksa.no_rawat,DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y')as tgl_registrasi,reg_periksa.stts_daftar," +
                         "dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli,"+
                         "concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab)as almt_pj,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur) as umur,pasien.tgl_daftar " +
                         "from reg_periksa inner join dokter inner join pasien inner join poliklinik inner join penjab " +
@@ -1516,7 +1772,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                         "where reg_periksa.stts_daftar like '%"+status+"%' and reg_periksa.status_lanjut='Ralan' and reg_periksa.stts<>'Batal' and reg_periksa.tgl_registrasi between ? and ? order by reg_periksa.tgl_registrasi,reg_periksa.jam_reg");
             }else{
                 ps=koneksi.prepareStatement(
-                        "select reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.stts_daftar," +
+                        "select reg_periksa.no_rawat,DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y')as tgl_registrasi,reg_periksa.stts_daftar," +
                         "dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli,"+
                         "concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab)as almt_pj,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur) as umur,pasien.tgl_daftar " +
                         "from reg_periksa inner join dokter inner join pasien inner join poliklinik inner join penjab " +
@@ -1595,7 +1851,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                         }
                     }                        
                     tabMode2.addRow(new Object[]{
-                        i,setlama,setbaru,rs.getString("nm_pasien"),umurlk,umurpr,rs.getString("almt_pj"),kddiangnosa,diagnosa,rs.getString("nm_dokter")
+                        i,setlama,setbaru,rs.getString("nm_pasien"),umurlk,umurpr,rs.getString("almt_pj"),kddiangnosa,diagnosa,rs.getString("nm_poli"),rs.getString("nm_dokter"),rs.getString("tgl_registrasi")
                     });                
                     i++;
                 }
@@ -1620,6 +1876,22 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }
 
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+        ceksukses = true;
+        executor.execute(() -> {
+            try {
+                task.run();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                ceksukses = false;
+            }
+        });
+    }
+
     private void getData() {
         int row=table1.getSelectedRow();
         if(row!= -1){
@@ -1641,35 +1913,1761 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }
 
-    private void runBackground(Runnable task) {
-        if (ceksukses) return;
-        if (executor.isShutdown() || executor.isTerminated()) return;
-        if (!isDisplayable()) return;
 
-        ceksukses = true;
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    // ===================== GRAFIK KUNJUNGAN NON BATAL =====================
+    // Sesuaikan konstanta berikut dengan data di database RS Anda bila berbeda.
+    private static final String KD_POLI_IGD=KunjunganRalanAturan.KD_POLI_IGD;   // reg_periksa.kd_poli untuk IGD
+    // Daftar poli yang tidak ditampilkan: diatur di KunjunganRalanAturan (dipakai juga oleh DlgRL4B)
+    private static final String[] POLI_DIKECUALIKAN=KunjunganRalanAturan.POLI_DIKECUALIKAN;
+    private static final String PJ_BPJS="BPJS Kesehatan";       // penjab.png_jawab untuk BPJS Kesehatan
+    private static final String[] NAMA_BULAN={"Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"};
+    private widget.Button BtnGrafik;
 
-        try {
-            executor.submit(() -> {
-                try {
-                    task.run();
-                } finally {
-                    ceksukses = false;
-                    SwingUtilities.invokeLater(() -> {
-                        if (isDisplayable()) {
-                            setCursor(Cursor.getDefaultCursor());
+    /** Ikon tombol Grafik: ubin biru dengan batang bertumpuk (putih = BPJS, oranye = Reguler), digambar lewat kode. */
+    private static javax.swing.ImageIcon buatIkonGrafik(){
+        int s=96;
+        BufferedImage big=new BufferedImage(s,s,BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g=big.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY);
+        g.setPaint(new GradientPaint(0,0,new Color(100,190,255),0,s,new Color(22,85,205)));
+        g.fillRoundRect(0,0,s,s,30,30);
+        g.setColor(new Color(255,255,255,45));
+        g.setStroke(new java.awt.BasicStroke(2f));
+        g.drawRoundRect(1,1,s-3,s-3,30,30);
+        int[] tinggi={26,44,64};
+        int base=78,lebar=16,x0=16,jarak=8;
+        for(int k=0;k<3;k++){
+            int x=x0+k*(lebar+jarak);
+            int h=tinggi[k];
+            int reg=Math.round(h*0.32f);
+            java.awt.Shape lama=g.getClip();
+            g.clip(new java.awt.geom.Rectangle2D.Double(0,0,s,base));
+            g.clip(new RoundRectangle2D.Double(x,base-h,lebar,h+lebar,10,10));
+            g.setColor(new Color(255,255,255,245));
+            g.fillRect(x,base-h+reg,lebar,h-reg);
+            g.setPaint(new GradientPaint(0,base-h,new Color(255,213,110),0,base-h+reg,new Color(255,150,20)));
+            g.fillRect(x,base-h,lebar,reg);
+            g.setClip(lama);
                         }
+        g.setColor(new Color(255,255,255,150));
+        g.fillRoundRect(10,81,76,4,4,4);
+        g.dispose();
+        return new javax.swing.ImageIcon(big.getScaledInstance(22,22,java.awt.Image.SCALE_SMOOTH));
+    }
+
+    private void initTombolGrafik(){
+        BtnGrafik=new widget.Button();
+        BtnGrafik.setMnemonic('G');
+        BtnGrafik.setIcon(buatIkonGrafik());
+        BtnGrafik.setText("Grafik");
+        BtnGrafik.setToolTipText("Alt+G");
+        BtnGrafik.setName("BtnGrafik");
+        BtnGrafik.setPreferredSize(new Dimension(90,30));
+        BtnGrafik.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tampilGrafik();
+            }
                     });
+        int idx=-1;
+        java.awt.Component[] komp=panelGlass5.getComponents();
+        for(int k=0;k<komp.length;k++){
+            if(komp[k]==BtnPrint){
+                idx=k;
+                break;
                 }
-            });
-        } catch (RejectedExecutionException ex) {
-            ceksukses = false;
+        }
+        panelGlass5.add(BtnGrafik,idx);
+        panelGlass5.revalidate();
+        panelGlass5.repaint();
+    }
+
+    private void tampilGrafik(){
+        int tahunIni=java.time.LocalDate.now().getYear();
+        int tahun;
+        try{
+            tahun=Integer.parseInt(Valid.SetTgl(Tgl1.getSelectedItem()+"").substring(0,4));
+        }catch(Exception e){
+            tahun=tahunIni;
+        }
+        if(tahun>tahunIni){
+            tahun=tahunIni;
+        }
+        String namaRS="";
+        try{
+            namaRS=Sequel.cariIsi("select nama_instansi from setting limit 1");
+        }catch(Exception e){
+            namaRS="";
+        }
+        if(namaRS==null){
+            namaRS="";
+        }
+        try{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            DialogGrafik dlg=new DialogGrafik(this,koneksi,namaRS,tahun);
+            this.setCursor(Cursor.getDefaultCursor());
+            dlg.setVisible(true);
+        }finally{
+            this.setCursor(Cursor.getDefaultCursor());
         }
     }
-    
-    @Override
-    public void dispose() {
-        executor.shutdownNow();
-        super.dispose();
+
+    private static String fmt(int n){
+        return java.text.NumberFormat.getIntegerInstance(new java.util.Locale("id","ID")).format(n);
     }
+
+    private static String delta(int sekarang,int lalu){
+        if(lalu==0){
+            return sekarang==0?"Sama dengan tahun lalu":"Tidak ada pembanding";
+        }
+        return (sekarang>=lalu?"Naik ":"Turun ")+String.format("%.1f%%",Math.abs(sekarang-lalu)*100.0/lalu)+" ("+(sekarang>=lalu?"+":"-")+fmt(Math.abs(sekarang-lalu))+")";
+    }
+
+    private static int jumlah(int[] a){
+        int s=0;
+        for(int v:a){
+            s+=v;
+        }
+        return s;
+    }
+
+    // ---------------------------------------------------------------------------------
+    private static class PanelGelap extends JPanel {
+        PanelGelap(){
+            super(new BorderLayout());
+        }
+        @Override
+        protected void paintComponent(Graphics g0){
+            Graphics2D g=(Graphics2D)g0.create();
+            g.setColor(new Color(11,18,40));
+            g.fillRect(0,0,getWidth(),getHeight());
+            g.setPaint(new GradientPaint(0,0,new Color(18,72,96),0,240,new Color(11,18,40)));
+            g.fillRect(0,0,getWidth(),240);
+            g.dispose();
+        }
+    }
+
+    private static class TombolGelap extends JToggleButton {
+        private final boolean aksi;
+        TombolGelap(String teks,boolean aksi){
+            super(teks);
+            this.aksi=aksi;
+            setOpaque(false);
+            setContentAreaFilled(false);
+            setBorderPainted(false);
+            setFocusPainted(false);
+            setRolloverEnabled(true);
+            setForeground(Color.WHITE);
+            setFont(new Font("SansSerif",Font.BOLD,11));
+            setBorder(BorderFactory.createEmptyBorder(7,14,7,14));
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
+        @Override
+        protected void paintComponent(Graphics g0){
+            Graphics2D g=(Graphics2D)g0.create();
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+            int w=getWidth(),h=getHeight();
+            boolean sel=isSelected()&&!aksi;
+            if(!isEnabled()){
+                g.setColor(new Color(255,255,255,10));
+            }else if(sel){
+                g.setPaint(new GradientPaint(0,0,new Color(66,165,245),0,h,new Color(30,100,220)));
+            }else if(getModel().isRollover()||getModel().isArmed()){
+                g.setColor(new Color(255,255,255,50));
+            }else{
+                g.setColor(new Color(255,255,255,24));
+            }
+            g.fillRoundRect(0,0,w-1,h-1,12,12);
+            if(!sel){
+                g.setColor(new Color(255,255,255,40));
+                g.drawRoundRect(0,0,w-1,h-1,12,12);
+            }
+            g.dispose();
+            super.paintComponent(g0);
+        }
+    }
+
+    private static class KartuKpi extends JPanel {
+        private final JLabel cap=new JLabel(" ");
+        private final JLabel val=new JLabel(" ");
+        private final JLabel sub=new JLabel(" ");
+        KartuKpi(){
+            setOpaque(false);
+            setLayout(new javax.swing.BoxLayout(this,javax.swing.BoxLayout.Y_AXIS));
+            setBorder(BorderFactory.createEmptyBorder(9,14,9,14));
+            cap.setFont(new Font("SansSerif",Font.BOLD,10));
+            cap.setForeground(new Color(150,175,205));
+            val.setFont(new Font("SansSerif",Font.BOLD,20));
+            val.setForeground(Color.WHITE);
+            sub.setFont(new Font("SansSerif",Font.PLAIN,11));
+            sub.setForeground(new Color(170,185,215));
+            add(cap);
+            add(val);
+            add(sub);
+        }
+        void set(String c,String v,String s,Color warnaSub){
+            cap.setText(c);
+            val.setText(v);
+            sub.setText(s);
+            sub.setForeground(warnaSub);
+        }
+        @Override
+        protected void paintComponent(Graphics g0){
+            Graphics2D g=(Graphics2D)g0.create();
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setColor(new Color(255,255,255,20));
+            g.fillRoundRect(0,0,getWidth()-1,getHeight()-1,16,16);
+            g.setColor(new Color(255,255,255,45));
+            g.drawRoundRect(0,0,getWidth()-1,getHeight()-1,16,16);
+            g.dispose();
+            super.paintComponent(g0);
+        }
+    }
+
+    // ---------------------------------------------------------------------------------
+    /** Grafik batang bertumpuk (BPJS + Reguler) per bulan: tahun lalu (pudar) berdampingan dengan tahun ini. */
+    private static class PanelGrafik extends JPanel {
+        private int tahun;
+        private int[][] cur=new int[2][12];
+        private int[][] prev=new int[2][12];
+        private String labelData="Gabungan";
+        private float progress=1f;
+        private int hover=-1,mx=0,my=0;
+        private javax.swing.Timer timer;
+        private long mulai;
+        private int pKiri,pAtas,pBawah;
+        private double pGw=1;
+
+        PanelGrafik(){
+            setOpaque(false);
+            addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+                @Override
+                public void mouseMoved(java.awt.event.MouseEvent e){
+                    mx=e.getX();
+                    my=e.getY();
+                    int baru=-1;
+                    if(pGw>1&&e.getX()>=pKiri&&e.getX()<pKiri+pGw*12&&e.getY()>=pAtas-10&&e.getY()<=pBawah+24){
+                        baru=(int)((e.getX()-pKiri)/pGw);
+                        if(baru>11){
+                            baru=11;
+                        }
+                    }
+                    hover=baru;
+                    repaint();
+                }
+            });
+            addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent e){
+                    hover=-1;
+                    repaint();
+        }
+            });
+    }
+    
+        void setData(int tahun,int[][] cur,int[][] prev,String labelData){
+            this.tahun=tahun;
+            this.cur=cur;
+            this.prev=prev;
+            this.labelData=labelData;
+        }
+
+        void mulaiAnimasi(){
+            if(timer!=null){
+                timer.stop();
+            }
+            mulai=System.nanoTime();
+            progress=0f;
+            timer=new javax.swing.Timer(16,new java.awt.event.ActionListener() {
+    @Override
+                public void actionPerformed(java.awt.event.ActionEvent e){
+                    float p=(System.nanoTime()-mulai)/1.2e9f;
+                    if(p>=1f){
+                        p=1f;
+                        timer.stop();
+    }
+                    progress=p;
+                    repaint();
+}
+            });
+            timer.start();
+        }
+
+        void selesaikanAnimasi(){
+            if(timer!=null){
+                timer.stop();
+            }
+            progress=1f;
+            hover=-1;
+        }
+
+        private void batang(Graphics2D g,double x,double bw,int bpjs,int reg,double base,int ph,double max,float e,boolean pudar){
+            double hB=ph*bpjs/max*e,hR=ph*reg/max*e,tot=hB+hR;
+            if(tot<=0){
+                return;
+            }
+            double top=base-tot;
+            java.awt.Shape lama=g.getClip();
+            g.clip(new java.awt.geom.Rectangle2D.Double(0,0,100000,base));
+            g.clip(new RoundRectangle2D.Double(x,top,bw,tot+bw,10,10));
+            int a=pudar?100:255;
+            g.setPaint(new GradientPaint(0,(float)(base-hB),new Color(79,195,247,a),0,(float)base,new Color(33,115,230,a)));
+            g.fill(new java.awt.geom.Rectangle2D.Double(x,base-hB,bw,hB));
+            g.setPaint(new GradientPaint(0,(float)top,new Color(255,200,110,a),0,(float)(top+Math.max(hR,1)),new Color(251,140,0,a)));
+            g.fill(new java.awt.geom.Rectangle2D.Double(x,top,bw,hR));
+            g.setClip(lama);
+        }
+
+        private void barisJenis(Graphics2D g,int y,String nama,int n,int total,Color c1,Color c2,int bx,int lebar,float e){
+            g.setPaint(new GradientPaint(0,y,c1,0,y+12,c2));
+            g.fillRoundRect(28,y,12,12,4,4);
+            g.setFont(new Font("SansSerif",Font.PLAIN,12));
+            g.setColor(new Color(225,232,248));
+            g.drawString(nama,48,y+11);
+            g.setColor(new Color(255,255,255,22));
+            g.fillRoundRect(bx,y-1,lebar,14,14,14);
+            int len=total>0?(int)Math.round(lebar*(double)n/total*e):0;
+            if(len>0){
+                g.setPaint(new GradientPaint(bx,0,c2,bx+lebar,0,c1));
+                g.fillRoundRect(bx,y-1,Math.max(14,len),14,14,14);
+            }
+            String s1=fmt(n)+" kunjungan";
+            String s2="  ("+String.format("%.1f%%",total>0?n*100.0/total:0.0)+")";
+            g.setFont(new Font("SansSerif",Font.BOLD,12));
+            g.setColor(Color.WHITE);
+            g.drawString(s1,bx+lebar+14,y+11);
+            int w1=g.getFontMetrics().stringWidth(s1);
+            g.setFont(new Font("SansSerif",Font.PLAIN,11));
+            g.setColor(new Color(150,165,195));
+            g.drawString(s2,bx+lebar+14+w1,y+11);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g0){
+            Graphics2D g=(Graphics2D)g0.create();
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            int w=getWidth(),h=getHeight();
+            g.setPaint(new GradientPaint(0,0,new Color(19,31,64),0,h,new Color(12,19,42)));
+            g.fillRoundRect(0,0,w-1,h-1,18,18);
+            g.setColor(new Color(255,255,255,22));
+            g.drawRoundRect(0,0,w-1,h-1,18,18);
+
+            int ringkas=130,kiri=64,kanan=28,atas=62;
+            int bawah=h-ringkas-30;
+            int pw=w-kiri-kanan,ph=bawah-atas;
+            if(pw<120||ph<60){
+                g.dispose();
+                return;
+            }
+            pKiri=kiri;pAtas=atas;pBawah=bawah;pGw=(double)pw/12;
+            float eAll=1-(1-progress)*(1-progress)*(1-progress);
+
+            // legenda
+            g.setFont(new Font("SansSerif",Font.PLAIN,12));
+            FontMetrics fm=g.getFontMetrics();
+            int lx=kiri,ly=28;
+            g.setPaint(new GradientPaint(0,ly-11,new Color(79,195,247),0,ly+1,new Color(33,115,230)));
+            g.fillRoundRect(lx,ly-11,12,12,4,4);
+            g.setColor(new Color(225,232,248));
+            g.drawString("BPJS Kesehatan",lx+18,ly);
+            lx+=18+fm.stringWidth("BPJS Kesehatan")+22;
+            g.setPaint(new GradientPaint(0,ly-11,new Color(255,200,110),0,ly+1,new Color(251,140,0)));
+            g.fillRoundRect(lx,ly-11,12,12,4,4);
+            g.setColor(new Color(225,232,248));
+            g.drawString("Reguler",lx+18,ly);
+            lx+=18+fm.stringWidth("Reguler")+36;
+            g.setColor(new Color(255,255,255,235));
+            g.fillRoundRect(lx,ly-11,12,12,4,4);
+            g.setColor(new Color(225,232,248));
+            g.drawString("Tahun "+tahun,lx+18,ly);
+            lx+=18+fm.stringWidth("Tahun "+tahun)+22;
+            g.setColor(new Color(255,255,255,90));
+            g.fillRoundRect(lx,ly-11,12,12,4,4);
+            g.setColor(new Color(225,232,248));
+            g.drawString("Tahun "+(tahun-1)+" (pudar)",lx+18,ly);
+            g.setFont(new Font("SansSerif",Font.BOLD,11));
+            g.setColor(new Color(255,213,79));
+            String ket="DATA : "+labelData.toUpperCase();
+            g.drawString(ket,w-kanan-g.getFontMetrics().stringWidth(ket),ly);
+
+            // skala
+            int max=0;
+            for(int m=0;m<12;m++){
+                max=Math.max(max,Math.max(cur[0][m]+cur[1][m],prev[0][m]+prev[1][m]));
+            }
+            double kasar=Math.max(max,5)/5.0;
+            double pangkat=Math.pow(10,Math.floor(Math.log10(kasar)));
+            double f=kasar/pangkat;
+            double langkah=(f<=1?1:f<=2?2:f<=5?5:10)*pangkat;
+            int garis=(int)Math.ceil(Math.max(max,1)/langkah);
+            double sumbuMax=langkah*garis;
+
+            g.setFont(new Font("SansSerif",Font.PLAIN,10));
+            fm=g.getFontMetrics();
+            for(int i=0;i<=garis;i++){
+                int y=bawah-(int)Math.round(ph*(i*langkah)/sumbuMax);
+                g.setColor(new Color(255,255,255,i==0?60:20));
+                g.drawLine(kiri,y,kiri+pw,y);
+                g.setColor(new Color(140,160,195));
+                String t=fmt((int)Math.round(i*langkah));
+                g.drawString(t,kiri-8-fm.stringWidth(t),y+4);
+            }
+
+            // sorotan bulan yang ditunjuk
+            if(hover>=0){
+                g.setColor(new Color(255,255,255,16));
+                g.fillRoundRect((int)(kiri+hover*pGw)+2,atas-6,(int)pGw-4,ph+34,10,10);
+            }
+
+            // batang
+            double gw=pGw;
+            double bw=Math.min(36,gw*0.34);
+            double gap=3;
+            for(int m=0;m<12;m++){
+                double cx=kiri+m*gw+gw/2;
+                float pm=Math.max(0f,Math.min(1f,progress*1.4f-m*0.035f));
+                float e=1-(1-pm)*(1-pm)*(1-pm);
+                double xPrev=cx-gap/2-bw,xCur=cx+gap/2;
+                batang(g,xPrev,bw,prev[0][m],prev[1][m],bawah,ph,sumbuMax,e,true);
+                batang(g,xCur,bw,cur[0][m],cur[1][m],bawah,ph,sumbuMax,e,false);
+                if(e>0.92f){
+                    g.setFont(new Font("SansSerif",Font.BOLD,10));
+                    fm=g.getFontMetrics();
+                    int tp=prev[0][m]+prev[1][m],tc=cur[0][m]+cur[1][m];
+                    if(tp>0){
+                        String s=String.valueOf(tp);
+                        g.setColor(new Color(150,165,195));
+                        g.drawString(s,(int)(xPrev+bw/2-fm.stringWidth(s)/2.0),(int)(bawah-ph*tp/sumbuMax)-5);
+                    }
+                    if(tc>0){
+                        String s=String.valueOf(tc);
+                        g.setColor(Color.WHITE);
+                        g.drawString(s,(int)(xCur+bw/2-fm.stringWidth(s)/2.0),(int)(bawah-ph*tc/sumbuMax)-5);
+                    }
+                }
+                g.setFont(new Font("SansSerif",m==hover?Font.BOLD:Font.PLAIN,11));
+                fm=g.getFontMetrics();
+                String bl=NAMA_BULAN[m].substring(0,3);
+                g.setColor(m==hover?Color.WHITE:new Color(170,185,215));
+                g.drawString(bl,(int)(cx-fm.stringWidth(bl)/2.0),bawah+18);
+            }
+
+            // ringkasan per jenis bayar
+            int y0=h-ringkas;
+            g.setColor(new Color(255,255,255,28));
+            g.drawLine(24,y0,w-24,y0);
+            g.setFont(new Font("SansSerif",Font.BOLD,10));
+            g.setColor(new Color(140,160,195));
+            g.drawString("TOTAL PER JENIS BAYAR  \u2022  "+labelData.toUpperCase()+"  \u2022  TAHUN "+tahun,28,y0+22);
+            int sb=jumlah(cur[0]),sr=jumlah(cur[1]),st=sb+sr;
+            int bx=210,bl=Math.max(60,w-bx-260);
+            barisJenis(g,y0+36,"BPJS KESEHATAN",sb,st,new Color(79,195,247),new Color(33,115,230),bx,bl,eAll);
+            barisJenis(g,y0+62,"REGULER",sr,st,new Color(255,200,110),new Color(251,140,0),bx,bl,eAll);
+            g.setColor(new Color(255,255,255,28));
+            g.drawLine(24,y0+84,w-24,y0+84);
+            int sp=jumlah(prev[0])+jumlah(prev[1]);
+            g.setFont(new Font("SansSerif",Font.BOLD,12));
+            g.setColor(new Color(255,213,79));
+            g.drawString("TOTAL",28,y0+108);
+            g.setColor(Color.WHITE);
+            String tx=fmt(st)+" kunjungan";
+            g.drawString(tx,bx,y0+108);
+            g.setFont(new Font("SansSerif",Font.PLAIN,11));
+            g.setColor(new Color(150,165,195));
+            g.drawString("\u2022  tahun "+(tahun-1)+" : "+fmt(sp)+"  \u2022  "+delta(st,sp),bx+g.getFontMetrics().stringWidth(tx)+30,y0+108);
+
+            // tooltip
+            if(hover>=0&&progress>=1f){
+                int m=hover;
+                int cb=cur[0][m],cr=cur[1][m],pb=prev[0][m],pr=prev[1][m];
+                String[] baris={
+                    NAMA_BULAN[m],
+                    "Tahun "+tahun+" : "+fmt(cb+cr)+" kunjungan",
+                    "    BPJS "+fmt(cb)+"   \u2022   Reguler "+fmt(cr),
+                    "Tahun "+(tahun-1)+" : "+fmt(pb+pr)+" kunjungan",
+                    "    BPJS "+fmt(pb)+"   \u2022   Reguler "+fmt(pr),
+                    delta(cb+cr,pb+pr)
+                };
+                g.setFont(new Font("SansSerif",Font.PLAIN,12));
+                fm=g.getFontMetrics();
+                int tw=0;
+                for(String s:baris){
+                    tw=Math.max(tw,fm.stringWidth(s));
+                }
+                int bwid=tw+28,bhgt=baris.length*18+16;
+                int tx0=mx+16,ty0=my+14;
+                if(tx0+bwid>w-8){
+                    tx0=mx-16-bwid;
+                }
+                if(ty0+bhgt>h-8){
+                    ty0=h-8-bhgt;
+                }
+                g.setColor(new Color(8,14,32,238));
+                g.fillRoundRect(tx0,ty0,bwid,bhgt,12,12);
+                g.setColor(new Color(255,255,255,70));
+                g.drawRoundRect(tx0,ty0,bwid,bhgt,12,12);
+                for(int k=0;k<baris.length;k++){
+                    if(k==0){
+                        g.setFont(new Font("SansSerif",Font.BOLD,13));
+                        g.setColor(new Color(255,213,79));
+                    }else if(k==5){
+                        g.setFont(new Font("SansSerif",Font.BOLD,12));
+                        g.setColor(cb+cr>=pb+pr?new Color(102,187,106):new Color(239,83,80));
+                    }else{
+                        g.setFont(new Font("SansSerif",k==1||k==3?Font.BOLD:Font.PLAIN,12));
+                        g.setColor(k<=2?Color.WHITE:new Color(170,185,215));
+                    }
+                    g.drawString(baris[k],tx0+14,ty0+22+k*18);
+                }
+            }
+            g.dispose();
+        }
+    }
+
+    // ---------------------------------------------------------------------------------
+    private static class DialogGrafik extends JDialog {
+        private final Connection kon;
+        private final String namaRS;
+        private int tahun;
+        private int[][][][] data=new int[2][2][2][12]; // [0=RJ,1=IGD][0=tahun ini,1=tahun lalu][0=BPJS,1=Reguler][bulan]
+        private java.time.LocalDate a1,a2,b1,b2;
+        private int pilihGrup=0;
+        private boolean lihatGrafik=true;
+        private final KartuKpi[] kpi=new KartuKpi[5];
+        private final PanelGrafik grafik=new PanelGrafik();
+        private final JPanel panelTabel=new JPanel(new java.awt.GridLayout(1,2,26,0));
+        private final JPanel kartu=new JPanel(new java.awt.CardLayout());
+        private final JLabel lblTahun=new JLabel("",SwingConstants.CENTER);
+        private final JLabel lblSub=new JLabel(" ");
+        private final TombolGelap tbGrafik=new TombolGelap("Grafik",false);
+        private final TombolGelap tbTabel=new TombolGelap("Tabel Rekap",false);
+        private final TombolGelap tbGab=new TombolGelap("Gabungan",false);
+        private final TombolGelap tbRj=new TombolGelap("Rawat Jalan",false);
+        private final TombolGelap tbIgd=new TombolGelap("IGD",false);
+        private final TombolGelap btnPrev=new TombolGelap("\u25C0",true);
+        private final TombolGelap btnNext=new TombolGelap("\u25B6",true);
+
+        DialogGrafik(java.awt.Window parent,Connection kon,String namaRS,int tahun){
+            super(parent,"Grafik Rekap Kunjungan Pasien",java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+            this.kon=kon;
+            this.namaRS=namaRS;
+            PanelGelap root=new PanelGelap();
+            setContentPane(root);
+
+            // header
+            JPanel header=new JPanel(new BorderLayout(0,12));
+            header.setOpaque(false);
+            header.setBorder(BorderFactory.createEmptyBorder(18,28,12,28));
+            JLabel judul=new JLabel("REKAP KUNJUNGAN PASIEN NON BATAL");
+            judul.setFont(new Font("SansSerif",Font.BOLD,22));
+            judul.setForeground(Color.WHITE);
+            lblSub.setFont(new Font("SansSerif",Font.PLAIN,12));
+            lblSub.setForeground(new Color(160,200,220));
+            JPanel tj=new JPanel(new java.awt.GridLayout(2,1,0,2));
+            tj.setOpaque(false);
+            tj.add(judul);
+            tj.add(lblSub);
+            header.add(tj,BorderLayout.NORTH);
+            JPanel baris=new JPanel(new java.awt.GridLayout(1,5,12,0));
+            baris.setOpaque(false);
+            baris.setPreferredSize(new Dimension(100,86));
+            for(int k=0;k<5;k++){
+                kpi[k]=new KartuKpi();
+                baris.add(kpi[k]);
+            }
+            header.add(baris,BorderLayout.CENTER);
+            root.add(header,BorderLayout.NORTH);
+
+            // kontrol + isi
+            JPanel tengah=new JPanel(new BorderLayout(0,10));
+            tengah.setOpaque(false);
+            tengah.setBorder(BorderFactory.createEmptyBorder(0,28,0,28));
+            JPanel kontrol=new JPanel(new BorderLayout());
+            kontrol.setOpaque(false);
+            JPanel kiriP=new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,6,0));
+            kiriP.setOpaque(false);
+            kiriP.add(label("TAMPILAN"));
+            kiriP.add(tbGrafik);
+            kiriP.add(tbTabel);
+            kiriP.add(javax.swing.Box.createHorizontalStrut(18));
+            kiriP.add(label("DATA GRAFIK"));
+            kiriP.add(tbGab);
+            kiriP.add(tbRj);
+            kiriP.add(tbIgd);
+            JPanel kananP=new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT,6,0));
+            kananP.setOpaque(false);
+            kananP.add(label("TAHUN"));
+            kananP.add(btnPrev);
+            lblTahun.setFont(new Font("SansSerif",Font.BOLD,16));
+            lblTahun.setForeground(Color.WHITE);
+            lblTahun.setPreferredSize(new Dimension(60,28));
+            kananP.add(lblTahun);
+            kananP.add(btnNext);
+            kontrol.add(kiriP,BorderLayout.WEST);
+            kontrol.add(kananP,BorderLayout.EAST);
+            tengah.add(kontrol,BorderLayout.NORTH);
+            kartu.setOpaque(false);
+            panelTabel.setOpaque(false);
+            kartu.add(grafik,"grafik");
+            kartu.add(panelTabel,"tabel");
+            tengah.add(kartu,BorderLayout.CENTER);
+            root.add(tengah,BorderLayout.CENTER);
+
+            // footer
+            JPanel footer=new JPanel(new BorderLayout());
+            footer.setOpaque(false);
+            footer.setBorder(BorderFactory.createEmptyBorder(10,28,14,28));
+            JLabel hint=new JLabel("Arahkan kursor ke batang untuk melihat rincian  \u2022  Esc untuk menutup");
+            hint.setFont(new Font("SansSerif",Font.PLAIN,11));
+            hint.setForeground(new Color(130,160,190));
+            footer.add(hint,BorderLayout.WEST);
+            JPanel tombol=new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT,8,0));
+            tombol.setOpaque(false);
+            TombolGelap ulang=new TombolGelap("Ulangi Animasi",true);
+            TombolGelap simpan=new TombolGelap("Simpan Gambar (PNG)",true);
+            TombolGelap tutup=new TombolGelap("Tutup",true);
+            tombol.add(ulang);
+            tombol.add(simpan);
+            tombol.add(tutup);
+            footer.add(tombol,BorderLayout.EAST);
+            root.add(footer,BorderLayout.SOUTH);
+
+            javax.swing.ButtonGroup g1=new javax.swing.ButtonGroup();
+            g1.add(tbGrafik);
+            g1.add(tbTabel);
+            tbGrafik.setSelected(true);
+            javax.swing.ButtonGroup g2=new javax.swing.ButtonGroup();
+            g2.add(tbGab);
+            g2.add(tbRj);
+            g2.add(tbIgd);
+            tbGab.setSelected(true);
+
+            tbGrafik.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ gantiTampilan(true); }
+            });
+            tbTabel.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ gantiTampilan(false); }
+            });
+            tbGab.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ pilihGrup=0; perbaruiGrafik(); }
+            });
+            tbRj.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ pilihGrup=1; perbaruiGrafik(); }
+            });
+            tbIgd.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ pilihGrup=2; perbaruiGrafik(); }
+            });
+            btnPrev.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ muat(DialogGrafik.this.tahun-1); }
+            });
+            btnNext.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ muat(DialogGrafik.this.tahun+1); }
+            });
+            ulang.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ if(lihatGrafik){ grafik.mulaiAnimasi(); } }
+            });
+            simpan.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ simpanGambar(); }
+            });
+            java.awt.event.ActionListener aksiTutup=new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ dispose(); }
+            };
+            tutup.addActionListener(aksiTutup);
+            getRootPane().registerKeyboardAction(aksiTutup,KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE,0),JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+            setSize(1260,880);
+            setMinimumSize(new Dimension(1000,740));
+            setLocationRelativeTo(parent);
+            muat(tahun);
+        }
+
+        private JLabel label(String t){
+            JLabel l=new JLabel(t);
+            l.setFont(new Font("SansSerif",Font.BOLD,10));
+            l.setForeground(new Color(140,165,200));
+            return l;
+        }
+
+        private void gantiTampilan(boolean grafikDipilih){
+            lihatGrafik=grafikDipilih;
+            ((java.awt.CardLayout)kartu.getLayout()).show(kartu,grafikDipilih?"grafik":"tabel");
+            tbGab.setEnabled(grafikDipilih);
+            tbRj.setEnabled(grafikDipilih);
+            tbIgd.setEnabled(grafikDipilih);
+            if(grafikDipilih){
+                grafik.mulaiAnimasi();
+            }
+        }
+
+        private void muat(int t){
+            java.time.LocalDate hari=java.time.LocalDate.now();
+            if(t>hari.getYear()||t<2000){
+                return;
+            }
+            tahun=t;
+            lblTahun.setText(String.valueOf(t));
+            a1=java.time.LocalDate.of(t,1,1);
+            a2=(t==hari.getYear())?hari:java.time.LocalDate.of(t,12,31);
+            b1=a1.minusYears(1);
+            b2=a2.minusYears(1);
+            data=new int[2][2][2][12];
+            PreparedStatement ps=null;
+            ResultSet rs=null;
+            try{
+                StringBuilder filterPoli=new StringBuilder();
+                for(int i=0;i<POLI_DIKECUALIKAN.length;i++){
+                    filterPoli.append(" and poliklinik.nm_poli not like ?");
+                }
+                ps=kon.prepareStatement(
+                    "select year(reg_periksa.tgl_registrasi) as thn,month(reg_periksa.tgl_registrasi) as bln,"+
+                    "if(reg_periksa.kd_poli=?,1,0) as grp,if(penjab.png_jawab=?,0,1) as jns,count(reg_periksa.no_rawat) as jml "+
+                    "from reg_periksa inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli "+
+                    "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
+                    "where reg_periksa.stts<>'Batal'"+filterPoli+" "+
+                    "and (reg_periksa.kd_poli=? or reg_periksa.status_lanjut='Ralan') "+
+                    "and ((reg_periksa.tgl_registrasi between ? and ?) or (reg_periksa.tgl_registrasi between ? and ?)) "+
+                    "group by thn,bln,grp,jns");
+                int idx=1;
+                ps.setString(idx++,KD_POLI_IGD);
+                ps.setString(idx++,PJ_BPJS);
+                for(String poli:POLI_DIKECUALIKAN){
+                    ps.setString(idx++,poli);
+                }
+                ps.setString(idx++,KD_POLI_IGD);
+                ps.setString(idx++,a1.toString());
+                ps.setString(idx++,a2.toString());
+                ps.setString(idx++,b1.toString());
+                ps.setString(idx++,b2.toString());
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    int idxTahun=(rs.getInt("thn")==t)?0:1;
+                    data[rs.getInt("grp")][idxTahun][rs.getInt("jns")][rs.getInt("bln")-1]+=rs.getInt("jml");
+                }
+            }catch(Exception ex){
+                System.out.println("laporan.DlgKunjunganRalan.DialogGrafik.muat() : "+ex);
+                JOptionPane.showMessageDialog(this,"Gagal mengambil data grafik : "+ex.getMessage());
+            }finally{
+                try{
+                    if(rs!=null){
+                        rs.close();
+                    }
+                    if(ps!=null){
+                        ps.close();
+                    }
+                }catch(Exception ignore){
+                }
+            }
+            segarkan();
+        }
+
+        private int tot(int g,int y){
+            return jumlah(data[g][y][0])+jumlah(data[g][y][1]);
+        }
+
+        private int[][] seri(int sel,int y){
+            int[][] r=new int[2][12];
+            for(int g=0;g<2;g++){
+                if(sel==0||sel==g+1){
+                    for(int j=0;j<2;j++){
+                        for(int m=0;m<12;m++){
+                            r[j][m]+=data[g][y][j][m];
+                        }
+                    }
+                }
+            }
+            return r;
+        }
+
+        private void perbaruiGrafik(){
+            String[] nm={"Gabungan","Rawat Jalan","IGD"};
+            grafik.setData(tahun,seri(pilihGrup,0),seri(pilihGrup,1),nm[pilihGrup]);
+            grafik.mulaiAnimasi();
+        }
+
+        private void segarkan(){
+            java.time.format.DateTimeFormatter df=java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            lblSub.setText("Periode : "+a1.format(df)+" s.d. "+a2.format(df)+"   \u2022   dibanding "+b1.format(df)+" s.d. "+b2.format(df)
+                +"   \u2022   tidak termasuk Batal & poli tertentu (Apotek, Lab, MCU, Radiologi, dll)   \u2022   dibagi menurut jenis bayar");
+            Color netral=new Color(170,185,215);
+            int[][] gab=seri(0,0);
+            int tIni=tot(0,0)+tot(1,0),tLalu=tot(0,1)+tot(1,1);
+            kpi[0].set("TOTAL KUNJUNGAN "+tahun,fmt(tIni),"BPJS "+fmt(jumlah(gab[0]))+"  \u2022  Reguler "+fmt(jumlah(gab[1])),netral);
+            kpi[1].set("TAHUN "+(tahun-1)+" (PERIODE SAMA)",fmt(tLalu),delta(tIni,tLalu),tIni>=tLalu?new Color(102,187,106):new Color(239,83,80));
+            for(int g=0;g<2;g++){
+                kpi[2+g].set(g==0?"RAWAT JALAN":"IGD",fmt(tot(g,0)),"BPJS "+fmt(jumlah(data[g][0][0]))+"  \u2022  Reguler "+fmt(jumlah(data[g][0][1])),netral);
+            }
+            int mTop=0,vTop=-1;
+            for(int m=0;m<12;m++){
+                int v=gab[0][m]+gab[1][m];
+                if(v>vTop){
+                    vTop=v;
+                    mTop=m;
+                }
+            }
+            if(vTop>0){
+                kpi[4].set("BULAN TERTINGGI",NAMA_BULAN[mTop],fmt(vTop)+" kunjungan",new Color(255,213,79));
+            }else{
+                kpi[4].set("BULAN TERTINGGI","-","Belum ada data",netral);
+            }
+            btnPrev.setEnabled(tahun>2000);
+            btnNext.setEnabled(tahun<java.time.LocalDate.now().getYear());
+
+            panelTabel.removeAll();
+            panelTabel.add(buatTabel(0,tahun,a1,a2));
+            panelTabel.add(buatTabel(1,tahun-1,b1,b2));
+            panelTabel.revalidate();
+            panelTabel.repaint();
+            perbaruiGrafik();
+        }
+
+        private String tglIndo(java.time.LocalDate d,boolean denganTahun){
+            return d.getDayOfMonth()+" "+NAMA_BULAN[d.getMonthValue()-1].toUpperCase()+(denganTahun?" "+d.getYear():"");
+        }
+
+        private JLabel sel(JPanel p,String t,int x,int y,int w,int h,Color bg,Color fg,boolean tebal,int rata,double wx){
+            JLabel l=new JLabel(t,rata);
+            l.setOpaque(true);
+            l.setBackground(bg);
+            l.setForeground(fg);
+            l.setFont(new Font("SansSerif",tebal?Font.BOLD:Font.PLAIN,12));
+            l.setBorder(BorderFactory.createEmptyBorder(5,9,5,9));
+            l.setPreferredSize(new Dimension(w>1?150:(x==0?120:78),h>1?54:27));
+            java.awt.GridBagConstraints c=new java.awt.GridBagConstraints();
+            c.gridx=x;
+            c.gridy=y;
+            c.gridwidth=w;
+            c.gridheight=h;
+            c.fill=java.awt.GridBagConstraints.BOTH;
+            c.weightx=wx;
+            c.insets=new java.awt.Insets(0,0,1,1);
+            p.add(l,c);
+            return l;
+        }
+
+        /** y=0 tahun ini, y=1 tahun lalu. Tampilan mengikuti contoh rekap: Rawat Jalan (BPJS,Reguler) dan IGD (BPJS,Reguler). */
+        private JPanel buatTabel(int y,int thn,java.time.LocalDate d1,java.time.LocalDate d2){
+            JPanel kertas=new JPanel(new BorderLayout(0,10));
+            kertas.setBackground(Color.WHITE);
+            kertas.setBorder(BorderFactory.createEmptyBorder(14,14,14,14));
+            JPanel jdl=new JPanel(new java.awt.GridLayout(4,1));
+            jdl.setOpaque(false);
+            String[] t={"REKAP KUNJUNGAN PASIEN","RAWAT JALAN DAN IGD (NON BATAL)",namaRS.toUpperCase(),tglIndo(d1,false)+" - "+tglIndo(d2,true)};
+            for(String s:t){
+                JLabel l=new JLabel(s,SwingConstants.CENTER);
+                l.setFont(new Font("SansSerif",Font.PLAIN,13));
+                l.setForeground(new Color(30,30,30));
+                jdl.add(l);
+            }
+            kertas.add(jdl,BorderLayout.NORTH);
+
+            JPanel grid=new JPanel(new java.awt.GridBagLayout());
+            grid.setBackground(Color.BLACK);
+            grid.setBorder(BorderFactory.createMatteBorder(1,1,0,0,Color.BLACK));
+            Color hijau=new Color(169,208,142);
+            Color hitam=Color.black;
+            sel(grid,"BULAN",0,0,1,2,hijau,hitam,false,SwingConstants.CENTER,1.5);
+            sel(grid,"RAWAT JALAN",1,0,2,1,hijau,hitam,false,SwingConstants.CENTER,0);
+            sel(grid,"IGD",3,0,2,1,hijau,hitam,false,SwingConstants.CENTER,0);
+            String[] sub={"BPJS","REGULER","BPJS","REGULER"};
+            for(int k=0;k<4;k++){
+                sel(grid,sub[k],1+k,1,1,1,Color.WHITE,hitam,false,SwingConstants.CENTER,1);
+            }
+            int[] total=new int[4];
+            for(int m=0;m<12;m++){
+                sel(grid,NAMA_BULAN[m].toUpperCase(),0,2+m,1,1,Color.WHITE,hitam,false,SwingConstants.LEFT,1.5);
+                for(int k=0;k<4;k++){
+                    int v=data[k/2][y][k%2][m];
+                    total[k]+=v;
+                    sel(grid,String.valueOf(v),1+k,2+m,1,1,Color.WHITE,hitam,false,SwingConstants.RIGHT,1);
+                }
+            }
+            sel(grid,"TOTAL",0,14,1,1,hitam,Color.WHITE,true,SwingConstants.LEFT,1.5);
+            for(int k=0;k<4;k++){
+                sel(grid,String.valueOf(total[k]),1+k,14,1,1,hitam,Color.WHITE,true,SwingConstants.RIGHT,1);
+            }
+            kertas.add(grid,BorderLayout.CENTER);
+            return kertas;
+        }
+
+        private void simpanGambar(){
+            JFileChooser fc=new JFileChooser();
+            fc.setSelectedFile(new java.io.File("rekap_kunjungan_"+tahun+(lihatGrafik?"_grafik":"_tabel")+".png"));
+            if(fc.showSaveDialog(this)!=JFileChooser.APPROVE_OPTION){
+                return;
+            }
+            java.io.File f=fc.getSelectedFile();
+            if(!f.getName().toLowerCase().endsWith(".png")){
+                f=new java.io.File(f.getAbsolutePath()+".png");
+            }
+            try{
+                grafik.selesaikanAnimasi();
+                java.awt.Component c=lihatGrafik?(java.awt.Component)grafik:(java.awt.Component)panelTabel;
+                BufferedImage img=new BufferedImage(Math.max(1,c.getWidth()),Math.max(1,c.getHeight()),BufferedImage.TYPE_INT_RGB);
+                Graphics2D g=img.createGraphics();
+                g.setColor(new Color(13,22,48));
+                g.fillRect(0,0,img.getWidth(),img.getHeight());
+                c.printAll(g);
+                g.dispose();
+                javax.imageio.ImageIO.write(img,"png",f);
+                JOptionPane.showMessageDialog(this,"Gambar tersimpan :\n"+f.getAbsolutePath());
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this,"Gagal menyimpan gambar : "+ex.getMessage());
+            }
+        }
+    }
+
+    // ===================== REKAP 10 BESAR DIAGNOSA PER DOKTER, PER BULAN =====================
+    private widget.Button BtnRekap;
+
+    /** Ikon tombol Rekap: ubin hijau dengan tiga batang mendatar (putih = BPJS, oranye = Reguler), digambar lewat kode. */
+    private static javax.swing.ImageIcon buatIkonRekap(){
+        int s=96;
+        BufferedImage big=new BufferedImage(s,s,BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g=big.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY);
+        g.setPaint(new GradientPaint(0,0,new Color(105,225,170),0,s,new Color(14,135,105)));
+        g.fillRoundRect(0,0,s,s,30,30);
+        g.setColor(new Color(255,255,255,45));
+        g.setStroke(new java.awt.BasicStroke(2f));
+        g.drawRoundRect(1,1,s-3,s-3,30,30);
+        int[] panjang={64,50,36};
+        int x0=16,tinggi=13,jarak=10,y0=18;
+        for(int k=0;k<3;k++){
+            int y=y0+k*(tinggi+jarak);
+            int w=panjang[k];
+            int reg=Math.round(w*0.32f);
+            java.awt.Shape lama=g.getClip();
+            g.clip(new RoundRectangle2D.Double(x0,y,w,tinggi,tinggi,tinggi));
+            g.setColor(new Color(255,255,255,245));
+            g.fillRect(x0,y,w-reg,tinggi);
+            g.setPaint(new GradientPaint(x0+w-reg,0,new Color(255,213,110),x0+w,0,new Color(255,150,20)));
+            g.fillRect(x0+w-reg,y,reg,tinggi);
+            g.setClip(lama);
+        }
+        g.dispose();
+        return new javax.swing.ImageIcon(big.getScaledInstance(22,22,java.awt.Image.SCALE_SMOOTH));
+    }
+
+    /** Dipasang tepat di sebelah tombol Grafik (sebelum tombol Cetak). Lebar dialog dilebarkan seperlunya agar semua tombol muat. */
+    private void initTombolRekap(){
+        BtnRekap=new widget.Button();
+        BtnRekap.setMnemonic('R');
+        BtnRekap.setIcon(buatIkonRekap());
+        BtnRekap.setText("Rekap");
+        BtnRekap.setToolTipText("Alt+R : 10 besar diagnosa per dokter, per bulan");
+        BtnRekap.setName("BtnRekap");
+        BtnRekap.setPreferredSize(new Dimension(90,30));
+        BtnRekap.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tampilRekap();
+            }
+        });
+        int idx=-1;
+        java.awt.Component[] komp=panelGlass5.getComponents();
+        for(int k=0;k<komp.length;k++){
+            if(komp[k]==BtnPrint){
+                idx=k;
+                break;
+            }
+        }
+        panelGlass5.add(BtnRekap,idx);
+        int perlu=10;
+        for(java.awt.Component c:panelGlass5.getComponents()){
+            perlu+=c.getPreferredSize().width+5;
+        }
+        if(getWidth()<perlu+24){
+            setSize(perlu+24,getHeight());
+        }
+        panelGlass5.revalidate();
+        panelGlass5.repaint();
+    }
+
+    private void tampilRekap(){
+        int tahunIni=java.time.LocalDate.now().getYear();
+        int tahun;
+        try{
+            tahun=Integer.parseInt(Valid.SetTgl(Tgl1.getSelectedItem()+"").substring(0,4));
+        }catch(Exception e){
+            tahun=tahunIni;
+        }
+        if(tahun>tahunIni){
+            tahun=tahunIni;
+        }
+        try{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            DialogRekapDiagnosa dlg=new DialogRekapDiagnosa(this,koneksi,tahun);
+            this.setCursor(Cursor.getDefaultCursor());
+            dlg.setVisible(true);
+        }finally{
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }
+
+    private static String potongTeks(String s,FontMetrics fm,int lebar){
+        if(s==null){
+            return "";
+        }
+        if(fm.stringWidth(s)<=lebar){
+            return s;
+        }
+        String e="\u2026";
+        int n=s.length();
+        while(n>0&&fm.stringWidth(s.substring(0,n)+e)>lebar){
+            n--;
+        }
+        return s.substring(0,n)+e;
+    }
+
+    private static String singkat(String s,int n){
+        if(s==null){
+            return "";
+        }
+        return s.length()<=n?s:s.substring(0,Math.max(0,n-1))+"\u2026";
+    }
+
+    private static String htmlAman(String s){
+        return s==null?"":s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;");
+    }
+
+    private static class BarisDiag {
+        final String kd,nm;
+        final int bpjs,reg;
+        BarisDiag(String kd,String nm,int bpjs,int reg){
+            this.kd=kd;
+            this.nm=nm;
+            this.bpjs=bpjs;
+            this.reg=reg;
+        }
+        int total(){
+            return bpjs+reg;
+        }
+    }
+
+    // ---------------------------------------------------------------------------------
+    /** Papan peringkat 10 besar diagnosa: batang mendatar bertumpuk (BPJS + Reguler), animasi, dan tooltip rincian. */
+    private static class PanelTop10 extends JPanel {
+        private java.util.List<BarisDiag> baris=new java.util.ArrayList<BarisDiag>();
+        private int total=0;
+        private String judul="",sub="";
+        private float progress=1f;
+        private int hover=-1,mx=0,my=0;
+        private javax.swing.Timer timer;
+        private long mulai;
+        private int pAtas=72,pBaris=40;
+
+        PanelTop10(){
+            setOpaque(false);
+            addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+                @Override
+                public void mouseMoved(java.awt.event.MouseEvent e){
+                    mx=e.getX();
+                    my=e.getY();
+                    int b=-1;
+                    if(e.getY()>=pAtas&&pBaris>0){
+                        int r=(e.getY()-pAtas)/pBaris;
+                        if(r>=0&&r<baris.size()){
+                            b=r;
+                        }
+                    }
+                    hover=b;
+                    repaint();
+                }
+            });
+            addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent e){
+                    hover=-1;
+                    repaint();
+                }
+            });
+        }
+
+        void setData(java.util.List<BarisDiag> baris,int total,String judul,String sub){
+            this.baris=baris;
+            this.total=total;
+            this.judul=judul;
+            this.sub=sub;
+            this.hover=-1;
+        }
+
+        void mulaiAnimasi(){
+            if(timer!=null){
+                timer.stop();
+            }
+            mulai=System.nanoTime();
+            progress=0f;
+            timer=new javax.swing.Timer(16,new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e){
+                    float p=(System.nanoTime()-mulai)/1.3e9f;
+                    if(p>=1f){
+                        p=1f;
+                        timer.stop();
+                    }
+                    progress=p;
+                    repaint();
+                }
+            });
+            timer.start();
+        }
+
+        void selesaikanAnimasi(){
+            if(timer!=null){
+                timer.stop();
+            }
+            progress=1f;
+            hover=-1;
+        }
+
+        @Override
+        protected void paintComponent(Graphics g0){
+            Graphics2D g=(Graphics2D)g0.create();
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            int w=getWidth(),h=getHeight();
+            g.setPaint(new GradientPaint(0,0,new Color(19,31,64),0,h,new Color(12,19,42)));
+            g.fillRoundRect(0,0,w-1,h-1,18,18);
+            g.setColor(new Color(255,255,255,22));
+            g.drawRoundRect(0,0,w-1,h-1,18,18);
+
+            // legenda (kanan atas)
+            g.setFont(new Font("SansSerif",Font.PLAIN,12));
+            FontMetrics fm=g.getFontMetrics();
+            int lw=18+fm.stringWidth("BPJS Kesehatan")+22+18+fm.stringWidth("Reguler");
+            int lx=w-28-lw,ly=32;
+            g.setPaint(new GradientPaint(0,ly-11,new Color(79,195,247),0,ly+1,new Color(33,115,230)));
+            g.fillRoundRect(lx,ly-11,12,12,4,4);
+            g.setColor(new Color(225,232,248));
+            g.drawString("BPJS Kesehatan",lx+18,ly);
+            lx+=18+fm.stringWidth("BPJS Kesehatan")+22;
+            g.setPaint(new GradientPaint(0,ly-11,new Color(255,200,110),0,ly+1,new Color(251,140,0)));
+            g.fillRoundRect(lx,ly-11,12,12,4,4);
+            g.setColor(new Color(225,232,248));
+            g.drawString("Reguler",lx+18,ly);
+
+            // judul
+            g.setFont(new Font("SansSerif",Font.BOLD,16));
+            fm=g.getFontMetrics();
+            g.setColor(Color.WHITE);
+            g.drawString(potongTeks(judul,fm,Math.max(80,w-lw-90)),28,34);
+            g.setFont(new Font("SansSerif",Font.PLAIN,11));
+            fm=g.getFontMetrics();
+            g.setColor(new Color(150,165,195));
+            g.drawString(potongTeks(sub,fm,w-56),28,53);
+            g.setColor(new Color(255,255,255,28));
+            g.drawLine(24,63,w-24,63);
+
+            int atas=72;
+            pAtas=atas;
+            pBaris=Math.max(30,Math.min(58,(h-atas-14)/10));
+
+            if(baris.isEmpty()){
+                g.setFont(new Font("SansSerif",Font.BOLD,15));
+                fm=g.getFontMetrics();
+                String t="Tidak ada data diagnosa pada pilihan ini";
+                g.setColor(new Color(170,185,215));
+                g.drawString(t,(w-fm.stringWidth(t))/2,h/2);
+                g.setFont(new Font("SansSerif",Font.PLAIN,12));
+                fm=g.getFontMetrics();
+                String t2="Coba pilih dokter, bulan, atau tahun yang lain";
+                g.setColor(new Color(130,150,185));
+                g.drawString(t2,(w-fm.stringWidth(t2))/2,h/2+22);
+                g.dispose();
+                return;
+            }
+
+            int maks=1;
+            for(BarisDiag r:baris){
+                maks=Math.max(maks,r.total());
+            }
+            int xBadge=28,xKode=66,wKode=58,xNama=134;
+            int wNama=Math.max(120,Math.min(380,(int)(w*0.30)));
+            int bx=xNama+wNama+14;
+            int bl=Math.max(60,w-28-170-bx);
+
+            for(int i=0;i<baris.size();i++){
+                BarisDiag r=baris.get(i);
+                int y=atas+i*pBaris,cy=y+pBaris/2;
+                float pm=Math.max(0f,Math.min(1f,progress*1.6f-i*0.08f));
+                float e=1-(1-pm)*(1-pm)*(1-pm);
+                if(i==hover){
+                    g.setColor(new Color(255,255,255,16));
+                    g.fillRoundRect(16,y+2,w-32,pBaris-4,12,12);
+                }
+                // lencana peringkat
+                Color c1,c2,tx;
+                if(i==0){
+                    c1=new Color(255,226,120);
+                    c2=new Color(255,170,30);
+                    tx=new Color(60,40,0);
+                }else if(i==1){
+                    c1=new Color(225,232,242);
+                    c2=new Color(150,165,190);
+                    tx=new Color(30,40,60);
+                }else if(i==2){
+                    c1=new Color(240,170,110);
+                    c2=new Color(190,105,45);
+                    tx=new Color(50,25,5);
+                }else{
+                    c1=new Color(70,100,160);
+                    c2=new Color(45,70,125);
+                    tx=Color.WHITE;
+                }
+                g.setPaint(new GradientPaint(0,cy-13,c1,0,cy+13,c2));
+                g.fillOval(xBadge,cy-13,26,26);
+                g.setFont(new Font("SansSerif",Font.BOLD,12));
+                fm=g.getFontMetrics();
+                String no=String.valueOf(i+1);
+                g.setColor(tx);
+                g.drawString(no,xBadge+13-fm.stringWidth(no)/2,cy+4);
+                // kode ICD
+                g.setColor(new Color(255,255,255,24));
+                g.fillRoundRect(xKode,cy-11,wKode,22,8,8);
+                g.setFont(new Font("SansSerif",Font.BOLD,11));
+                fm=g.getFontMetrics();
+                String kd=potongTeks(r.kd,fm,wKode-8);
+                g.setColor(new Color(190,215,255));
+                g.drawString(kd,xKode+(wKode-fm.stringWidth(kd))/2,cy+4);
+                // nama penyakit
+                g.setFont(new Font("SansSerif",i==hover?Font.BOLD:Font.PLAIN,12));
+                fm=g.getFontMetrics();
+                g.setColor(i==hover?Color.WHITE:new Color(225,232,248));
+                g.drawString(potongTeks(r.nm,fm,wNama),xNama,cy+4);
+                // batang bertumpuk
+                int bh=Math.min(20,pBaris-14);
+                int by=cy-bh/2;
+                g.setColor(new Color(255,255,255,18));
+                g.fillRoundRect(bx,by,bl,bh,bh,bh);
+                int len=(int)Math.round(bl*(double)r.total()/maks*e);
+                if(len>0){
+                    int wB=r.total()>0?(int)Math.round(len*(double)r.bpjs/r.total()):0;
+                    java.awt.Shape lama=g.getClip();
+                    g.clip(new RoundRectangle2D.Double(bx,by,Math.max(len,bh),bh,bh,bh));
+                    if(wB>0){
+                        g.setPaint(new GradientPaint(bx,0,new Color(79,195,247),bx+Math.max(wB,1),0,new Color(33,115,230)));
+                        g.fillRect(bx,by,wB,bh);
+                    }
+                    if(len-wB>0){
+                        g.setPaint(new GradientPaint(bx+wB,0,new Color(255,200,110),bx+len,0,new Color(251,140,0)));
+                        g.fillRect(bx+wB,by,len-wB,bh);
+                    }
+                    g.setColor(new Color(255,255,255,40));
+                    g.fillRect(bx,by,Math.max(len,bh),bh/2);
+                    g.setClip(lama);
+                }
+                // angka
+                if(e>0.55f){
+                    int a=Math.min(255,(int)((e-0.55f)/0.45f*255));
+                    String s1=fmt(r.total());
+                    String s2="  ("+String.format("%.1f%%",total>0?r.total()*100.0/total:0.0)+")";
+                    g.setFont(new Font("SansSerif",Font.BOLD,13));
+                    fm=g.getFontMetrics();
+                    g.setColor(new Color(255,255,255,a));
+                    g.drawString(s1,bx+len+10,cy+5);
+                    int w1=fm.stringWidth(s1);
+                    g.setFont(new Font("SansSerif",Font.PLAIN,11));
+                    g.setColor(new Color(150,165,195,a));
+                    g.drawString(s2,bx+len+10+w1,cy+5);
+                }
+            }
+
+            // tooltip
+            if(hover>=0&&hover<baris.size()&&progress>=1f){
+                BarisDiag r=baris.get(hover);
+                String[] t={
+                    "#"+(hover+1)+"   "+r.kd,
+                    singkat(r.nm,70),
+                    "Total : "+fmt(r.total())+" diagnosa  ("+String.format("%.1f%%",total>0?r.total()*100.0/total:0.0)+" dari "+fmt(total)+")",
+                    "BPJS "+fmt(r.bpjs)+"   \u2022   Reguler "+fmt(r.reg)
+                };
+                g.setFont(new Font("SansSerif",Font.PLAIN,12));
+                fm=g.getFontMetrics();
+                int tw=0;
+                for(String s:t){
+                    tw=Math.max(tw,fm.stringWidth(s));
+                }
+                int bwid=tw+28,bhgt=t.length*18+16;
+                int tx0=mx+16,ty0=my+14;
+                if(tx0+bwid>w-8){
+                    tx0=mx-16-bwid;
+                }
+                if(ty0+bhgt>h-8){
+                    ty0=h-8-bhgt;
+                }
+                g.setColor(new Color(8,14,32,238));
+                g.fillRoundRect(tx0,ty0,bwid,bhgt,12,12);
+                g.setColor(new Color(255,255,255,70));
+                g.drawRoundRect(tx0,ty0,bwid,bhgt,12,12);
+                for(int k=0;k<t.length;k++){
+                    if(k==0){
+                        g.setFont(new Font("SansSerif",Font.BOLD,13));
+                        g.setColor(new Color(255,213,79));
+                    }else if(k==1){
+                        g.setFont(new Font("SansSerif",Font.BOLD,12));
+                        g.setColor(Color.WHITE);
+                    }else{
+                        g.setFont(new Font("SansSerif",Font.PLAIN,12));
+                        g.setColor(new Color(170,185,215));
+                    }
+                    g.drawString(t[k],tx0+14,ty0+22+k*18);
+                }
+            }
+            g.dispose();
+        }
+    }
+
+    // ---------------------------------------------------------------------------------
+    private static class DialogRekapDiagnosa extends JDialog {
+        private final Connection kon;
+        private int tahun,bulan=0;
+        private boolean utama=true;
+        private String kdDokter="",nmDokter="Semua Dokter";
+        private java.time.LocalDate d1,d2;
+        private final java.util.List<String[]> daftarDokter=new java.util.ArrayList<String[]>();   // {kd,nama,jumlah}
+        private int totalSemuaDokter=0;
+        private final KartuKpi[] kpi=new KartuKpi[5];
+        private final PanelTop10 papan=new PanelTop10();
+        private final JLabel lblSub=new JLabel(" ");
+        private final JLabel lblTahun=new JLabel("",SwingConstants.CENTER);
+        private final TombolGelap[] tbBulan=new TombolGelap[13];
+        private final TombolGelap tbUtama=new TombolGelap("Diagnosa Utama",false);
+        private final TombolGelap tbSemua=new TombolGelap("Semua Diagnosa",false);
+        private final TombolGelap btnPrev=new TombolGelap("\u25C0",true);
+        private final TombolGelap btnNext=new TombolGelap("\u25B6",true);
+        private final javax.swing.JTextField cari=new javax.swing.JTextField();
+        private final JPanel listDokter=new JPanel();
+        private javax.swing.ButtonGroup grupDokter=new javax.swing.ButtonGroup();
+
+        DialogRekapDiagnosa(java.awt.Window parent,Connection kon,int tahun){
+            super(parent,"Rekap 10 Besar Diagnosa per Dokter",java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+            this.kon=kon;
+            this.tahun=tahun;
+            PanelGelap root=new PanelGelap();
+            setContentPane(root);
+
+            // header
+            JPanel header=new JPanel(new BorderLayout(0,12));
+            header.setOpaque(false);
+            header.setBorder(BorderFactory.createEmptyBorder(18,28,12,28));
+            JLabel judul=new JLabel("REKAP 10 BESAR DIAGNOSA PER DOKTER");
+            judul.setFont(new Font("SansSerif",Font.BOLD,22));
+            judul.setForeground(Color.WHITE);
+            lblSub.setFont(new Font("SansSerif",Font.PLAIN,12));
+            lblSub.setForeground(new Color(160,200,220));
+            JPanel tj=new JPanel(new java.awt.GridLayout(2,1,0,2));
+            tj.setOpaque(false);
+            tj.add(judul);
+            tj.add(lblSub);
+            header.add(tj,BorderLayout.NORTH);
+            JPanel barisKpi=new JPanel(new java.awt.GridLayout(1,5,12,0));
+            barisKpi.setOpaque(false);
+            barisKpi.setPreferredSize(new Dimension(100,86));
+            for(int k=0;k<5;k++){
+                kpi[k]=new KartuKpi();
+                barisKpi.add(kpi[k]);
+            }
+            header.add(barisKpi,BorderLayout.CENTER);
+            root.add(header,BorderLayout.NORTH);
+
+            // sisi kiri: daftar dokter
+            JPanel sisi=new JPanel(new BorderLayout(0,8));
+            sisi.setOpaque(false);
+            sisi.setPreferredSize(new Dimension(272,100));
+            JPanel sisiAtas=new JPanel(new java.awt.GridLayout(2,1,0,4));
+            sisiAtas.setOpaque(false);
+            sisiAtas.add(label("DOKTER (URUT DIAGNOSA TERBANYAK)"));
+            cari.setBackground(new Color(22,36,72));
+            cari.setForeground(Color.WHITE);
+            cari.setCaretColor(Color.WHITE);
+            cari.setFont(new Font("SansSerif",Font.PLAIN,12));
+            cari.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(70,90,130)),
+                BorderFactory.createEmptyBorder(6,10,6,10)));
+            sisiAtas.add(cari);
+            sisi.add(sisiAtas,BorderLayout.NORTH);
+            listDokter.setOpaque(false);
+            listDokter.setLayout(new javax.swing.BoxLayout(listDokter,javax.swing.BoxLayout.Y_AXIS));
+            javax.swing.JScrollPane sp=new javax.swing.JScrollPane(listDokter,
+                javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            sp.setOpaque(false);
+            sp.getViewport().setOpaque(false);
+            sp.setBorder(BorderFactory.createLineBorder(new Color(255,255,255,30)));
+            sp.getVerticalScrollBar().setUnitIncrement(18);
+            sisi.add(sp,BorderLayout.CENTER);
+
+            // kontrol: bulan, mode diagnosa, tahun
+            JPanel kontrol=new JPanel(new java.awt.GridLayout(2,1,0,8));
+            kontrol.setOpaque(false);
+            JPanel baris1=new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
+            baris1.setOpaque(false);
+            baris1.add(label("BULAN"));
+            javax.swing.ButtonGroup gb=new javax.swing.ButtonGroup();
+            for(int k=0;k<13;k++){
+                final int kk=k;
+                tbBulan[k]=new TombolGelap(k==0?"Semua":NAMA_BULAN[k-1].substring(0,3),false);
+                tbBulan[k].setBorder(BorderFactory.createEmptyBorder(7,9,7,9));
+                gb.add(tbBulan[k]);
+                baris1.add(tbBulan[k]);
+                tbBulan[k].addActionListener(new java.awt.event.ActionListener() {
+                    @Override public void actionPerformed(java.awt.event.ActionEvent e){
+                        bulan=kk;
+                        muatSemua();
+                    }
+                });
+            }
+            JPanel baris2=new JPanel(new BorderLayout());
+            baris2.setOpaque(false);
+            JPanel kiri2=new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,6,0));
+            kiri2.setOpaque(false);
+            kiri2.add(label("JENIS"));
+            kiri2.add(tbUtama);
+            kiri2.add(tbSemua);
+            JPanel kanan2=new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT,6,0));
+            kanan2.setOpaque(false);
+            kanan2.add(label("TAHUN"));
+            kanan2.add(btnPrev);
+            lblTahun.setFont(new Font("SansSerif",Font.BOLD,16));
+            lblTahun.setForeground(Color.WHITE);
+            lblTahun.setPreferredSize(new Dimension(60,28));
+            kanan2.add(lblTahun);
+            kanan2.add(btnNext);
+            baris2.add(kiri2,BorderLayout.WEST);
+            baris2.add(kanan2,BorderLayout.EAST);
+            kontrol.add(baris1);
+            kontrol.add(baris2);
+            javax.swing.ButtonGroup gm=new javax.swing.ButtonGroup();
+            gm.add(tbUtama);
+            gm.add(tbSemua);
+            tbUtama.setSelected(true);
+
+            JPanel kanan=new JPanel(new BorderLayout(0,10));
+            kanan.setOpaque(false);
+            kanan.add(kontrol,BorderLayout.NORTH);
+            kanan.add(papan,BorderLayout.CENTER);
+
+            JPanel tengah=new JPanel(new BorderLayout(14,0));
+            tengah.setOpaque(false);
+            tengah.setBorder(BorderFactory.createEmptyBorder(0,28,0,28));
+            tengah.add(sisi,BorderLayout.WEST);
+            tengah.add(kanan,BorderLayout.CENTER);
+            root.add(tengah,BorderLayout.CENTER);
+
+            // footer
+            JPanel footer=new JPanel(new BorderLayout());
+            footer.setOpaque(false);
+            footer.setBorder(BorderFactory.createEmptyBorder(10,28,14,28));
+            JLabel hint=new JLabel("Pilih dokter di kiri dan bulan di atas  \u2022  arahkan kursor ke batang untuk rincian  \u2022  Esc untuk menutup");
+            hint.setFont(new Font("SansSerif",Font.PLAIN,11));
+            hint.setForeground(new Color(130,160,190));
+            footer.add(hint,BorderLayout.WEST);
+            JPanel tombol=new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT,8,0));
+            tombol.setOpaque(false);
+            TombolGelap ulang=new TombolGelap("Ulangi Animasi",true);
+            TombolGelap simpan=new TombolGelap("Simpan Gambar (PNG)",true);
+            TombolGelap tutup=new TombolGelap("Tutup",true);
+            tombol.add(ulang);
+            tombol.add(simpan);
+            tombol.add(tutup);
+            footer.add(tombol,BorderLayout.EAST);
+            root.add(footer,BorderLayout.SOUTH);
+
+            tbUtama.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ utama=true; muatSemua(); }
+            });
+            tbSemua.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ utama=false; muatSemua(); }
+            });
+            btnPrev.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ gantiTahun(DialogRekapDiagnosa.this.tahun-1); }
+            });
+            btnNext.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ gantiTahun(DialogRekapDiagnosa.this.tahun+1); }
+            });
+            cari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+                @Override public void insertUpdate(DocumentEvent e){ bangunDaftar(); }
+                @Override public void removeUpdate(DocumentEvent e){ bangunDaftar(); }
+                @Override public void changedUpdate(DocumentEvent e){ bangunDaftar(); }
+            });
+            ulang.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ papan.mulaiAnimasi(); }
+            });
+            simpan.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ simpanGambar(); }
+            });
+            java.awt.event.ActionListener aksiTutup=new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){ dispose(); }
+            };
+            tutup.addActionListener(aksiTutup);
+            getRootPane().registerKeyboardAction(aksiTutup,KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE,0),JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+            setSize(1280,880);
+            setMinimumSize(new Dimension(1060,740));
+            setLocationRelativeTo(parent);
+            tbBulan[0].setSelected(true);
+            muatSemua();
+        }
+
+        private JLabel label(String t){
+            JLabel l=new JLabel(t);
+            l.setFont(new Font("SansSerif",Font.BOLD,10));
+            l.setForeground(new Color(140,165,200));
+            return l;
+        }
+
+        private void gantiTahun(int t){
+            if(t>java.time.LocalDate.now().getYear()||t<2000){
+                return;
+            }
+            tahun=t;
+            muatSemua();
+        }
+
+        /** Menentukan d1-d2 menurut tahun dan bulan terpilih (tahun berjalan dipotong sampai hari ini). */
+        private void hitungPeriode(){
+            java.time.LocalDate hari=java.time.LocalDate.now();
+            java.time.LocalDate awal=java.time.LocalDate.of(tahun,1,1);
+            java.time.LocalDate akhir=(tahun==hari.getYear())?hari:java.time.LocalDate.of(tahun,12,31);
+            if(bulan==0){
+                d1=awal;
+                d2=akhir;
+            }else{
+                d1=java.time.LocalDate.of(tahun,bulan,1);
+                d2=d1.withDayOfMonth(d1.lengthOfMonth());
+                if(d2.isAfter(akhir)){
+                    d2=akhir;
+                }
+                if(d1.isAfter(d2)){
+                    d1=d2;
+                }
+            }
+        }
+
+        /** Query dasar: kunjungan non batal, poli yang dikecualikan tidak ikut, sama seperti grafik. */
+        private PreparedStatement buat(String select,String akhir,boolean denganBpjs,boolean denganDokter) throws Exception{
+            boolean pakaiDokter=denganDokter&&kdDokter.length()>0;
+            StringBuilder sb=new StringBuilder(select);
+            sb.append(" from diagnosa_pasien inner join reg_periksa on diagnosa_pasien.no_rawat=reg_periksa.no_rawat ");
+            sb.append("inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter ");
+            sb.append("inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli ");
+            sb.append("inner join penjab on reg_periksa.kd_pj=penjab.kd_pj ");
+            sb.append("inner join penyakit on diagnosa_pasien.kd_penyakit=penyakit.kd_penyakit ");
+            sb.append("where reg_periksa.stts<>'Batal' and diagnosa_pasien.status='Ralan'");
+            for(int i=0;i<POLI_DIKECUALIKAN.length;i++){
+                sb.append(" and poliklinik.nm_poli not like ?");
+            }
+            sb.append(" and (reg_periksa.kd_poli=? or reg_periksa.status_lanjut='Ralan')");
+            sb.append(" and reg_periksa.tgl_registrasi between ? and ?");
+            // diagnosa berkode KG, Z, O, R tidak ikut direkap (diatur di KunjunganRalanAturan)
+            sb.append(KunjunganRalanAturan.sqlKecualiDiagnosaRekap("diagnosa_pasien.kd_penyakit"));
+            if(utama){
+                sb.append(" and diagnosa_pasien.prioritas=1");
+            }
+            if(pakaiDokter){
+                sb.append(" and reg_periksa.kd_dokter=?");
+            }
+            sb.append(akhir);
+            PreparedStatement ps=kon.prepareStatement(sb.toString());
+            int idx=1;
+            if(denganBpjs){
+                ps.setString(idx++,PJ_BPJS);
+            }
+            for(String poli:POLI_DIKECUALIKAN){
+                ps.setString(idx++,poli);
+            }
+            ps.setString(idx++,KD_POLI_IGD);
+            ps.setString(idx++,d1.toString());
+            ps.setString(idx++,d2.toString());
+            if(pakaiDokter){
+                ps.setString(idx++,kdDokter);
+            }
+            return ps;
+        }
+
+        private static void tutupRs(ResultSet rs,PreparedStatement ps){
+            try{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }catch(Exception ignore){
+            }
+        }
+
+        private void muatSemua(){
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            try{
+                java.time.LocalDate hari=java.time.LocalDate.now();
+                int maksBulan=(tahun==hari.getYear())?hari.getMonthValue():12;
+                if(bulan>maksBulan){
+                    bulan=0;
+                }
+                for(int k=1;k<13;k++){
+                    tbBulan[k].setEnabled(k<=maksBulan);
+                }
+                tbBulan[bulan].setSelected(true);
+                lblTahun.setText(String.valueOf(tahun));
+                btnPrev.setEnabled(tahun>2000);
+                btnNext.setEnabled(tahun<hari.getYear());
+                hitungPeriode();
+                muatDokter();
+                bangunDaftar();
+                muatTop();
+            }finally{
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+
+        private void muatDokter(){
+            daftarDokter.clear();
+            totalSemuaDokter=0;
+            PreparedStatement ps=null;
+            ResultSet rs=null;
+            try{
+                ps=buat("select dokter.kd_dokter,dokter.nm_dokter,count(*) as jml",
+                    " group by dokter.kd_dokter,dokter.nm_dokter order by jml desc,dokter.nm_dokter",false,false);
+                rs=ps.executeQuery();
+                boolean ada=false;
+                while(rs.next()){
+                    int jml=rs.getInt(3);
+                    totalSemuaDokter+=jml;
+                    daftarDokter.add(new String[]{rs.getString(1),rs.getString(2),String.valueOf(jml)});
+                    if(rs.getString(1).equals(kdDokter)){
+                        ada=true;
+                    }
+                }
+                if(kdDokter.length()>0&&!ada){
+                    daftarDokter.add(new String[]{kdDokter,nmDokter,"0"});   // dokter terpilih tetap tampil walau bulan ini kosong
+                }
+            }catch(Exception ex){
+                System.out.println("laporan.DlgKunjunganRalan.DialogRekapDiagnosa.muatDokter() : "+ex);
+                JOptionPane.showMessageDialog(this,"Gagal mengambil daftar dokter : "+ex.getMessage());
+            }finally{
+                tutupRs(rs,ps);
+            }
+        }
+
+        private void tambahDokter(final String kd,final String nm,int jml,String teks){
+            TombolGelap b=new TombolGelap(" ",false);
+            b.setHorizontalAlignment(SwingConstants.LEFT);
+            b.setText("<html><nobr><b>"+htmlAman(teks)+"</b></nobr><br><nobr><font color='#9fb4d8' size='2'>"+fmt(jml)+" diagnosa</font></nobr></html>");
+            b.setToolTipText(nm);
+            b.setPreferredSize(new Dimension(10,46));
+            b.setMaximumSize(new Dimension(Integer.MAX_VALUE,46));
+            b.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            grupDokter.add(b);
+            if(kd.equals(kdDokter)){
+                b.setSelected(true);
+            }
+            b.addActionListener(new java.awt.event.ActionListener() {
+                @Override public void actionPerformed(java.awt.event.ActionEvent e){
+                    kdDokter=kd;
+                    nmDokter=nm;
+                    muatTop();
+                }
+            });
+            listDokter.add(b);
+            listDokter.add(javax.swing.Box.createVerticalStrut(5));
+        }
+
+        private void bangunDaftar(){
+            listDokter.removeAll();
+            grupDokter=new javax.swing.ButtonGroup();
+            String q=cari.getText().trim().toLowerCase();
+            tambahDokter("","Semua Dokter",totalSemuaDokter,"SEMUA DOKTER");
+            for(String[] d:daftarDokter){
+                if(q.length()==0||d[1].toLowerCase().contains(q)||d[0].toLowerCase().contains(q)){
+                    tambahDokter(d[0],d[1],Integer.parseInt(d[2]),d[1]);
+                }
+            }
+            listDokter.revalidate();
+            listDokter.repaint();
+        }
+
+        private void muatTop(){
+            java.util.List<BarisDiag> hasil=new java.util.ArrayList<BarisDiag>();
+            int total=0,jenis=0,sepuluh=0;
+            PreparedStatement ps=null,ps2=null;
+            ResultSet rs=null,rs2=null;
+            try{
+                ps=buat("select penyakit.kd_penyakit,penyakit.nm_penyakit,count(*) as jml,sum(if(penjab.png_jawab=?,1,0)) as bpjs",
+                    " group by penyakit.kd_penyakit,penyakit.nm_penyakit order by jml desc,penyakit.nm_penyakit limit 10",true,true);
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    int jml=rs.getInt("jml"),bp=rs.getInt("bpjs");
+                    hasil.add(new BarisDiag(rs.getString(1),rs.getString(2),bp,jml-bp));
+                    sepuluh+=jml;
+                }
+                ps2=buat("select count(*),count(distinct diagnosa_pasien.kd_penyakit)","",false,true);
+                rs2=ps2.executeQuery();
+                if(rs2.next()){
+                    total=rs2.getInt(1);
+                    jenis=rs2.getInt(2);
+                }
+            }catch(Exception ex){
+                System.out.println("laporan.DlgKunjunganRalan.DialogRekapDiagnosa.muatTop() : "+ex);
+                JOptionPane.showMessageDialog(this,"Gagal mengambil data diagnosa : "+ex.getMessage());
+            }finally{
+                tutupRs(rs,ps);
+                tutupRs(rs2,ps2);
+            }
+            tampilkan(hasil,total,jenis,sepuluh);
+        }
+
+        private void tampilkan(java.util.List<BarisDiag> hasil,int total,int jenis,int sepuluh){
+            java.time.format.DateTimeFormatter df=java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            String namaBulan=bulan==0?"Satu tahun penuh":NAMA_BULAN[bulan-1];
+            String rentang=d1.format(df)+" s.d. "+d2.format(df);
+            String modeTeks=utama?"Diagnosa utama (prioritas 1)":"Semua diagnosa";
+            lblSub.setText("Periode : "+rentang+"   \u2022   "+modeTeks+"   \u2022   dokter menurut dokter pada registrasi   \u2022   tidak termasuk Batal & poli tertentu");
+            Color netral=new Color(170,185,215);
+            kpi[0].set("TOTAL DIAGNOSA",fmt(total),fmt(jenis)+" jenis penyakit berbeda",netral);
+            if(!hasil.isEmpty()){
+                BarisDiag t=hasil.get(0);
+                kpi[1].set("DIAGNOSA TERATAS",t.kd,singkat(t.nm,24)+" \u2022 "+fmt(t.total()),new Color(255,213,79));
+            }else{
+                kpi[1].set("DIAGNOSA TERATAS","-","Belum ada data",netral);
+            }
+            double persen=total>0?sepuluh*100.0/total:0.0;
+            kpi[2].set("10 BESAR MENCAKUP",String.format("%.1f%%",persen),fmt(sepuluh)+" dari "+fmt(total)+" diagnosa",persen>=50?new Color(102,187,106):netral);
+            kpi[3].set("DOKTER",singkat(kdDokter.length()==0?"Semua Dokter":nmDokter,17),
+                kdDokter.length()==0?fmt(daftarDokter.size())+" dokter berdiagnosa":"Dokter terpilih",netral);
+            kpi[4].set("PERIODE",bulan==0?"Tahun "+tahun:NAMA_BULAN[bulan-1]+" "+tahun,rentang,netral);
+            papan.setData(hasil,total,"10 BESAR DIAGNOSA  \u2022  "+(kdDokter.length()==0?"SEMUA DOKTER":nmDokter.toUpperCase()),
+                namaBulan+" "+tahun+"   \u2022   "+rentang+"   \u2022   "+modeTeks);
+            papan.mulaiAnimasi();
+        }
+
+        private void simpanGambar(){
+            JFileChooser fc=new JFileChooser();
+            String dok=kdDokter.length()==0?"semua_dokter":kdDokter.replaceAll("[^A-Za-z0-9_-]","");
+            fc.setSelectedFile(new java.io.File("rekap_diagnosa_"+dok+"_"+tahun+(bulan==0?"":"_"+(bulan<10?"0":"")+bulan)+".png"));
+            if(fc.showSaveDialog(this)!=JFileChooser.APPROVE_OPTION){
+                return;
+            }
+            java.io.File f=fc.getSelectedFile();
+            if(!f.getName().toLowerCase().endsWith(".png")){
+                f=new java.io.File(f.getAbsolutePath()+".png");
+            }
+            try{
+                papan.selesaikanAnimasi();
+                BufferedImage img=new BufferedImage(Math.max(1,papan.getWidth()),Math.max(1,papan.getHeight()),BufferedImage.TYPE_INT_RGB);
+                Graphics2D g=img.createGraphics();
+                g.setColor(new Color(13,22,48));
+                g.fillRect(0,0,img.getWidth(),img.getHeight());
+                papan.printAll(g);
+                g.dispose();
+                javax.imageio.ImageIO.write(img,"png",f);
+                JOptionPane.showMessageDialog(this,"Gambar tersimpan :\n"+f.getAbsolutePath());
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this,"Gagal menyimpan gambar : "+ex.getMessage());
+            }
+        }
+    }
+
 }

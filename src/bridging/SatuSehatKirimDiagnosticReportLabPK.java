@@ -159,6 +159,12 @@ public final class SatuSehatKirimDiagnosticReportLabPK extends javax.swing.JDial
         tbObat.setDefaultRenderer(Object.class, new WarnaTable());
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
+
+        cmbStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runBackground(() -> tampil());
+            }
+        });
         
         try {
             link=koneksiDB.URLFHIRSATUSEHAT();
@@ -197,8 +203,8 @@ public final class SatuSehatKirimDiagnosticReportLabPK extends javax.swing.JDial
     private void initComponents() {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
-        ppPilihSemua = new widget.MenuItem();
-        ppBersihkan = new widget.MenuItem();
+        ppPilihSemua = new javax.swing.JMenuItem();
+        ppBersihkan = new javax.swing.JMenuItem();
         LoadHTML = new widget.editorpane();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
@@ -217,6 +223,8 @@ public final class SatuSehatKirimDiagnosticReportLabPK extends javax.swing.JDial
         DTPCari1 = new widget.Tanggal();
         jLabel17 = new widget.Label();
         DTPCari2 = new widget.Tanggal();
+        jLabel12 = new widget.Label();
+        cmbStatus = new widget.ComboBox();
         jLabel16 = new widget.Label();
         TCari = new widget.TextBox();
         BtnCari = new widget.Button();
@@ -390,7 +398,7 @@ public final class SatuSehatKirimDiagnosticReportLabPK extends javax.swing.JDial
         jLabel15.setPreferredSize(new java.awt.Dimension(85, 23));
         panelGlass9.add(jLabel15);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-02-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-07-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -403,12 +411,22 @@ public final class SatuSehatKirimDiagnosticReportLabPK extends javax.swing.JDial
         jLabel17.setPreferredSize(new java.awt.Dimension(24, 23));
         panelGlass9.add(jLabel17);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-02-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-07-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
         DTPCari2.setPreferredSize(new java.awt.Dimension(95, 23));
         panelGlass9.add(DTPCari2);
+
+        jLabel12.setText("Status Kirim :");
+        jLabel12.setName("jLabel12"); // NOI18N
+        jLabel12.setPreferredSize(new java.awt.Dimension(120, 23));
+        panelGlass9.add(jLabel12);
+
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Semua", "Terkirim", "Belum Terkirim" }));
+        cmbStatus.setName("cmbStatus"); // NOI18N
+        cmbStatus.setPreferredSize(new java.awt.Dimension(150, 23));
+        panelGlass9.add(cmbStatus);
 
         jLabel16.setText("Key Word :");
         jLabel16.setName("jLabel16"); // NOI18N
@@ -844,7 +862,9 @@ public final class SatuSehatKirimDiagnosticReportLabPK extends javax.swing.JDial
     private widget.editorpane LoadHTML;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
+    private widget.ComboBox cmbStatus;
     private widget.InternalFrame internalFrame1;
+    private widget.Label jLabel12;
     private widget.Label jLabel15;
     private widget.Label jLabel16;
     private widget.Label jLabel17;
@@ -853,13 +873,24 @@ public final class SatuSehatKirimDiagnosticReportLabPK extends javax.swing.JDial
     private javax.swing.JPopupMenu jPopupMenu1;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
-    private widget.MenuItem ppBersihkan;
-    private widget.MenuItem ppPilihSemua;
+    private javax.swing.JMenuItem ppBersihkan;
+    private javax.swing.JMenuItem ppPilihSemua;
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
-    private void tampil() {
+   private void tampil() {
         Valid.tabelKosong(tabMode);
         try{
+
+            String statusKirim = "";
+
+            if (cmbStatus.getSelectedItem().toString().equals("Terkirim")) {
+                statusKirim =
+                    " and ifnull(satu_sehat_diagnosticreport_lab.id_diagnosticreport,'') <> '' ";
+            } else if (cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")) {
+                statusKirim =
+                    " and ifnull(satu_sehat_diagnosticreport_lab.id_diagnosticreport,'') = '' ";
+            }
+
             ps=koneksi.prepareStatement(
                    "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,periksa_lab.kd_dokter,pegawai.nama,pegawai.no_ktp as ktpdokter,"+
                    "satu_sehat_encounter.id_encounter,permintaan_lab.noorder,permintaan_lab.tgl_hasil,permintaan_lab.jam_hasil,permintaan_lab.diagnosa_klinis,"+
@@ -889,6 +920,7 @@ public final class SatuSehatKirimDiagnosticReportLabPK extends javax.swing.JDial
                    "and satu_sehat_servicerequest_lab.kd_jenis_prw=satu_sehat_diagnosticreport_lab.kd_jenis_prw "+
                    "inner join pegawai on periksa_lab.kd_dokter=pegawai.nik "+
                    "where reg_periksa.tgl_registrasi between ? and ? "+
+                   statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.nama like ? or template_laboratorium.Pemeriksaan like ? or "+
                    "satu_sehat_mapping_lab.code like ? or permintaan_lab.noorder like ?)"));
@@ -955,6 +987,7 @@ public final class SatuSehatKirimDiagnosticReportLabPK extends javax.swing.JDial
                    "and satu_sehat_servicerequest_lab.kd_jenis_prw=satu_sehat_diagnosticreport_lab.kd_jenis_prw "+
                    "inner join pegawai on periksa_lab.kd_dokter=pegawai.nik "+
                    "where reg_periksa.tgl_registrasi between ? and ? "+
+                   statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.nama like ? or template_laboratorium.Pemeriksaan like ? or "+
                    "satu_sehat_mapping_lab.code like ? or permintaan_lab.noorder like ?)"));

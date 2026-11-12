@@ -21,7 +21,7 @@
                         </thead>
                         <tbody>
                         <?php 
-                           $querypoli = bukaquery("select nm_poli,registrasi,registrasilama from poliklinik where status='1' order by nm_poli");
+                           $querypoli = bukaquery("select nm_poli,registrasi,registrasilama from poliklinik where status='1' and nm_poli not like '%MARJORIE%' and nm_poli not like '%PROMO%' and nm_poli not like '%APOTEK%' and nm_poli not like '%LABORATORIUM%' and nm_poli not like '%Medical Check Up%' and nm_poli not like '%MCU AKPER%' and nm_poli not in ('APOTEK','MCU AKPER/KARYAWAN','POLI DOTS','POLI GINEKOLOGI','POLI NEONATAL','PROMO LIBUR SEKOLAH','UNIT LABORATORIUM','Medical Check Up','PROMO KEMERDEKAAN','KLINIK MARJORIE') order by nm_poli");
                            while($rsquerypoli = mysqli_fetch_array($querypoli)) {
                                echo "<tr>
                                        <td align='left'>".$rsquerypoli["nm_poli"]."</td>

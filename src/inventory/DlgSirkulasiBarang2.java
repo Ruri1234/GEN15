@@ -60,7 +60,7 @@ public class DlgSirkulasiBarang2 extends javax.swing.JDialog {
         tabMode=new DefaultTableModel(null,new Object[]{
               "Kode Barang","Nama Barang","Satuan","Tgl.Opname","Stok Awal","Pengadaan","Penerimaan","Penjualan",
               "Ke Pasien","Piutang Jual","Retur Beli","Retur Jual","Retur Piutang","Pengambilan UTD",
-              "Stok Keluar Medis","Resep Pulang","Mutasi Masuk","Mutasi Keluar","Hibah","Stok Akhir"
+              "Stok Keluar Medis","Resep Pulang","Mutasi Masuk","Mutasi Keluar","Hibah","Stok Akhir","Jenis"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -69,7 +69,7 @@ public class DlgSirkulasiBarang2 extends javax.swing.JDialog {
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 21; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(100);
@@ -77,6 +77,8 @@ public class DlgSirkulasiBarang2 extends javax.swing.JDialog {
                 column.setPreferredWidth(200);
             }else if(i==3){
                 column.setPreferredWidth(67);
+            }else if(i==20){
+                column.setPreferredWidth(150);
             }else{
                 column.setPreferredWidth(80);
             }
@@ -964,7 +966,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
        Valid.tabelKosong(tabMode);      
        try{   
             ps=koneksi.prepareStatement(
-                    "select databarang.kode_brng,databarang.nama_brng,kodesatuan.satuan "+
+                    "select databarang.kode_brng,databarang.nama_brng,kodesatuan.satuan,jenis.nama "+
                     "from databarang inner join kodesatuan on databarang.kode_sat=kodesatuan.kode_sat "+
                     "inner join jenis on databarang.kdjns=jenis.kdjns "+
                     "inner join golongan_barang on databarang.kode_golongan=golongan_barang.kode "+
@@ -1403,7 +1405,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                             Valid.SetAngka(jumlahpasin),Valid.SetAngka(jumlahpiutang),Valid.SetAngka(jumlahretbeli),
                             Valid.SetAngka(jumlahretjual),Valid.SetAngka(jumlahretpiut),Valid.SetAngka(jumlahutd),
                             Valid.SetAngka(jumlahkeluar),Valid.SetAngka(jumlahrespulang),Valid.SetAngka(jumlahmutasimasuk),
-                            Valid.SetAngka(jumlahmutasikeluar),Valid.SetAngka(jumlahhibah),Valid.SetAngka(stokakhir)
+                            Valid.SetAngka(jumlahmutasikeluar),Valid.SetAngka(jumlahhibah),Valid.SetAngka(stokakhir),rs.getString("nama")
                         }); 
                     }
 
@@ -1429,7 +1431,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
        Valid.tabelKosong(tabMode);      
        try{   
             ps=koneksi.prepareStatement(
-                    "select databarang.kode_brng,databarang.nama_brng,kodesatuan.satuan "+
+                    "select databarang.kode_brng,databarang.nama_brng,kodesatuan.satuan,jenis.nama "+
                     "from databarang inner join kodesatuan on databarang.kode_sat=kodesatuan.kode_sat "+
                     "inner join jenis on databarang.kdjns=jenis.kdjns "+
                     "inner join golongan_barang on databarang.kode_golongan=golongan_barang.kode "+
@@ -1884,7 +1886,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                             Valid.SetAngka(jumlahpasin),Valid.SetAngka(jumlahpiutang),Valid.SetAngka(jumlahretbeli),
                             Valid.SetAngka(jumlahretjual),Valid.SetAngka(jumlahretpiut),Valid.SetAngka(jumlahutd),
                             Valid.SetAngka(jumlahkeluar),Valid.SetAngka(jumlahrespulang),Valid.SetAngka(jumlahmutasimasuk),
-                            Valid.SetAngka(jumlahmutasikeluar),Valid.SetAngka(jumlahhibah),Valid.SetAngka(stokakhir)
+                            Valid.SetAngka(jumlahmutasikeluar),Valid.SetAngka(jumlahhibah),Valid.SetAngka(stokakhir),rs.getString("nama")
                         }); 
                     }
 

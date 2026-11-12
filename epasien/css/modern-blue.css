@@ -1,0 +1,593 @@
+/* ==============================================================================
+   MODERN ROYAL & SAPPHIRE BLUE HEALTHCARE THEME
+   SIMRS KHANZA EPASIEN - RSU BETHESDA SERUKAM
+   ============================================================================== */
+
+:root {
+  --color-navy: #0A2540;
+  --color-royal: #0D47A1;
+  --color-sapphire: #1565C0;
+  --color-blue-light: #1E88E5;
+  --color-cyan: #00B4D8;
+  --color-ice-blue: #F0F7FF;
+  --color-bg-page: #F8FAFC;
+  --color-text-main: #1E293B;
+  --color-text-muted: #64748B;
+  --color-border: #E2E8F0;
+  --gradient-royal: linear-gradient(135deg, #0D47A1 0%, #1565C0 60%, #00B4D8 100%);
+  --gradient-subtle: linear-gradient(135deg, #F0F7FF 0%, #FFFFFF 100%);
+  --shadow-sm: 0 2px 4px rgba(13, 71, 161, 0.06);
+  --shadow-md: 0 8px 20px -4px rgba(13, 71, 161, 0.12);
+  --shadow-lg: 0 16px 32px -6px rgba(13, 71, 161, 0.16);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+/* --- 1. Global Typography & Elements --- */
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
+  color: var(--color-text-main);
+  background-color: var(--color-bg-page);
+}
+
+a {
+  color: var(--color-sapphire);
+  transition: all 0.25s ease;
+}
+
+a:hover, a:focus {
+  color: var(--color-royal);
+  text-decoration: none;
+}
+
+/* --- 2. Top Header Bar (Pengunjung) --- */
+header {
+  background: var(--color-navy) !important;
+  border-bottom: 2px solid var(--color-sapphire);
+  padding: 10px 0;
+  color: #E2E8F0 !important;
+  font-size: 13px;
+}
+
+header p {
+  color: #CBD5E1 !important;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+header .phone-icon, 
+header .date-icon, 
+header .email-icon {
+  color: #E2E8F0;
+  margin-left: 20px;
+  font-weight: 500;
+}
+
+header .phone-icon i, 
+header .date-icon i, 
+header .email-icon i {
+  color: var(--color-cyan);
+  margin-right: 6px;
+}
+
+header .email-icon a {
+  color: #E2E8F0;
+}
+header .email-icon a:hover {
+  color: var(--color-cyan);
+}
+
+/* --- 3. Navbar Navigation --- */
+.navbar-default {
+  background: #FFFFFF !important;
+  box-shadow: var(--shadow-md) !important;
+  border: none !important;
+  padding: 8px 0;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand {
+  color: var(--color-royal) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.5px;
+  font-size: 22px;
+}
+
+.navbar-brand i {
+  color: var(--color-sapphire);
+  margin-right: 8px;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: var(--color-text-main) !important;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 15px 18px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li.active > a {
+  color: var(--color-sapphire) !important;
+  background: var(--color-ice-blue) !important;
+}
+
+/* Tombol Buat Janji / Booking di Navbar */
+.navbar-default .navbar-nav li.appointment-btn a {
+  background: var(--gradient-royal) !important;
+  color: #FFFFFF !important;
+  border-radius: 50px !important;
+  padding: 10px 24px !important;
+  margin-top: 5px;
+  box-shadow: 0 4px 12px rgba(13, 71, 161, 0.3);
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.navbar-default .navbar-nav li.appointment-btn a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(13, 71, 161, 0.45) !important;
+  color: #FFFFFF !important;
+}
+
+/* --- 4. Section Titles & Headings --- */
+.section-title h2 {
+  color: var(--color-navy);
+  font-weight: 800;
+  font-size: 32px;
+  letter-spacing: -0.5px;
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.section-title h2::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--gradient-royal);
+  border-radius: 2px;
+}
+
+/* --- 5. Hero & Slider Styling --- */
+.slider-caption {
+  background: rgba(10, 37, 64, 0.75) !important;
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-lg);
+  padding: 35px 45px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow-lg);
+}
+
+.slider-caption h1 {
+  color: #FFFFFF !important;
+  font-weight: 800;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.slider-caption h3 {
+  color: var(--color-cyan) !important;
+  font-weight: 600;
+}
+
+.slider-caption .btn {
+  background: var(--gradient-royal) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 50px !important;
+  padding: 12px 30px !important;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.4);
+  transition: all 0.3s ease;
+}
+
+.slider-caption .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 180, 216, 0.6);
+}
+
+/* --- 6. Form Pendaftaran & Login (Appointment Section) --- */
+#appointment {
+  background: linear-gradient(180deg, #F8FAFC 0%, #EDF4FB 100%) !important;
+  padding: 80px 0;
+}
+
+#appointment .container {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+}
+
+#appointment-form label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-navy);
+  margin-bottom: 6px;
+  display: block;
+}
+
+#appointment-form .form-control {
+  height: 46px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid #CBD5E1;
+  background: #F8FAFC;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--color-text-main);
+  box-shadow: none;
+  transition: all 0.25s ease;
+}
+
+#appointment-form .form-control:focus {
+  border-color: var(--color-sapphire);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.15) !important;
+}
+
+/* Tombol Submit Login / Daftar */
+#cf-submit {
+  background: var(--gradient-royal) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: var(--radius-md) !important;
+  height: 48px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 18px rgba(13, 71, 161, 0.35);
+  transition: all 0.3s ease;
+}
+
+#cf-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(13, 71, 161, 0.45) !important;
+}
+
+/* --- 7. Tombol-tombol Standar Bootstrap --- */
+.btn-primary {
+  background: var(--gradient-royal) !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(13, 71, 161, 0.25);
+  border-radius: var(--radius-md);
+  padding: 9px 20px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(13, 71, 161, 0.35);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #009688 0%, #00796B 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 150, 136, 0.25);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+}
+
+.btn-info {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+}
+
+/* --- 8. Doctor & Team Cards --- */
+.team-thumb {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+.team-thumb:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(21, 101, 192, 0.3);
+}
+
+.team-info {
+  padding: 20px;
+}
+
+.team-info h3 {
+  color: var(--color-navy);
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 0;
+}
+
+.team-info p {
+  color: var(--color-sapphire);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- 9. News / Information Cards --- */
+.news-thumb {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+.news-thumb:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* --- 10. Footer Section --- */
+footer {
+  background: var(--color-navy) !important;
+  color: #94A3B8 !important;
+  padding: 60px 0 30px 0 !important;
+  border-top: 3px solid var(--color-sapphire);
+}
+
+footer h4 {
+  color: #FFFFFF !important;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+footer .footer-thumb p {
+  color: #CBD5E1;
+}
+
+footer .footer-thumb span {
+  color: var(--color-cyan) !important;
+  font-weight: 600;
+}
+
+footer .social-icon li a {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  border-radius: 50%;
+  transition: all 0.25s ease;
+}
+
+footer .social-icon li a:hover {
+  background: var(--color-cyan);
+  color: var(--color-navy);
+}
+
+footer .footer-link a {
+  color: #CBD5E1;
+  margin: 0 10px;
+  font-weight: 500;
+}
+
+footer .footer-link a:hover {
+  color: var(--color-cyan);
+}
+
+footer .border-top {
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding-top: 25px;
+  margin-top: 30px;
+}
+
+/* --- 11. USER DASHBOARD (Setelah Login Pasien - AdminBSB) --- */
+/* Top Header Bar di User Dashboard */
+body.theme-blue .navbar {
+  background: var(--gradient-royal) !important;
+  box-shadow: 0 4px 15px rgba(13, 71, 161, 0.25);
+  border: none;
+}
+
+body.theme-blue .navbar-brand {
+  color: #FFFFFF !important;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+/* Left Sidebar di Dashboard Pasien */
+.sidebar .user-info {
+  background: var(--gradient-royal) !important;
+  padding: 22px 18px;
+  box-shadow: inset 0 -4px 10px rgba(0,0,0,0.1);
+}
+
+.sidebar .user-info .info-container .name {
+  font-weight: 700;
+  font-size: 15px;
+  color: #FFFFFF;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.sidebar .user-info .info-container .email {
+  color: #E2E8F0;
+  font-size: 12px;
+}
+
+.sidebar .menu .list .header {
+  background: #F1F5F9;
+  color: var(--color-navy);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  padding: 12px 16px;
+}
+
+.sidebar .menu .list a {
+  font-weight: 500;
+  color: var(--color-text-main);
+  border-radius: var(--radius-sm);
+  margin: 2px 8px;
+}
+
+.sidebar .menu .list a:hover {
+  background: var(--color-ice-blue) !important;
+  color: var(--color-royal) !important;
+}
+
+.sidebar .menu .list li.active > a {
+  background: var(--color-sapphire) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 10px rgba(21, 101, 192, 0.3);
+}
+
+.sidebar .menu .list li.active > a i {
+  color: #FFFFFF !important;
+}
+
+/* Dashboard Cards & Content */
+.card {
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm) !important;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md) !important;
+}
+
+.card .header {
+  border-bottom: 1.5px solid #F1F5F9 !important;
+  padding: 18px 20px !important;
+}
+
+.card .header h2 {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--color-navy) !important;
+}
+
+/* Modern Datatables */
+.table thead th {
+  background: #F1F5F9 !important;
+  color: var(--color-navy) !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid var(--color-sapphire) !important;
+}
+
+.table tbody tr:hover {
+  background-color: var(--color-ice-blue) !important;
+}
+
+/* --- 12. PWA FLOATING INSTALL BANNER (Mobile/Desktop) --- */
+#pwa-install-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  max-width: 480px;
+  background: #FFFFFF;
+  border-radius: 50px;
+  box-shadow: 0 12px 30px rgba(13, 71, 161, 0.25), 0 0 0 1px rgba(21, 101, 192, 0.15);
+  padding: 10px 16px;
+  z-index: 999999;
+  animation: pwaSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pwaSlideUp {
+  from {
+    transform: translate(-50%, 100px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.pwa-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pwa-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+
+.pwa-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.pwa-text strong {
+  font-size: 13px;
+  color: var(--color-navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pwa-text span {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pwa-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pwa-btn-install {
+  background: var(--gradient-royal);
+  color: #FFFFFF;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(13, 71, 161, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pwa-btn-install:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(13, 71, 161, 0.4);
+}
+
+.pwa-btn-close {
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  font-size: 20px;
+  line-height: 1;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: color 0.2s ease;
+}
+
+.pwa-btn-close:hover {
+  color: #EF4444;
+}

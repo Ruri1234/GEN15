@@ -10,6 +10,7 @@
  */
 
 package inventaris;
+import AESsecurity.EnkripsiAES;
 import fungsi.WarnaTable;
 import fungsi.batasInput;
 import fungsi.koneksiDB;
@@ -59,6 +60,10 @@ public final class InventarisKoleksi extends javax.swing.JDialog {
     private String namaruang="";
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
+    // Urutan data (diubah lewat menu klik kanan). Default: sesuai tampilan awal.
+    private volatile String urutan="inventaris_barang.kode_barang,inventaris.no_inventaris";
+    private widget.MenuItem ppUrutNoInvAsc;
+    private widget.MenuItem ppUrutNoInvDesc;
 
     /** Creates new form DlgJnsPerawatan
      * @param parent
@@ -66,6 +71,7 @@ public final class InventarisKoleksi extends javax.swing.JDialog {
     public InventarisKoleksi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        initMenuUrut();
 
         this.setLocation(8,1);
         setSize(628,674);
@@ -1483,7 +1489,7 @@ private void ppBarcodeBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {/
                         "or inventaris_barang.nama_barang like '%"+TCari.getText().trim()+"%' or inventaris_merk.nama_merk like '%"+TCari.getText().trim()+"%' "+
                         "or inventaris_barang.thn_produksi like '%"+TCari.getText().trim()+"%' or inventaris_barang.isbn like '%"+TCari.getText().trim()+"%' "+
                         "or inventaris_kategori.nama_kategori like '%"+TCari.getText().trim()+"%' or inventaris_jenis.nama_jenis like '%"+TCari.getText().trim()+"%') "+
-                        "order by inventaris_barang.kode_barang,inventaris.no_inventaris");
+                        "order by "+urutan);
              Valid.tabelKosong(tabMode);
              try{            
                 rs=ps.executeQuery();
@@ -1701,6 +1707,32 @@ private void ppBarcodeBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {/
                 System.out.println("Notif : "+e);
             } 
         }
+    }
+
+    private void initMenuUrut() {
+        ppUrutNoInvAsc = buatMenuUrut("No.Inventaris A - Z");
+        ppUrutNoInvAsc.addActionListener(e -> urutkanNoInventaris(true));
+        ppUrutNoInvDesc = buatMenuUrut("No.Inventaris Z - A");
+        ppUrutNoInvDesc.addActionListener(e -> urutkanNoInventaris(false));
+        Popup.addSeparator();
+        Popup.add(ppUrutNoInvAsc);
+        Popup.add(ppUrutNoInvDesc);
+    }
+
+    private widget.MenuItem buatMenuUrut(String teks) {
+        widget.MenuItem item = new widget.MenuItem();
+        item.setBackground(new java.awt.Color(255, 255, 254));
+        item.setFont(new java.awt.Font("Tahoma", 0, 11));
+        item.setForeground(new java.awt.Color(50, 50, 50));
+        item.setText(teks);
+        item.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        item.setPreferredSize(new java.awt.Dimension(150, 25));
+        return item;
+    }
+
+    private void urutkanNoInventaris(boolean naik) {
+        urutan = naik ? "inventaris.no_inventaris ASC" : "inventaris.no_inventaris DESC";
+        runBackground(() ->tampil());
     }
 
     private void runBackground(Runnable task) {

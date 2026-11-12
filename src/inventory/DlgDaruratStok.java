@@ -1,5 +1,5 @@
 package inventory;
-import fungsi.WarnaTable;
+import fungsi.WarnaTableDarurat;
 import fungsi.batasInput;
 import fungsi.koneksiDB;
 import fungsi.sekuel;
@@ -33,6 +33,7 @@ public class DlgDaruratStok extends javax.swing.JDialog {
     private ResultSet rs,rsstok;
     private double stok=0;
     private String aktifkanbatch="no";
+     private String order="order by databarang.nama_brng";
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
 
@@ -43,7 +44,7 @@ public class DlgDaruratStok extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        Object[] row={"Kode Barang", "Nama Barang", "Satuan", "Jenis","Minimal","Saat Ini"};
+        Object[] row={"Kode Barang", "Nama Barang","Kandungan", "Satuan", "Jenis","Minimal","Saat Ini"};
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -52,21 +53,23 @@ public class DlgDaruratStok extends javax.swing.JDialog {
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(90);
             }else if(i==1){
-                column.setPreferredWidth(200);
+                column.setPreferredWidth(300);
             }else if(i==2){
-                column.setPreferredWidth(100);
+                column.setPreferredWidth(300);
             }else if(i==3){
-                column.setPreferredWidth(100);
+                column.setPreferredWidth(80);
+            }else if (i==4){
+                column.setPreferredWidth(150);
             }else{
                 column.setPreferredWidth(80);
             }
         }
-        tbDokter.setDefaultRenderer(Object.class, new WarnaTable());         
+        tbDokter.setDefaultRenderer(Object.class, new WarnaTableDarurat());         
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
         
@@ -87,6 +90,17 @@ public class DlgDaruratStok extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Popup1 = new javax.swing.JPopupMenu();
+        MnKodeBarangDesc = new javax.swing.JMenuItem();
+        MnKodeBarangAsc = new javax.swing.JMenuItem();
+        MnNamaBarangDesc = new javax.swing.JMenuItem();
+        MnNamaBarangAsc = new javax.swing.JMenuItem();
+        MnKategoriAsc = new javax.swing.JMenuItem();
+        MnKategoriDesc = new javax.swing.JMenuItem();
+        MnSatuanAsc = new javax.swing.JMenuItem();
+        MnSatuanDesc = new javax.swing.JMenuItem();
+        MnStokMinimalAsc = new javax.swing.JMenuItem();
+        MnStokMinimalDesc = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
         scrollPane1 = new widget.ScrollPane();
         tbDokter = new widget.Table();
@@ -98,6 +112,168 @@ public class DlgDaruratStok extends javax.swing.JDialog {
         label9 = new widget.Label();
         BtnPrint = new widget.Button();
         BtnKeluar = new widget.Button();
+
+        Popup1.setName("Popup1"); // NOI18N
+
+        MnKodeBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
+        MnKodeBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKodeBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
+        MnKodeBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnKodeBarangDesc.setText("Urutkan Berdasar Kandungan Descending");
+        MnKodeBarangDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnKodeBarangDesc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnKodeBarangDesc.setName("MnKodeBarangDesc"); // NOI18N
+        MnKodeBarangDesc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnKodeBarangDesc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnKodeBarangDescActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnKodeBarangDesc);
+
+        MnKodeBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
+        MnKodeBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKodeBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
+        MnKodeBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnKodeBarangAsc.setText("Urutkan Berdasar Kandungan Ascending");
+        MnKodeBarangAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnKodeBarangAsc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnKodeBarangAsc.setName("MnKodeBarangAsc"); // NOI18N
+        MnKodeBarangAsc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnKodeBarangAsc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnKodeBarangAscActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnKodeBarangAsc);
+
+        MnNamaBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
+        MnNamaBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
+        MnNamaBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnNamaBarangDesc.setText("Urutkan Berdasar Nama Barang Descending");
+        MnNamaBarangDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnNamaBarangDesc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnNamaBarangDesc.setName("MnNamaBarangDesc"); // NOI18N
+        MnNamaBarangDesc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnNamaBarangDesc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnNamaBarangDescActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnNamaBarangDesc);
+
+        MnNamaBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
+        MnNamaBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
+        MnNamaBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnNamaBarangAsc.setText("Urutkan Berdasar Nama Barang Ascending");
+        MnNamaBarangAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnNamaBarangAsc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnNamaBarangAsc.setName("MnNamaBarangAsc"); // NOI18N
+        MnNamaBarangAsc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnNamaBarangAsc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnNamaBarangAscActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnNamaBarangAsc);
+
+        MnKategoriAsc.setBackground(new java.awt.Color(255, 255, 254));
+        MnKategoriAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKategoriAsc.setForeground(new java.awt.Color(50, 50, 50));
+        MnKategoriAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnKategoriAsc.setText("Urutkan Berdasar Jenis Ascending");
+        MnKategoriAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnKategoriAsc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnKategoriAsc.setName("MnKategoriAsc"); // NOI18N
+        MnKategoriAsc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnKategoriAsc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnKategoriAscActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnKategoriAsc);
+
+        MnKategoriDesc.setBackground(new java.awt.Color(255, 255, 254));
+        MnKategoriDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKategoriDesc.setForeground(new java.awt.Color(50, 50, 50));
+        MnKategoriDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnKategoriDesc.setText("Urutkan Berdasar Jenis Descending");
+        MnKategoriDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnKategoriDesc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnKategoriDesc.setName("MnKategoriDesc"); // NOI18N
+        MnKategoriDesc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnKategoriDesc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnKategoriDescActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnKategoriDesc);
+
+        MnSatuanAsc.setBackground(new java.awt.Color(255, 255, 254));
+        MnSatuanAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSatuanAsc.setForeground(new java.awt.Color(50, 50, 50));
+        MnSatuanAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnSatuanAsc.setText("Urutkan Berdasar Satuan Ascending");
+        MnSatuanAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnSatuanAsc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnSatuanAsc.setName("MnSatuanAsc"); // NOI18N
+        MnSatuanAsc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnSatuanAsc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnSatuanAscActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnSatuanAsc);
+
+        MnSatuanDesc.setBackground(new java.awt.Color(255, 255, 254));
+        MnSatuanDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSatuanDesc.setForeground(new java.awt.Color(50, 50, 50));
+        MnSatuanDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnSatuanDesc.setText("Urutkan Berdasar Satuan Descending");
+        MnSatuanDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnSatuanDesc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnSatuanDesc.setName("MnSatuanDesc"); // NOI18N
+        MnSatuanDesc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnSatuanDesc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnSatuanDescActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnSatuanDesc);
+
+        MnStokMinimalAsc.setBackground(new java.awt.Color(255, 255, 254));
+        MnStokMinimalAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnStokMinimalAsc.setForeground(new java.awt.Color(50, 50, 50));
+        MnStokMinimalAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnStokMinimalAsc.setText("Urutkan Berdasar Stok Minimal Ascending");
+        MnStokMinimalAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnStokMinimalAsc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnStokMinimalAsc.setName("MnStokMinimalAsc"); // NOI18N
+        MnStokMinimalAsc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnStokMinimalAsc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnStokMinimalAscActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnStokMinimalAsc);
+
+        MnStokMinimalDesc.setBackground(new java.awt.Color(255, 255, 254));
+        MnStokMinimalDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnStokMinimalDesc.setForeground(new java.awt.Color(50, 50, 50));
+        MnStokMinimalDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnStokMinimalDesc.setText("Urutkan Berdasar Stok Minimal Descending");
+        MnStokMinimalDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnStokMinimalDesc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnStokMinimalDesc.setName("MnStokMinimalDesc"); // NOI18N
+        MnStokMinimalDesc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnStokMinimalDesc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnStokMinimalDescActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnStokMinimalDesc);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -126,6 +302,7 @@ public class DlgDaruratStok extends javax.swing.JDialog {
 
             }
         ));
+        tbDokter.setComponentPopupMenu(Popup1);
         tbDokter.setName("tbDokter"); // NOI18N
         scrollPane1.setViewportView(tbDokter);
 
@@ -252,7 +429,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     tabMode.getValueAt(i,2).toString()+"','"+
                                     tabMode.getValueAt(i,3).toString()+"','"+
                                     tabMode.getValueAt(i,4).toString()+"','"+
-                                    tabMode.getValueAt(i,5).toString()+"','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Sirkulasi Barang Keluar Masuk"); 
+                                tabMode.getValueAt(i,5).toString()+"','"+
+                                tabMode.getValueAt(i,6).toString()+"','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Sirkulasi Barang Keluar Masuk"); 
                 }
 
                 Map<String, Object> param = new HashMap<>(); 
@@ -353,6 +531,56 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         } 
     }//GEN-LAST:event_formWindowOpened
 
+    private void MnKodeBarangDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnKodeBarangDescActionPerformed
+        order="order by databarang.letak_barang desc";
+        prosesCari();
+    }//GEN-LAST:event_MnKodeBarangDescActionPerformed
+
+    private void MnKodeBarangAscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnKodeBarangAscActionPerformed
+        order="order by databarang.letak_barang asc";
+        prosesCari();
+    }//GEN-LAST:event_MnKodeBarangAscActionPerformed
+
+    private void MnNamaBarangDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnNamaBarangDescActionPerformed
+        order="order by databarang.nama_brng desc";
+        prosesCari();
+    }//GEN-LAST:event_MnNamaBarangDescActionPerformed
+
+    private void MnNamaBarangAscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnNamaBarangAscActionPerformed
+        order="order by databarang.nama_brng asc";
+        prosesCari();
+    }//GEN-LAST:event_MnNamaBarangAscActionPerformed
+
+    private void MnKategoriAscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnKategoriAscActionPerformed
+        order="order by jenis.nama asc";
+        prosesCari();
+    }//GEN-LAST:event_MnKategoriAscActionPerformed
+
+    private void MnKategoriDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnKategoriDescActionPerformed
+        order="order by jenis.nama desc";
+        prosesCari();
+    }//GEN-LAST:event_MnKategoriDescActionPerformed
+
+    private void MnSatuanAscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnSatuanAscActionPerformed
+        order="order by kodesatuan.satuan asc";
+        prosesCari();
+    }//GEN-LAST:event_MnSatuanAscActionPerformed
+
+    private void MnSatuanDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnSatuanDescActionPerformed
+        order="order by kodesatuan.satuan desc";
+        prosesCari();
+    }//GEN-LAST:event_MnSatuanDescActionPerformed
+
+    private void MnStokMinimalAscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnStokMinimalAscActionPerformed
+        order="order by databarang.stokminimal asc";
+        prosesCari();
+    }//GEN-LAST:event_MnStokMinimalAscActionPerformed
+
+    private void MnStokMinimalDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnStokMinimalDescActionPerformed
+        order="order by databarang.stokminimal desc";
+        prosesCari();
+    }//GEN-LAST:event_MnStokMinimalDescActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -374,6 +602,17 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private widget.Button BtnCari;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
+    private javax.swing.JMenuItem MnKategoriAsc;
+    private javax.swing.JMenuItem MnKategoriDesc;
+    private javax.swing.JMenuItem MnKodeBarangAsc;
+    private javax.swing.JMenuItem MnKodeBarangDesc;
+    private javax.swing.JMenuItem MnNamaBarangAsc;
+    private javax.swing.JMenuItem MnNamaBarangDesc;
+    private javax.swing.JMenuItem MnSatuanAsc;
+    private javax.swing.JMenuItem MnSatuanDesc;
+    private javax.swing.JMenuItem MnStokMinimalAsc;
+    private javax.swing.JMenuItem MnStokMinimalDesc;
+    private javax.swing.JPopupMenu Popup1;
     private widget.TextBox TCari;
     private widget.InternalFrame internalFrame1;
     private widget.Label label10;
@@ -384,52 +623,65 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     // End of variables declaration//GEN-END:variables
 
     private void prosesCari() {
-        Valid.tabelKosong(tabMode);
-        try {
-            String filterBatch;
-            if (aktifkanbatch.equals("yes")) {
-                filterBatch = "gudangbarang.no_batch<>'' and gudangbarang.no_faktur<>''";
-            } else {
-                filterBatch = "gudangbarang.no_batch='' and gudangbarang.no_faktur=''";
-            }
-
-            ps = koneksi.prepareStatement(
-                "select databarang.kode_brng,databarang.nama_brng,kodesatuan.satuan,databarang.stokminimal,jenis.nama,IFNULL(stok.stoksaatini,0) as stoksaatini "+
-                "from databarang inner join kodesatuan on databarang.kode_sat=kodesatuan.kode_sat inner join jenis on databarang.kdjns=jenis.kdjns "+
-                "left join ( "+
-                "  select gudangbarang.kode_brng,sum(gudangbarang.stok) as stoksaatini from gudangbarang inner join bangsal on gudangbarang.kd_bangsal=bangsal.kd_bangsal "+
-                "  where bangsal.status='1' and "+filterBatch+" group by gudangbarang.kode_brng "+
-                ") as stok on databarang.kode_brng=stok.kode_brng "+
-                "where databarang.status='1' and (databarang.kode_brng like ? or databarang.nama_brng like ? or jenis.nama like ?) "+
-                "and IFNULL(stok.stoksaatini,0)<=databarang.stokminimal order by databarang.nama_brng"
-            );
+       Valid.tabelKosong(tabMode);      
+       try{   
+            ps=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng, databarang.letak_barang,"
+                        + " kodesatuan.satuan,databarang.stokminimal, jenis.nama, gudangbarang.kd_bangsal "
+                        + " from databarang inner join kodesatuan on databarang.kode_sat=kodesatuan.kode_sat "
+                        + " inner join gudangbarang on databarang.kode_brng=gudangbarang.kode_brng inner join jenis on databarang.kdjns=jenis.kdjns where databarang.status='1' and gudangbarang.kd_bangsal='GDO'"
+                        + " and (databarang.kode_brng like ? or databarang.nama_brng like ? or jenis.nama like ?)"+order);
             try {
                 ps.setString(1,"%"+TCari.getText().trim()+"%");
                 ps.setString(2,"%"+TCari.getText().trim()+"%");
                 ps.setString(3,"%"+TCari.getText().trim()+"%");
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    tabMode.addRow(new Object[]{
-                        rs.getString("kode_brng"),rs.getString("nama_brng"),rs.getString("satuan"), rs.getString("nama"),rs.getDouble("stokminimal"), rs.getDouble("stoksaatini")
-                    });
-                }
+                rs=ps.executeQuery();            
+                while(rs.next()){ 
+                    if(aktifkanbatch.equals("yes")){
+                        psstok=koneksi.prepareStatement("select sum(gudangbarang.stok) from gudangbarang inner join bangsal on gudangbarang.kd_bangsal=bangsal.kd_bangsal where bangsal.status='1' and gudangbarang.kd_bangsal='GDO' and gudangbarang.no_batch<>'' and gudangbarang.no_faktur<>'' and gudangbarang.kode_brng=?"); 
+                    }else{
+                        psstok=koneksi.prepareStatement("select sum(gudangbarang.stok) from gudangbarang inner join bangsal on gudangbarang.kd_bangsal=bangsal.kd_bangsal where bangsal.status='1' and gudangbarang.kd_bangsal='GDO' and gudangbarang.no_batch='' and gudangbarang.no_faktur='' and gudangbarang.kode_brng=?"); 
+                    }
+                               
+                    try {
+                        psstok.setString(1,rs.getString(1));
+                        rsstok=psstok.executeQuery();
+                        if(rsstok.next()){
+                            stok=rsstok.getDouble(1);
+                        }
+                    } finally{
+                        if(rsstok!=null){
+                            rsstok.close();
+                        }
+                        if(psstok!=null){
+                            psstok.close();
+                        }
+                    }
+                    if(stok<=rs.getDouble("stokminimal")){
+                        tabMode.addRow(new Object[]{
+                            rs.getString("kode_brng"),rs.getString("nama_brng"),rs.getString("letak_barang"),
+                            rs.getString("satuan"),rs.getString("nama"),
+                            rs.getDouble("stokminimal"),stok
+                        });
+                    }
+                }                  
             } catch (Exception e) {
-                System.out.println("Notifikasi : " + e);
-            } finally {
-                if (rs != null) {
+                System.out.println("Notifikasi : "+e);
+            } finally{
+                if(rs!=null){
                     rs.close();
                 }
-                if (ps != null) {
+                if(ps!=null){
                     ps.close();
                 }
             }
-        } catch (SQLException e) {
-            System.out.println("Notifikasi : " + e);
+        }catch(SQLException e){
+            System.out.println("Notifikasi : "+e);
         }
+        
     }
     
     public void isCek(){
-         BtnPrint.setEnabled(akses.getdarurat_stok());
+         BtnPrint.setEnabled(akses.getsirkulasi_obat());
     }
     
     private void runBackground(Runnable task) {

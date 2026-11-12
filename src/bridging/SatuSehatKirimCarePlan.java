@@ -134,6 +134,12 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
         tbObat.setDefaultRenderer(Object.class, new WarnaTable());
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
+
+        cmbStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runBackground(() -> tampil());
+            }
+        });
         
         try {
             link=koneksiDB.URLFHIRSATUSEHAT();
@@ -172,8 +178,8 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
     private void initComponents() {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
-        ppPilihSemua = new widget.MenuItem();
-        ppBersihkan = new widget.MenuItem();
+        ppPilihSemua = new javax.swing.JMenuItem();
+        ppBersihkan = new javax.swing.JMenuItem();
         LoadHTML = new widget.editorpane();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
@@ -192,6 +198,8 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
         DTPCari1 = new widget.Tanggal();
         jLabel17 = new widget.Label();
         DTPCari2 = new widget.Tanggal();
+        cmbStatus = new widget.ComboBox();
+        jLabel12 = new widget.Label();
         jLabel16 = new widget.Label();
         TCari = new widget.TextBox();
         BtnCari = new widget.Button();
@@ -385,6 +393,16 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
         DTPCari2.setPreferredSize(new java.awt.Dimension(95, 23));
         panelGlass9.add(DTPCari2);
 
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Semua", "Terkirim", "Belum Terkirim" }));
+        cmbStatus.setName("cmbStatus"); // NOI18N
+        cmbStatus.setPreferredSize(new java.awt.Dimension(150, 23));
+        panelGlass9.add(cmbStatus);
+
+        jLabel12.setText("Status Kirim :");
+        jLabel12.setName("jLabel12"); // NOI18N
+        jLabel12.setPreferredSize(new java.awt.Dimension(120, 23));
+        panelGlass9.add(jLabel12);
+
         jLabel16.setText("Key Word :");
         jLabel16.setName("jLabel16"); // NOI18N
         jLabel16.setPreferredSize(new java.awt.Dimension(70, 23));
@@ -555,10 +573,10 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
                         headers.add("Authorization", "Bearer "+api.TokenSatuSehat());
                         json = "{" +
                                     "\"resourceType\" : \"CarePlan\"," +
-                                    "\"identifier\" : {" +
+                                    "\"identifier\" : [{" +
                                         "\"system\" : \"http://sys-ids.kemkes.go.id/careplan/"+koneksiDB.IDSATUSEHAT()+"\"," +
                                         "\"value\" : \""+tbObat.getValueAt(i,2).toString()+"\"" +
-                                    "}," +
+                                    "}]," +
                                     "\"title\" : \"Instruksi Medik dan Keperawatan Pasien\"," +
                                     "\"status\" : \"active\"," +
                                     (tbObat.getValueAt(i,12).toString().equals("Ralan")?
@@ -586,19 +604,19 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
                                         "],"
                                     )+
                                     "\"intent\" : \"plan\"," +
-                                    "\"description\" : \""+tbObat.getValueAt(i,7).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>").replaceAll("\t", " ")+"\"," +
+                                    "\"description\" : \""+escapeJson(tbObat.getValueAt(i,7).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>").replaceAll("\t", " "))+"\"," +
                                     "\"subject\" : {" +
                                         "\"reference\" : \"Patient/"+idpasien+"\"," +
-                                        "\"display\" : \""+tbObat.getValueAt(i,4).toString()+"\"" +
+                                        "\"display\" : \""+escapeJson(tbObat.getValueAt(i,4).toString())+"\"" +
                                     "}," +
                                     "\"encounter\" : {" +
                                         "\"reference\" : \"Encounter/"+tbObat.getValueAt(i,6).toString()+"\","+
-                                        "\"display\" : \"Kunjungan "+tbObat.getValueAt(i,4).toString()+" pada tanggal "+tbObat.getValueAt(i,1).toString()+" dengan nomor kunjungan "+tbObat.getValueAt(i,2).toString()+"\""+
+                                        "\"display\" : \"Kunjungan "+escapeJson(tbObat.getValueAt(i,4).toString())+" pada tanggal "+tbObat.getValueAt(i,1).toString()+" dengan nomor kunjungan "+tbObat.getValueAt(i,2).toString()+"\""+
                                     "}," +
                                     "\"created\" : \""+tbObat.getValueAt(i,10).toString().replaceAll(" ","T")+"+07:00\"," +
                                     "\"author\" : {" +
                                         "\"reference\" : \"Practitioner/"+idpraktisi+"\"," +
-                                        "\"display\" : \""+tbObat.getValueAt(i,8).toString()+"\"" +
+                                        "\"display\" : \""+escapeJson(tbObat.getValueAt(i,8).toString())+"\"" +
                                     "}" +
                                 "}";
                         System.out.println("URL : "+link+"/CarePlan");
@@ -616,6 +634,9 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
                                 tbObat.setValueAt(false,i,0);
                             }
                         }
+                    }catch(org.springframework.web.client.HttpStatusCodeException e){
+                        System.out.println("Notifikasi Bridging : "+e);
+                        System.out.println("Response Body : "+e.getResponseBodyAsString());
                     }catch(Exception e){
                         System.out.println("Notifikasi Bridging : "+e);
                     }
@@ -651,10 +672,10 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
                         json = "{" +
                                     "\"resourceType\" : \"CarePlan\"," +
                                     "\"id\": \""+tbObat.getValueAt(i,11).toString()+"\"," +
-                                    "\"identifier\" : {" +
+                                    "\"identifier\" : [{" +
                                         "\"system\" : \"http://sys-ids.kemkes.go.id/careplan/"+koneksiDB.IDSATUSEHAT()+"\"," +
                                         "\"value\" : \""+tbObat.getValueAt(i,2).toString()+"\"" +
-                                    "}," +
+                                    "}]," +
                                     "\"title\" : \"Instruksi Medik dan Keperawatan Pasien\"," +
                                     "\"status\" : \"active\"," +
                                     (tbObat.getValueAt(i,12).toString().equals("Ralan")?
@@ -682,19 +703,19 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
                                         "],"
                                     )+
                                     "\"intent\" : \"plan\"," +
-                                    "\"description\" : \""+tbObat.getValueAt(i,7).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>").replaceAll("\t", " ")+"\"," +
+                                    "\"description\" : \""+escapeJson(tbObat.getValueAt(i,7).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>").replaceAll("\t", " "))+"\"," +
                                     "\"subject\" : {" +
                                         "\"reference\" : \"Patient/"+idpasien+"\"," +
-                                        "\"display\" : \""+tbObat.getValueAt(i,4).toString()+"\"" +
+                                        "\"display\" : \""+escapeJson(tbObat.getValueAt(i,4).toString())+"\"" +
                                     "}," +
                                     "\"encounter\" : {" +
                                         "\"reference\" : \"Encounter/"+tbObat.getValueAt(i,6).toString()+"\","+
-                                        "\"display\" : \"Kunjungan "+tbObat.getValueAt(i,4).toString()+" pada tanggal "+tbObat.getValueAt(i,1).toString()+" dengan nomor kunjungan "+tbObat.getValueAt(i,2).toString()+"\""+
+                                        "\"display\" : \"Kunjungan "+escapeJson(tbObat.getValueAt(i,4).toString())+" pada tanggal "+tbObat.getValueAt(i,1).toString()+" dengan nomor kunjungan "+tbObat.getValueAt(i,2).toString()+"\""+
                                     "}," +
                                     "\"created\" : \""+tbObat.getValueAt(i,10).toString().replaceAll(" ","T")+"+07:00\"," +
                                     "\"author\" : {" +
                                         "\"reference\" : \"Practitioner/"+idpraktisi+"\"," +
-                                        "\"display\" : \""+tbObat.getValueAt(i,8).toString()+"\"" +
+                                        "\"display\" : \""+escapeJson(tbObat.getValueAt(i,8).toString())+"\"" +
                                     "}" +
                                 "}";
                         System.out.println("URL : "+link+"/CarePlan/"+tbObat.getValueAt(i,11).toString());
@@ -703,6 +724,9 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
                         json=api.getRest().exchange(link+"/CarePlan/"+tbObat.getValueAt(i,11).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                         System.out.println("Result JSON : "+json);
                         tbObat.setValueAt(false,i,0);
+                    }catch(org.springframework.web.client.HttpStatusCodeException e){
+                        System.out.println("Notifikasi Bridging : "+e);
+                        System.out.println("Response Body : "+e.getResponseBodyAsString());
                     }catch(Exception e){
                         System.out.println("Notifikasi Bridging : "+e);
                     }
@@ -781,7 +805,9 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
     private widget.editorpane LoadHTML;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
+    private widget.ComboBox cmbStatus;
     private widget.InternalFrame internalFrame1;
+    private widget.Label jLabel12;
     private widget.Label jLabel15;
     private widget.Label jLabel16;
     private widget.Label jLabel17;
@@ -790,28 +816,42 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
     private javax.swing.JPopupMenu jPopupMenu1;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
-    private widget.MenuItem ppBersihkan;
-    private widget.MenuItem ppPilihSemua;
+    private javax.swing.JMenuItem ppBersihkan;
+    private javax.swing.JMenuItem ppPilihSemua;
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
     
     private void tampil() {
-        Valid.tabelKosong(tabMode);
-        try{
-            ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
-                   "pasien.nm_pasien,pasien.no_ktp,satu_sehat_encounter.id_encounter,pemeriksaan_ralan.rtl,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,"+
-                   "ifnull(satu_sehat_careplan.id_careplan,'') as satu_sehat_careplan "+
-                   "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
-                   "left join satu_sehat_careplan on satu_sehat_careplan.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_careplan.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_careplan.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "where pemeriksaan_ralan.rtl<>'' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ?) "));
+    Valid.tabelKosong(tabMode);
+    try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim = " and ifnull(satu_sehat_careplan.id_careplan,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim = " and ifnull(satu_sehat_careplan.id_careplan,'')='' ";
+        }
+
+        ps=koneksi.prepareStatement(
+            "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+            "pasien.nm_pasien,pasien.no_ktp,satu_sehat_encounter.id_encounter,pemeriksaan_ralan.rtl,"+
+            "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,"+
+            "ifnull(satu_sehat_careplan.id_careplan,'') as satu_sehat_careplan "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_careplan on satu_sehat_careplan.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_careplan.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_careplan.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "where pemeriksaan_ralan.rtl<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim+
+            (TCari.getText().equals("")?"":" and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
+            "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ?) ")
+        );
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -854,6 +894,7 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
                    "left join satu_sehat_careplan on satu_sehat_careplan.no_rawat=pemeriksaan_ranap.no_rawat "+
                    "and satu_sehat_careplan.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_careplan.jam_rawat=pemeriksaan_ranap.jam_rawat "+
                    "where pemeriksaan_ranap.rtl<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+                   statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ?) "));
             try {
@@ -899,6 +940,11 @@ public final class SatuSehatKirimCarePlan extends javax.swing.JDialog {
     
     public JTable getTable(){
         return tbObat;
+    }
+    
+    private String escapeJson(String text) {
+        if (text == null) return "";
+        return text.replace("\\", "\\\\").replace("\"", "\\\"");
     }
     
     private void runBackground(Runnable task) {

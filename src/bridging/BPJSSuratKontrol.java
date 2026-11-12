@@ -229,6 +229,15 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         ChkInput.setSelected(false);
         isForm();
         
+        internalFrame1.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                if(ChkInput.isSelected()){
+                    isForm();
+                }
+            }
+        });
+        
         try {
             user=akses.getkode().replace(" ","").substring(0,9);
         } catch (Exception e) {
@@ -1549,6 +1558,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
                             HamilMenyusui.getSelectedItem().toString().trim(),Remisi.getText(),TerapiRumatan.getSelectedItem().toString().trim(),Usia.getText(),AsamUrat.getText(),RemisiSLE.getText(),Hamil.getSelectedItem().toString().trim()
                         })==true){
                         emptTeks();
+                        ciutkanFormJikaLayarKecil();
                         runBackground(() ->tampil());
                         if(JADIKANBOOKINGSURATKONTROLAPIBPJS.equals("yes")){
                             if(isBooking()==false){
@@ -1893,6 +1903,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                                 HamilMenyusui.getSelectedItem().toString().trim(),Remisi.getText(),TerapiRumatan.getSelectedItem().toString().trim(),Usia.getText(),AsamUrat.getText(),RemisiSLE.getText(),Hamil.getSelectedItem().toString().trim(),NoSurat.getText()
                             })==true){
                             emptTeks();
+                            ciutkanFormJikaLayarKecil();
                             runBackground(() ->tampil());
                         }
                     }else{
@@ -2491,27 +2502,40 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         runBackground(() ->tampil());
     }
     
+    // Tinggi area bawah (jPanel3: tombol + pencarian) dan tinggi minimal tabel hasil
+    private static final int TINGGI_FORM_PENUH = 475;
+    private static final int TINGGI_AREA_BAWAH = 144;
+    private static final int TINGGI_TABEL_MIN  = 150;
+    private static final int TINGGI_FORM_MIN   = 120;
+
     private void isForm(){
         if(ChkInput.isSelected()==true){
-            if(internalFrame1.getHeight()>647){
-                ChkInput.setVisible(false);
-                PanelInput.setPreferredSize(new Dimension(WIDTH,475));
-                FormInput.setVisible(true);      
-                ChkInput.setVisible(true);
-            }else{
-                ChkInput.setVisible(false);
-                PanelInput.setPreferredSize(new Dimension(WIDTH,internalFrame1.getHeight()-175));
-                FormInput.setVisible(true);      
-                ChkInput.setVisible(true);
-            }
-        }else if(ChkInput.isSelected()==false){           
-            ChkInput.setVisible(false);            
+            ChkInput.setVisible(false);
+            // Sisakan ruang untuk tabel hasil; form di-scroll sendiri (scrollInput)
+            int sisa = internalFrame1.getHeight()-TINGGI_AREA_BAWAH-TINGGI_TABEL_MIN;
+            int tinggi = Math.max(TINGGI_FORM_MIN,Math.min(TINGGI_FORM_PENUH,sisa));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,tinggi));
+            FormInput.setVisible(true);
+            ChkInput.setVisible(true);
+        }else{
+            ChkInput.setVisible(false);
             PanelInput.setPreferredSize(new Dimension(WIDTH,20));
-            FormInput.setVisible(false);      
+            FormInput.setVisible(false);
             ChkInput.setVisible(true);
         }
+        PanelInput.revalidate();
+        internalFrame1.revalidate();
+        internalFrame1.repaint();
     }
-    
+
+    // Di layar kecil, setelah simpan/ubah form dilipat agar tabel hasil langsung terlihat
+    private void ciutkanFormJikaLayarKecil(){
+        if(internalFrame1.getHeight()<=TINGGI_FORM_PENUH+TINGGI_AREA_BAWAH+TINGGI_TABEL_MIN+30){
+            ChkInput.setSelected(false);
+            isForm();
+        }
+    }
+
     public void isCek(){
         BtnSimpan.setEnabled(akses.getbpjs_surat_kontrol());
         BtnHapus.setEnabled(akses.getbpjs_surat_kontrol());

@@ -801,6 +801,8 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
         DTPCari1 = new widget.Tanggal();
         jLabel17 = new widget.Label();
         DTPCari2 = new widget.Tanggal();
+        jLabel12 = new widget.Label();
+        cmbStatus = new widget.ComboBox();
         jLabel16 = new widget.Label();
         TCari = new widget.TextBox();
         BtnCari = new widget.Button();
@@ -979,7 +981,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
         jLabel15.setPreferredSize(new java.awt.Dimension(85, 23));
         panelGlass9.add(jLabel15);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-09-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-10-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setPreferredSize(new java.awt.Dimension(95, 23));
@@ -991,11 +993,21 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
         jLabel17.setPreferredSize(new java.awt.Dimension(24, 23));
         panelGlass9.add(jLabel17);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-09-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-10-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setPreferredSize(new java.awt.Dimension(95, 23));
         panelGlass9.add(DTPCari2);
+
+        jLabel12.setText("Status Kirim :");
+        jLabel12.setName("jLabel12"); // NOI18N
+        jLabel12.setPreferredSize(new java.awt.Dimension(120, 23));
+        panelGlass9.add(jLabel12);
+
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Semua", "Terkirim", "Belum Terkirim" }));
+        cmbStatus.setName("cmbStatus"); // NOI18N
+        cmbStatus.setPreferredSize(new java.awt.Dimension(150, 23));
+        panelGlass9.add(cmbStatus);
 
         jLabel16.setText("Key Word :");
         jLabel16.setName("jLabel16"); // NOI18N
@@ -3810,7 +3822,9 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private widget.ScrollPane Scroll9;
     private widget.TextBox TCari;
     private widget.TabPane TabRawat;
+    private widget.ComboBox cmbStatus;
     private widget.InternalFrame internalFrame1;
+    private widget.Label jLabel12;
     private widget.Label jLabel15;
     private widget.Label jLabel16;
     private widget.Label jLabel17;
@@ -3836,19 +3850,37 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private void tampilsuhu() {
         Valid.tabelKosong(tabModeSuhu);
         try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvsuhu.id_observation,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvsuhu.id_observation,'')='' ";
+        }
+
             ps=koneksi.prepareStatement(
                    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
                    "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.suhu_tubuh, "+
-                   "ifnull(satu_sehat_observationttvsuhu.id_observation,'') as satu_sehat_observationttvsuhu from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik left join satu_sehat_observationttvsuhu on satu_sehat_observationttvsuhu.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_observationttvsuhu.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_observationttvsuhu.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "and satu_sehat_observationttvsuhu.status='Ralan' where pemeriksaan_ralan.suhu_tubuh<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+            "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.suhu_tubuh,"+
+            "ifnull(satu_sehat_observationttvsuhu.id_observation,'') as satu_sehat_observationttvsuhu "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_observationttvsuhu on satu_sehat_observationttvsuhu.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_observationttvsuhu.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_observationttvsuhu.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "and satu_sehat_observationttvsuhu.status='Ralan' "+
+            "where pemeriksaan_ralan.suhu_tubuh<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+            "reg_periksa.stts like ?)")
+        );
+
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -3881,18 +3913,37 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
             }
             
             ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
-                   "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.suhu_tubuh, "+
-                   "ifnull(satu_sehat_observationttvsuhu.id_observation,'') as satu_sehat_observationttvsuhu from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik left join satu_sehat_observationttvsuhu on satu_sehat_observationttvsuhu.no_rawat=pemeriksaan_ranap.no_rawat "+
-                   "and satu_sehat_observationttvsuhu.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_observationttvsuhu.jam_rawat=pemeriksaan_ranap.jam_rawat "+
-                   "and satu_sehat_observationttvsuhu.status='Ranap' where pemeriksaan_ranap.suhu_tubuh<>'' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
+    "reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+    "pasien.nm_pasien,pasien.no_ktp,"+
+    "reg_periksa.stts,"+
+    "concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,"+
+    "satu_sehat_encounter.id_encounter,"+
+    "pegawai.nama,pegawai.no_ktp as ktppraktisi,"+
+    "pemeriksaan_ranap.tgl_perawatan,"+
+    "pemeriksaan_ranap.jam_rawat,"+
+    "pemeriksaan_ranap.suhu_tubuh,"+
+    "ifnull(satu_sehat_observationttvsuhu.id_observation,'') as satu_sehat_observationttvsuhu "+
+    "from reg_periksa "+
+    "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+    "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+    "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
+    "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik "+
+    "left join satu_sehat_observationttvsuhu on satu_sehat_observationttvsuhu.no_rawat=pemeriksaan_ranap.no_rawat "+
+    "and satu_sehat_observationttvsuhu.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "+
+    "and satu_sehat_observationttvsuhu.jam_rawat=pemeriksaan_ranap.jam_rawat "+
+    "and satu_sehat_observationttvsuhu.status='Ranap' "+
+    "where pemeriksaan_ranap.suhu_tubuh<>'' "+
+    "and reg_periksa.tgl_registrasi between ? and ? "+
+    (TCari.getText().equals("") ? "" :
+    "and (reg_periksa.no_rawat like ? or "+
+    "reg_periksa.no_rkm_medis like ? or "+
+    "pasien.nm_pasien like ? or "+
+    "pasien.no_ktp like ? or "+
+    "pegawai.no_ktp like ? or "+
+    "pegawai.nama like ? or "+
+    "reg_periksa.stts like ?)")
+);
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -3932,19 +3983,36 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private void tampilrespirasi() {
         Valid.tabelKosong(tabModeRespirasi);
         try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvrespirasi.id_observation,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvrespirasi.id_observation,'')='' ";
+        }
+
             ps=koneksi.prepareStatement(
                    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
                    "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.respirasi, "+
-                   "ifnull(satu_sehat_observationttvrespirasi.id_observation,'') as satu_sehat_observationttvrespirasi from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik left join satu_sehat_observationttvrespirasi on satu_sehat_observationttvrespirasi.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_observationttvrespirasi.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_observationttvrespirasi.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "and satu_sehat_observationttvrespirasi.status='Ralan' where pemeriksaan_ralan.respirasi<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+            "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.respirasi,"+
+            "ifnull(satu_sehat_observationttvrespirasi.id_observation,'') as satu_sehat_observationttvrespirasi "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_observationttvrespirasi on satu_sehat_observationttvrespirasi.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_observationttvrespirasi.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_observationttvrespirasi.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "and satu_sehat_observationttvrespirasi.status='Ralan' "+
+            "where pemeriksaan_ralan.respirasi<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+            "reg_periksa.stts like ?)")
+        );
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -3977,18 +4045,37 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
             }
             
             ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
-                   "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.respirasi, "+
-                   "ifnull(satu_sehat_observationttvrespirasi.id_observation,'') as satu_sehat_observationttvrespirasi from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik left join satu_sehat_observationttvrespirasi on satu_sehat_observationttvrespirasi.no_rawat=pemeriksaan_ranap.no_rawat "+
-                   "and satu_sehat_observationttvrespirasi.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_observationttvrespirasi.jam_rawat=pemeriksaan_ranap.jam_rawat "+
-                   "and satu_sehat_observationttvrespirasi.status='Ranap' where pemeriksaan_ranap.respirasi<>'' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
+    "reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+    "pasien.nm_pasien,pasien.no_ktp,"+
+    "reg_periksa.stts,"+
+    "concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,"+
+    "satu_sehat_encounter.id_encounter,"+
+    "pegawai.nama,pegawai.no_ktp as ktppraktisi,"+
+    "pemeriksaan_ranap.tgl_perawatan,"+
+    "pemeriksaan_ranap.jam_rawat,"+
+    "pemeriksaan_ranap.respirasi,"+
+    "ifnull(satu_sehat_observationttvrespirasi.id_observation,'') as satu_sehat_observationttvrespirasi "+
+    "from reg_periksa "+
+    "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+    "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+    "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
+    "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik "+
+    "left join satu_sehat_observationttvrespirasi on satu_sehat_observationttvrespirasi.no_rawat=pemeriksaan_ranap.no_rawat "+
+    "and satu_sehat_observationttvrespirasi.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "+
+    "and satu_sehat_observationttvrespirasi.jam_rawat=pemeriksaan_ranap.jam_rawat "+
+    "and satu_sehat_observationttvrespirasi.status='Ranap' "+
+    "where pemeriksaan_ranap.respirasi<>'' "+
+    "and reg_periksa.tgl_registrasi between ? and ? "+
+    (TCari.getText().equals("") ? "" :
+    "and (reg_periksa.no_rawat like ? or "+
+    "reg_periksa.no_rkm_medis like ? or "+
+    "pasien.nm_pasien like ? or "+
+    "pasien.no_ktp like ? or "+
+    "pegawai.no_ktp like ? or "+
+    "pegawai.nama like ? or "+
+    "reg_periksa.stts like ?)")
+);
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4028,19 +4115,36 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private void tampilnadi() {
         Valid.tabelKosong(tabModeNadi);
         try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvnadi.id_observation,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvnadi.id_observation,'')='' ";
+        }
+
             ps=koneksi.prepareStatement(
                    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
                    "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.nadi, "+
-                   "ifnull(satu_sehat_observationttvnadi.id_observation,'') as satu_sehat_observationttvnadi from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik left join satu_sehat_observationttvnadi on satu_sehat_observationttvnadi.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_observationttvnadi.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_observationttvnadi.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "and satu_sehat_observationttvnadi.status='Ralan' where pemeriksaan_ralan.nadi<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+            "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.nadi,"+
+            "ifnull(satu_sehat_observationttvnadi.id_observation,'') as satu_sehat_observationttvnadi "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_observationttvnadi on satu_sehat_observationttvnadi.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_observationttvnadi.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_observationttvnadi.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "and satu_sehat_observationttvnadi.status='Ralan' "+
+            "where pemeriksaan_ralan.nadi<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+            "reg_periksa.stts like ?)")
+        );
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4073,18 +4177,38 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
             }
             
             ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
-                   "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.nadi, "+
-                   "ifnull(satu_sehat_observationttvnadi.id_observation,'') as satu_sehat_observationttvnadi from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik left join satu_sehat_observationttvnadi on satu_sehat_observationttvnadi.no_rawat=pemeriksaan_ranap.no_rawat "+
-                   "and satu_sehat_observationttvnadi.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_observationttvnadi.jam_rawat=pemeriksaan_ranap.jam_rawat "+
-                   "and satu_sehat_observationttvnadi.status='Ranap' where pemeriksaan_ranap.nadi<>'' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+       "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
+       "reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+       "pasien.nm_pasien,pasien.no_ktp,"+
+       "reg_periksa.stts,"+
+       "concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,"+
+       "satu_sehat_encounter.id_encounter,"+
+       "pegawai.nama,pegawai.no_ktp as ktppraktisi,"+
+       "pemeriksaan_ranap.tgl_perawatan,"+
+       "pemeriksaan_ranap.jam_rawat,"+
+       "pemeriksaan_ranap.nadi,"+
+       "ifnull(satu_sehat_observationttvnadi.id_observation,'') as satu_sehat_observationttvnadi "+
+       "from reg_periksa "+
+       "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+       "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+       "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
+       "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik "+
+       "left join satu_sehat_observationttvnadi on satu_sehat_observationttvnadi.no_rawat=pemeriksaan_ranap.no_rawat "+
+       "and satu_sehat_observationttvnadi.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "+
+       "and satu_sehat_observationttvnadi.jam_rawat=pemeriksaan_ranap.jam_rawat "+
+       "and satu_sehat_observationttvnadi.status='Ranap' "+
+       "where pemeriksaan_ranap.nadi<>'' "+
+       "and reg_periksa.tgl_registrasi between ? and ? "+
+       statusKirim+
+       (TCari.getText().equals("") ? "" :
+       "and (reg_periksa.no_rawat like ? or "+
+       "reg_periksa.no_rkm_medis like ? or "+
+       "pasien.nm_pasien like ? or "+
+       "pasien.no_ktp like ? or "+
+       "pegawai.no_ktp like ? or "+
+       "pegawai.nama like ? or "+
+       "reg_periksa.stts like ?)")
+);
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4124,19 +4248,36 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private void tampilspo2() {
         Valid.tabelKosong(tabModeSpO2);
         try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvspo2.id_observation,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvspo2.id_observation,'')='' ";
+        }
+
             ps=koneksi.prepareStatement(
                    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
                    "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.spo2, "+
-                   "ifnull(satu_sehat_observationttvspo2.id_observation,'') as satu_sehat_observationttvspo2 from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik left join satu_sehat_observationttvspo2 on satu_sehat_observationttvspo2.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_observationttvspo2.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_observationttvspo2.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "and satu_sehat_observationttvspo2.status='Ralan' where pemeriksaan_ralan.spo2<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+            "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.spo2,"+
+            "ifnull(satu_sehat_observationttvspo2.id_observation,'') as satu_sehat_observationttvspo2 "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_observationttvspo2 on satu_sehat_observationttvspo2.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_observationttvspo2.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_observationttvspo2.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "and satu_sehat_observationttvspo2.status='Ralan' "+
+            "where pemeriksaan_ralan.spo2<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+            "reg_periksa.stts like ?)")
+        );
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4169,18 +4310,38 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
             }
             
             ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
-                   "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.spo2, "+
-                   "ifnull(satu_sehat_observationttvspo2.id_observation,'') as satu_sehat_observationttvspo2 from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik left join satu_sehat_observationttvspo2 on satu_sehat_observationttvspo2.no_rawat=pemeriksaan_ranap.no_rawat "+
-                   "and satu_sehat_observationttvspo2.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_observationttvspo2.jam_rawat=pemeriksaan_ranap.jam_rawat "+
-                   "and satu_sehat_observationttvspo2.status='Ranap' where pemeriksaan_ranap.spo2<>'' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+       "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
+       "reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+       "pasien.nm_pasien,pasien.no_ktp,"+
+       "reg_periksa.stts,"+
+       "concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,"+
+       "satu_sehat_encounter.id_encounter,"+
+       "pegawai.nama,pegawai.no_ktp as ktppraktisi,"+
+       "pemeriksaan_ranap.tgl_perawatan,"+
+       "pemeriksaan_ranap.jam_rawat,"+
+       "pemeriksaan_ranap.spo2,"+
+       "ifnull(satu_sehat_observationttvspo2.id_observation,'') as satu_sehat_observationttvspo2 "+
+       "from reg_periksa "+
+       "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+       "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+       "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
+       "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik "+
+       "left join satu_sehat_observationttvspo2 on satu_sehat_observationttvspo2.no_rawat=pemeriksaan_ranap.no_rawat "+
+       "and satu_sehat_observationttvspo2.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "+
+       "and satu_sehat_observationttvspo2.jam_rawat=pemeriksaan_ranap.jam_rawat "+
+       "and satu_sehat_observationttvspo2.status='Ranap' "+
+       "where pemeriksaan_ranap.spo2<>'' "+
+       "and reg_periksa.tgl_registrasi between ? and ? "+
+       statusKirim+
+       (TCari.getText().equals("") ? "" :
+       "and (reg_periksa.no_rawat like ? or "+
+       "reg_periksa.no_rkm_medis like ? or "+
+       "pasien.nm_pasien like ? or "+
+       "pasien.no_ktp like ? or "+
+       "pegawai.no_ktp like ? or "+
+       "pegawai.nama like ? or "+
+       "reg_periksa.stts like ?)")
+);
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4220,19 +4381,36 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private void tampilgcs() {
         Valid.tabelKosong(tabModeGCS);
         try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvgcs.id_observation,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvgcs.id_observation,'')='' ";
+        }
+
             ps=koneksi.prepareStatement(
                    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
                    "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.gcs, "+
-                   "ifnull(satu_sehat_observationttvgcs.id_observation,'') as satu_sehat_observationttvgcs from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik left join satu_sehat_observationttvgcs on satu_sehat_observationttvgcs.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_observationttvgcs.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_observationttvgcs.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "and satu_sehat_observationttvgcs.status='Ralan' where pemeriksaan_ralan.gcs<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+            "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.gcs,"+
+            "ifnull(satu_sehat_observationttvgcs.id_observation,'') as satu_sehat_observationttvgcs "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_observationttvgcs on satu_sehat_observationttvgcs.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_observationttvgcs.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_observationttvgcs.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "and satu_sehat_observationttvgcs.status='Ralan' "+
+            "where pemeriksaan_ralan.gcs<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+            "reg_periksa.stts like ?)")
+        );
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4265,18 +4443,38 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
             }
             
             ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
-                   "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.gcs, "+
-                   "ifnull(satu_sehat_observationttvgcs.id_observation,'') as satu_sehat_observationttvgcs from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik left join satu_sehat_observationttvgcs on satu_sehat_observationttvgcs.no_rawat=pemeriksaan_ranap.no_rawat "+
-                   "and satu_sehat_observationttvgcs.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_observationttvgcs.jam_rawat=pemeriksaan_ranap.jam_rawat "+
-                   "and satu_sehat_observationttvgcs.status='Ranap' where pemeriksaan_ranap.gcs<>'' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+       "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
+       "reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+       "pasien.nm_pasien,pasien.no_ktp,"+
+       "reg_periksa.stts,"+
+       "concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,"+
+       "satu_sehat_encounter.id_encounter,"+
+       "pegawai.nama,pegawai.no_ktp as ktppraktisi,"+
+       "pemeriksaan_ranap.tgl_perawatan,"+
+       "pemeriksaan_ranap.jam_rawat,"+
+       "pemeriksaan_ranap.gcs,"+
+       "ifnull(satu_sehat_observationttvgcs.id_observation,'') as satu_sehat_observationttvgcs "+
+       "from reg_periksa "+
+       "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+       "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+       "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
+       "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik "+
+       "left join satu_sehat_observationttvgcs on satu_sehat_observationttvgcs.no_rawat=pemeriksaan_ranap.no_rawat "+
+       "and satu_sehat_observationttvgcs.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "+
+       "and satu_sehat_observationttvgcs.jam_rawat=pemeriksaan_ranap.jam_rawat "+
+       "and satu_sehat_observationttvgcs.status='Ranap' "+
+       "where pemeriksaan_ranap.gcs<>'' "+
+       "and reg_periksa.tgl_registrasi between ? and ? "+
+       statusKirim+
+       (TCari.getText().equals("") ? "" :
+       "and (reg_periksa.no_rawat like ? or "+
+       "reg_periksa.no_rkm_medis like ? or "+
+       "pasien.nm_pasien like ? or "+
+       "pasien.no_ktp like ? or "+
+       "pegawai.no_ktp like ? or "+
+       "pegawai.nama like ? or "+
+       "reg_periksa.stts like ?)")
+);
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4316,19 +4514,36 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private void tampilkesadaran() {
         Valid.tabelKosong(tabModeKesadaran);
         try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvkesadaran.id_observation,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvkesadaran.id_observation,'')='' ";
+        }
+
             ps=koneksi.prepareStatement(
                    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
                    "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.kesadaran, "+
-                   "ifnull(satu_sehat_observationttvkesadaran.id_observation,'') as satu_sehat_observationttvkesadaran from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik left join satu_sehat_observationttvkesadaran on satu_sehat_observationttvkesadaran.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_observationttvkesadaran.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_observationttvkesadaran.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "and satu_sehat_observationttvkesadaran.status='Ralan' where pemeriksaan_ralan.kesadaran<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+            "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.kesadaran,"+
+            "ifnull(satu_sehat_observationttvkesadaran.id_observation,'') as satu_sehat_observationttvkesadaran "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_observationttvkesadaran on satu_sehat_observationttvkesadaran.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_observationttvkesadaran.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_observationttvkesadaran.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "and satu_sehat_observationttvkesadaran.status='Ralan' "+
+            "where pemeriksaan_ralan.kesadaran<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+            "reg_periksa.stts like ?)")
+        );
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4361,18 +4576,38 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
             }
             
             ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
-                   "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.kesadaran, "+
-                   "ifnull(satu_sehat_observationttvkesadaran.id_observation,'') as satu_sehat_observationttvkesadaran from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik left join satu_sehat_observationttvkesadaran on satu_sehat_observationttvkesadaran.no_rawat=pemeriksaan_ranap.no_rawat "+
-                   "and satu_sehat_observationttvkesadaran.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_observationttvkesadaran.jam_rawat=pemeriksaan_ranap.jam_rawat "+
-                   "and satu_sehat_observationttvkesadaran.status='Ranap' where pemeriksaan_ranap.kesadaran<>'' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+       "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
+       "reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+       "pasien.nm_pasien,pasien.no_ktp,"+
+       "reg_periksa.stts,"+
+       "concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,"+
+       "satu_sehat_encounter.id_encounter,"+
+       "pegawai.nama,pegawai.no_ktp as ktppraktisi,"+
+       "pemeriksaan_ranap.tgl_perawatan,"+
+       "pemeriksaan_ranap.jam_rawat,"+
+       "pemeriksaan_ranap.kesadaran,"+
+       "ifnull(satu_sehat_observationttvkesadaran.id_observation,'') as satu_sehat_observationttvkesadaran "+
+       "from reg_periksa "+
+       "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+       "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+       "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
+       "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik "+
+       "left join satu_sehat_observationttvkesadaran on satu_sehat_observationttvkesadaran.no_rawat=pemeriksaan_ranap.no_rawat "+
+       "and satu_sehat_observationttvkesadaran.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "+
+       "and satu_sehat_observationttvkesadaran.jam_rawat=pemeriksaan_ranap.jam_rawat "+
+       "and satu_sehat_observationttvkesadaran.status='Ranap' "+
+       "where pemeriksaan_ranap.kesadaran<>'' "+
+       "and reg_periksa.tgl_registrasi between ? and ? "+
+       statusKirim+
+       (TCari.getText().equals("") ? "" :
+       "and (reg_periksa.no_rawat like ? or "+
+       "reg_periksa.no_rkm_medis like ? or "+
+       "pasien.nm_pasien like ? or "+
+       "pasien.no_ktp like ? or "+
+       "pegawai.no_ktp like ? or "+
+       "pegawai.nama like ? or "+
+       "reg_periksa.stts like ?)")
+);
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4412,19 +4647,36 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private void tampiltensi() {
         Valid.tabelKosong(tabModeTensi);
         try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvtensi.id_observation,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvtensi.id_observation,'')='' ";
+        }
+
             ps=koneksi.prepareStatement(
                    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
                    "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.tensi, "+
-                   "ifnull(satu_sehat_observationttvtensi.id_observation,'') as satu_sehat_observationttvtensi from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik left join satu_sehat_observationttvtensi on satu_sehat_observationttvtensi.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_observationttvtensi.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_observationttvtensi.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "and satu_sehat_observationttvtensi.status='Ralan' where pemeriksaan_ralan.tensi<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+            "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.tensi,"+
+            "ifnull(satu_sehat_observationttvtensi.id_observation,'') as satu_sehat_observationttvtensi "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_observationttvtensi on satu_sehat_observationttvtensi.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_observationttvtensi.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_observationttvtensi.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "and satu_sehat_observationttvtensi.status='Ralan' "+
+            "where pemeriksaan_ralan.tensi<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+            "reg_periksa.stts like ?)")
+        );
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4457,18 +4709,38 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
             }
             
             ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
-                   "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.tensi, "+
-                   "ifnull(satu_sehat_observationttvtensi.id_observation,'') as satu_sehat_observationttvtensi from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik left join satu_sehat_observationttvtensi on satu_sehat_observationttvtensi.no_rawat=pemeriksaan_ranap.no_rawat "+
-                   "and satu_sehat_observationttvtensi.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_observationttvtensi.jam_rawat=pemeriksaan_ranap.jam_rawat "+
-                   "and satu_sehat_observationttvtensi.status='Ranap' where pemeriksaan_ranap.tensi<>'' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+       "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
+       "reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+       "pasien.nm_pasien,pasien.no_ktp,"+
+       "reg_periksa.stts,"+
+       "concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,"+
+       "satu_sehat_encounter.id_encounter,"+
+       "pegawai.nama,pegawai.no_ktp as ktppraktisi,"+
+       "pemeriksaan_ranap.tgl_perawatan,"+
+       "pemeriksaan_ranap.jam_rawat,"+
+       "pemeriksaan_ranap.tensi,"+
+       "ifnull(satu_sehat_observationttvtensi.id_observation,'') as satu_sehat_observationttvtensi "+
+       "from reg_periksa "+
+       "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+       "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+       "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
+       "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik "+
+       "left join satu_sehat_observationttvtensi on satu_sehat_observationttvtensi.no_rawat=pemeriksaan_ranap.no_rawat "+
+       "and satu_sehat_observationttvtensi.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "+
+       "and satu_sehat_observationttvtensi.jam_rawat=pemeriksaan_ranap.jam_rawat "+
+       "and satu_sehat_observationttvtensi.status='Ranap' "+
+       "where pemeriksaan_ranap.tensi<>'' "+
+       "and reg_periksa.tgl_registrasi between ? and ? "+
+       statusKirim+
+       (TCari.getText().equals("") ? "" :
+       "and (reg_periksa.no_rawat like ? or "+
+       "reg_periksa.no_rkm_medis like ? or "+
+       "pasien.nm_pasien like ? or "+
+       "pasien.no_ktp like ? or "+
+       "pegawai.no_ktp like ? or "+
+       "pegawai.nama like ? or "+
+       "reg_periksa.stts like ?)")
+);
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4508,19 +4780,36 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private void tampiltb() {
         Valid.tabelKosong(tabModeTB);
         try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvtb.id_observation,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvtb.id_observation,'')='' ";
+        }
+
             ps=koneksi.prepareStatement(
                    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
                    "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.tinggi, "+
-                   "ifnull(satu_sehat_observationttvtb.id_observation,'') as satu_sehat_observationttvtb from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik left join satu_sehat_observationttvtb on satu_sehat_observationttvtb.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_observationttvtb.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_observationttvtb.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "and satu_sehat_observationttvtb.status='Ralan' where pemeriksaan_ralan.tinggi<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+            "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.tinggi,"+
+            "ifnull(satu_sehat_observationttvtb.id_observation,'') as satu_sehat_observationttvtb "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_observationttvtb on satu_sehat_observationttvtb.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_observationttvtb.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_observationttvtb.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "and satu_sehat_observationttvtb.status='Ralan' "+
+            "where pemeriksaan_ralan.tinggi<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+            "reg_periksa.stts like ?)")
+        );
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4553,18 +4842,38 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
             }
             
             ps=koneksi.prepareStatement(
-                   "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
-                   "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.tinggi, "+
-                   "ifnull(satu_sehat_observationttvtb.id_observation,'') as satu_sehat_observationttvtb from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik left join satu_sehat_observationttvtb on satu_sehat_observationttvtb.no_rawat=pemeriksaan_ranap.no_rawat "+
-                   "and satu_sehat_observationttvtb.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_observationttvtb.jam_rawat=pemeriksaan_ranap.jam_rawat "+
-                   "and satu_sehat_observationttvtb.status='Ranap' where pemeriksaan_ranap.tinggi<>'' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+       "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
+       "reg_periksa.no_rawat,reg_periksa.no_rkm_medis,"+
+       "pasien.nm_pasien,pasien.no_ktp,"+
+       "reg_periksa.stts,"+
+       "concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,"+
+       "satu_sehat_encounter.id_encounter,"+
+       "pegawai.nama,pegawai.no_ktp as ktppraktisi,"+
+       "pemeriksaan_ranap.tgl_perawatan,"+
+       "pemeriksaan_ranap.jam_rawat,"+
+       "pemeriksaan_ranap.tinggi,"+
+       "ifnull(satu_sehat_observationttvtb.id_observation,'') as satu_sehat_observationttvtb "+
+       "from reg_periksa "+
+       "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+       "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+       "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
+       "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik "+
+       "left join satu_sehat_observationttvtb on satu_sehat_observationttvtb.no_rawat=pemeriksaan_ranap.no_rawat "+
+       "and satu_sehat_observationttvtb.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "+
+       "and satu_sehat_observationttvtb.jam_rawat=pemeriksaan_ranap.jam_rawat "+
+       "and satu_sehat_observationttvtb.status='Ranap' "+
+       "where pemeriksaan_ranap.tinggi<>'' "+
+       "and reg_periksa.tgl_registrasi between ? and ? "+
+       statusKirim+
+       (TCari.getText().equals("") ? "" :
+       "and (reg_periksa.no_rawat like ? or "+
+       "reg_periksa.no_rkm_medis like ? or "+
+       "pasien.nm_pasien like ? or "+
+       "pasien.no_ktp like ? or "+
+       "pegawai.no_ktp like ? or "+
+       "pegawai.nama like ? or "+
+       "reg_periksa.stts like ?)")
+);
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4604,19 +4913,36 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private void tampilbb() {
         Valid.tabelKosong(tabModeBB);
         try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvbb.id_observation,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvbb.id_observation,'')='' ";
+        }
+
             ps=koneksi.prepareStatement(
                    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
                    "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.berat, "+
-                   "ifnull(satu_sehat_observationttvbb.id_observation,'') as satu_sehat_observationttvbb from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik left join satu_sehat_observationttvbb on satu_sehat_observationttvbb.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_observationttvbb.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_observationttvbb.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "and satu_sehat_observationttvbb.status='Ralan' where pemeriksaan_ralan.berat<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+            "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.berat,"+
+            "ifnull(satu_sehat_observationttvbb.id_observation,'') as satu_sehat_observationttvbb "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_observationttvbb on satu_sehat_observationttvbb.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_observationttvbb.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_observationttvbb.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "and satu_sehat_observationttvbb.status='Ralan' "+
+            "where pemeriksaan_ralan.berat<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+            "reg_periksa.stts like ?)")
+        );
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4651,16 +4977,24 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
             ps=koneksi.prepareStatement(
                    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
                    "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.berat, "+
-                   "ifnull(satu_sehat_observationttvbb.id_observation,'') as satu_sehat_observationttvbb from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik left join satu_sehat_observationttvbb on satu_sehat_observationttvbb.no_rawat=pemeriksaan_ranap.no_rawat "+
-                   "and satu_sehat_observationttvbb.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan and satu_sehat_observationttvbb.jam_rawat=pemeriksaan_ranap.jam_rawat "+
-                   "and satu_sehat_observationttvbb.status='Ranap' where pemeriksaan_ranap.berat<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+    "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.berat,"+
+    "ifnull(satu_sehat_observationttvbb.id_observation,'') as satu_sehat_observationttvbb "+
+    "from reg_periksa "+
+    "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+    "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+    "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "+
+    "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik "+
+    "left join satu_sehat_observationttvbb on satu_sehat_observationttvbb.no_rawat=pemeriksaan_ranap.no_rawat "+
+    "and satu_sehat_observationttvbb.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "+
+    "and satu_sehat_observationttvbb.jam_rawat=pemeriksaan_ranap.jam_rawat "+
+    "and satu_sehat_observationttvbb.status='Ranap' "+
+    "where pemeriksaan_ranap.berat<>'' "+
+    "and reg_periksa.tgl_registrasi between ? and ? "+
+    statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+    "reg_periksa.stts like ?)")
+);
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -4700,19 +5034,36 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private void tampillp() {
         Valid.tabelKosong(tabModeLP);
         try{
+
+        String statusKirim = "";
+
+        if(cmbStatus.getSelectedItem().toString().equals("Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvlp.id_observation,'')<>'' ";
+        }else if(cmbStatus.getSelectedItem().toString().equals("Belum Terkirim")){
+            statusKirim=" and ifnull(satu_sehat_observationttvlp.id_observation,'')='' ";
+        }
+
             ps=koneksi.prepareStatement(
                    "select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,"+
                    "reg_periksa.stts,concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) as pulang,satu_sehat_encounter.id_encounter,"+
-                   "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.lingkar_perut, "+
-                   "ifnull(satu_sehat_observationttvlp.id_observation,'') as satu_sehat_observationttvlp from reg_periksa inner join pasien "+
-                   "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                   "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik left join satu_sehat_observationttvlp on satu_sehat_observationttvlp.no_rawat=pemeriksaan_ralan.no_rawat "+
-                   "and satu_sehat_observationttvlp.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan and satu_sehat_observationttvlp.jam_rawat=pemeriksaan_ralan.jam_rawat "+
-                   "and satu_sehat_observationttvlp.status='Ralan' where pemeriksaan_ralan.lingkar_perut<>'' and reg_periksa.tgl_registrasi between ? and ? "+
+            "pegawai.nama,pegawai.no_ktp as ktppraktisi,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.lingkar_perut,"+
+            "ifnull(satu_sehat_observationttvlp.id_observation,'') as satu_sehat_observationttvlp "+
+            "from reg_periksa "+
+            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+            "inner join satu_sehat_encounter on satu_sehat_encounter.no_rawat=reg_periksa.no_rawat "+
+            "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
+            "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+            "left join satu_sehat_observationttvlp on satu_sehat_observationttvlp.no_rawat=pemeriksaan_ralan.no_rawat "+
+            "and satu_sehat_observationttvlp.tgl_perawatan=pemeriksaan_ralan.tgl_perawatan "+
+            "and satu_sehat_observationttvlp.jam_rawat=pemeriksaan_ralan.jam_rawat "+
+            "and satu_sehat_observationttvlp.status='Ralan' "+
+            "where pemeriksaan_ralan.lingkar_perut<>'' "+
+            "and reg_periksa.tgl_registrasi between ? and ? "+
+            statusKirim+
                    (TCari.getText().equals("")?"":"and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                    "pasien.nm_pasien like ? or pasien.no_ktp like ? or pegawai.no_ktp like ? or pegawai.nama like ? or "+
-                   "reg_periksa.stts like ?)"));
+            "reg_periksa.stts like ?)")
+        );
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));

@@ -22,7 +22,7 @@ public class WarnaTable4 extends JTextArea implements TableCellRenderer {
         this.setWrapStyleWord(true);                    
         this.setLineWrap(true);  
         if (row % 2 == 1){
-            this.setBackground(new Color(255,244,244));
+            this.setBackground(new Color(225,235,249));
         }else{
             this.setBackground(new Color(255,255,255));
         } 
@@ -30,6 +30,13 @@ public class WarnaTable4 extends JTextArea implements TableCellRenderer {
         this.setSelectedTextColor(new Color(255,0,0));
         this.setForeground(new Color(50,50,50));
         this.setFont(new java.awt.Font("Tahoma", 0, 11));
+
+        // Penanganan jika baris sedang dipilih
+        if (isSelected) {
+            this.setBackground(new Color(80,129,227)); // Warna biru untuk baris yang dipilih
+            this.setForeground(Color.WHITE);           // Warna teks putih agar kontras
+        }
+
         return this;
     }
 

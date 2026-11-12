@@ -10,6 +10,11 @@
     header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
     header("Cache-Control: post-check=0, pre-check=0", false);
     header("Pragma: no-cache");
+    header("X-XSS-Protection: 1; mode=block");
+    header("X-Content-Type-Options: nosniff");
+    header("X-Frame-Options: SAMEORIGIN");
+    header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
+    header_remove("X-Powered-By");
     
     if(!isset($_SESSION["nama_instansi"])){
         $querypengaturan                    = bukaquery("select * from setting");

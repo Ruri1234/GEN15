@@ -103,6 +103,7 @@ public final class KeuanganRekapPoliAnak extends javax.swing.JDialog {
         BtnAll = new widget.Button();
         jLabel8 = new widget.Label();
         BtnPrint = new widget.Button();
+        BtnRekap = new widget.Button();
         BtnKeluar = new widget.Button();
         panelisi4 = new widget.panelisi();
         label17 = new widget.Label();
@@ -226,6 +227,24 @@ public final class KeuanganRekapPoliAnak extends javax.swing.JDialog {
             }
         });
         panelGlass5.add(BtnPrint);
+
+        BtnRekap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
+        BtnRekap.setMnemonic('R');
+        BtnRekap.setText("Rekap");
+        BtnRekap.setToolTipText("Alt+R");
+        BtnRekap.setName("BtnRekap"); // NOI18N
+        BtnRekap.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnRekap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRekapActionPerformed(evt);
+            }
+        });
+        BtnRekap.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnRekapKeyPressed(evt);
+            }
+        });
+        panelGlass5.add(BtnRekap);
 
         BtnKeluar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/exit.png"))); // NOI18N
         BtnKeluar.setMnemonic('K');
@@ -386,6 +405,19 @@ public final class KeuanganRekapPoliAnak extends javax.swing.JDialog {
             //Valid.pindah(evt, BtnHapus, BtnAll);
         }
 }//GEN-LAST:event_BtnPrintKeyPressed
+
+    private void BtnRekapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRekapActionPerformed
+        KeuanganRekapDiagnosisAnak rekap=new KeuanganRekapDiagnosisAnak(null,false);
+        rekap.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        rekap.setLocationRelativeTo(internalFrame1);
+        rekap.setVisible(true);
+    }//GEN-LAST:event_BtnRekapActionPerformed
+
+    private void BtnRekapKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnRekapKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+            BtnRekapActionPerformed(null);
+        }
+    }//GEN-LAST:event_BtnRekapKeyPressed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
         dispose();
@@ -595,6 +627,7 @@ public final class KeuanganRekapPoliAnak extends javax.swing.JDialog {
     private widget.Button BtnCari;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
+    private widget.Button BtnRekap;
     private widget.Button BtnSeek2;
     private widget.Button BtnSeek3;
     private widget.editorpane LoadHTML;

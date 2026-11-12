@@ -15,6 +15,7 @@ import fungsi.batasInput;
 import fungsi.koneksiDB;
 import fungsi.sekuel;
 import fungsi.validasi;
+import fungsi.validasi1;
 import fungsi.akses;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -49,9 +50,12 @@ public class DlgPasienMati extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
+    private validasi1 Valid1=new validasi1();
+    private DlgPasien pasien=new DlgPasien(null,false);
     private PreparedStatement ps;
     private ResultSet rs;
-    private String finger="";
+    private DlgCariDokter dokter=new DlgCariDokter(null,false);
+    private String finger="",bln_angka="",bln_romawi="";
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
     
@@ -64,7 +68,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
 
         Object[] row={"Tanggal","Jam","No.R.Medik","Nama Pasien","J.K.","Tmp.Lahir",
                       "Tgl.Lahir","G.D.","Stts.Nikah","Agama","Keterangan","Tempat Meninggal",
-                      "ICD-X","Antara 1","Antara 2","Langsung","Kode DPJP","Nama DPJP"};
+                      "ICD-X","Antara 1","Antara 2","Langsung","Kode DPJP","Nama DPJP","No.Surat"};
 
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
@@ -75,7 +79,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
         tbMati.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbMati.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 18; i++) {
+        for (int i = 0; i < 19; i++) {
             TableColumn column = tbMati.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(75);
@@ -113,6 +117,8 @@ public class DlgPasienMati extends javax.swing.JDialog {
                 column.setPreferredWidth(90);
             }else if(i==17){
                 column.setPreferredWidth(150);
+            }else if(i==18){
+                column.setPreferredWidth(150);
             }
         }
         tbMati.setDefaultRenderer(Object.class, new WarnaTable());
@@ -120,6 +126,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
         TNoRM.setDocument(new batasInput((byte)15).getKata(TNoRM));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
         TKtg.setDocument(new batasInput((byte)100).getKata(TKtg));
+        NoSurat.setDocument(new batasInput((byte)30).getKata(NoSurat));
         ChkInput.setSelected(false);
         isForm();
     }
@@ -186,6 +193,8 @@ public class DlgPasienMati extends javax.swing.JDialog {
         KdDokter = new widget.TextBox();
         NmDokter = new widget.TextBox();
         BtnDokter = new widget.Button();
+        jLabel17 = new widget.Label();
+        NoSurat = new widget.TextBox();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
@@ -496,7 +505,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
 
         DTPTgl.setEditable(false);
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-08-2021" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-02-2026" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -684,6 +693,21 @@ public class DlgPasienMati extends javax.swing.JDialog {
         FormInput.add(BtnDokter);
         BtnDokter.setBounds(626, 130, 28, 23);
 
+        jLabel17.setText("No Surat :");
+        jLabel17.setName("jLabel17"); // NOI18N
+        FormInput.add(jLabel17);
+        jLabel17.setBounds(0, 160, 115, 23);
+
+        NoSurat.setHighlighter(null);
+        NoSurat.setName("NoSurat"); // NOI18N
+        NoSurat.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                NoSuratKeyPressed(evt);
+            }
+        });
+        FormInput.add(NoSurat);
+        NoSurat.setBounds(120, 160, 200, 23);
+
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
         internalFrame1.add(PanelInput, java.awt.BorderLayout.PAGE_START);
@@ -769,12 +793,14 @@ public class DlgPasienMati extends javax.swing.JDialog {
             Valid.textKosong(TKtg,"keterangan");
         }else if(NmDokter.getText().trim().equals("")){
             Valid.textKosong(BtnDokter,"Dokter DPJP");
+        }else if(NoSurat.getText().trim().equals("")){
+            Valid.textKosong(NoSurat,"No.Surat");
         }else{
             if(Sequel.menyimpantf("pasien_mati","'"+Valid.SetTgl(DTPTgl.getSelectedItem()+"")+"','"+
                     cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem()+"','"+
                     TNoRM.getText()+"','"+TKtg.getText()+"','"+tmptmeninggal.getSelectedItem()+"','"+
                     icd1.getText()+"','"+icd2.getText()+"','"+icd3.getText()+"','"+
-                    icd4.getText()+"','"+KdDokter.getText()+"'","pasien")==true){
+                    icd4.getText()+"','"+KdDokter.getText()+"','"+NoSurat.getText()+"'","pasien")==true){
                 runBackground(() ->tampil());
                 emptTeks();
             }
@@ -844,7 +870,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
                     "select pasien_mati.tanggal,pasien_mati.jam,pasien_mati.no_rkm_medis,pasien.nm_pasien, "+
                     "pasien.jk,pasien.tmp_lahir,pasien.tgl_lahir,pasien.gol_darah,pasien.stts_nikah, "+
                     "pasien.agama,pasien_mati.keterangan,pasien_mati.temp_meninggal,pasien_mati.icd1,pasien_mati.icd2,"+
-                    "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter "+
+                    "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter,pasien_mati.nosurat "+
                     "from pasien_mati inner join pasien on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join dokter on pasien_mati.kd_dokter=dokter.kd_dokter "+
                     (TCari.getText().trim().equals("")?"":
@@ -856,6 +882,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
                     "pasien_mati.kd_dokter like '%"+TCari.getText().trim()+"%' or "+
                     "dokter.nm_dokter like '%"+TCari.getText().trim()+"%' or "+
                     "pasien_mati.icd1 like '%"+TCari.getText().trim()+"%' or "+
+                    "pasien_mati.nosurat like '%"+TCari.getText().trim()+"%' or "+
                     "pasien_mati.keterangan like '%"+TCari.getText().trim()+"%' ")+
                     "order by pasien_mati.tanggal ",param);            
         }
@@ -930,10 +957,10 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
           finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",KdDokter.getText());
           param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+NmDokter.getText()+"\nID "+(finger.equals("")?KdDokter.getText():finger)+"\n"+DTPTgl.getSelectedItem());  
           Valid.MyReportqry("rptSuratKematian.jasper","report","::[ Surat Kematian ]::",
-                "select date_format(pasien_mati.tanggal,'%d-%m-%Y') as tanggal,pasien_mati.jam,pasien_mati.no_rkm_medis,pasien.nm_pasien, "+
+                "select date_format(pasien_mati.tanggal,'%d-%m-%Y') as tanggal,pasien_mati.jam,pasien_mati.no_rkm_medis,pasien.nm_pasien,dokter.no_ijn_praktek, "+
                 "pasien.jk,pasien.tmp_lahir,pasien.tgl_lahir,pasien.gol_darah,pasien.stts_nikah,pasien.umur,pasien.alamat, "+
                 "pasien.agama,pasien_mati.keterangan,pasien_mati.temp_meninggal,pasien_mati.icd1,pasien_mati.icd2,"+
-                "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter "+
+                "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter,pasien_mati.nosurat "+
                 "from pasien_mati inner join pasien on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
                 "inner join dokter on pasien_mati.kd_dokter=dokter.kd_dokter where pasien_mati.no_rkm_medis='"+TNoRM.getText()+"' ",param);
       }
@@ -983,7 +1010,7 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
                 "select date_format(pasien_mati.tanggal,'%d-%m-%Y') as tanggal,pasien_mati.jam,pasien_mati.no_rkm_medis,pasien.nm_pasien, "+
                 "pasien.jk,pasien.tmp_lahir,pasien.tgl_lahir,pasien.gol_darah,pasien.stts_nikah,pasien.umur,pasien.alamat,pasien.pekerjaan, "+
                 "pasien.agama,pasien_mati.keterangan,pasien_mati.temp_meninggal,pasien_mati.icd1,pasien_mati.icd2,"+
-                "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter "+
+                "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter,pasien_mati.nosurat "+
                 "from pasien_mati inner join pasien on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
                 "inner join dokter on pasien_mati.kd_dokter=dokter.kd_dokter where pasien_mati.no_rkm_medis='"+TNoRM.getText()+"' ",param);
         }
@@ -1052,7 +1079,7 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
                 "select date_format(pasien_mati.tanggal,'%d-%m-%Y') as tanggal,pasien_mati.jam,pasien_mati.no_rkm_medis,pasien.nm_pasien, "+
                 "pasien.jk,pasien.tmp_lahir,pasien.tgl_lahir,pasien.gol_darah,pasien.stts_nikah,pasien.umur,pasien.alamat, "+
                 "pasien.agama,pasien_mati.keterangan,pasien_mati.temp_meninggal,pasien_mati.icd1,pasien_mati.icd2,"+
-                "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter "+
+                "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter,pasien_mati.nosurat "+
                 "from pasien_mati inner join pasien on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
                 "inner join dokter on pasien_mati.kd_dokter=dokter.kd_dokter where pasien_mati.no_rkm_medis='"+TNoRM.getText()+"' ",param);
         }
@@ -1100,6 +1127,10 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
         }
     }//GEN-LAST:event_BtnDokterKeyPressed
 
+    private void NoSuratKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NoSuratKeyPressed
+        Valid.pindah(evt,DTPTgl,TKtg);
+    }//GEN-LAST:event_NoSuratKeyPressed
+
     /**
     * @param args the command line arguments
     */
@@ -1135,6 +1166,7 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
     private widget.MenuItem MnCetakSuratMati;
     private widget.MenuItem MnCetakSuratMati1;
     private widget.TextBox NmDokter;
+    private widget.TextBox NoSurat;
     private javax.swing.JPanel PanelInput;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
@@ -1156,6 +1188,7 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
     private widget.Label jLabel14;
     private widget.Label jLabel15;
     private widget.Label jLabel16;
+    private widget.Label jLabel17;
     private widget.Label jLabel4;
     private widget.Label jLabel5;
     private widget.Label jLabel6;
@@ -1176,7 +1209,7 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
             ps=koneksi.prepareStatement("select pasien_mati.tanggal,pasien_mati.jam,pasien_mati.no_rkm_medis,pasien.nm_pasien, "+
                    "pasien.jk,pasien.tmp_lahir,pasien.tgl_lahir,pasien.gol_darah,pasien.stts_nikah, "+
                    "pasien.agama,pasien_mati.keterangan,pasien_mati.temp_meninggal,pasien_mati.icd1,pasien_mati.icd2,"+
-                   "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter "+
+                   "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter,pasien_mati.nosurat "+
                    "from pasien_mati inner join pasien on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
                    "inner join dokter on pasien_mati.kd_dokter=dokter.kd_dokter "+
                    (TCari.getText().trim().equals("")?"":
@@ -1198,7 +1231,7 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
                         rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),
                         rs.getString(9),rs.getString(10),rs.getString(11),rs.getString(12),
                         rs.getString(13),rs.getString(14),rs.getString(15),rs.getString(16),
-                        rs.getString(17),rs.getString(18)
+                        rs.getString(17),rs.getString(18),rs.getString(19)
                     });
                 }
             } catch (Exception e) {
@@ -1230,7 +1263,8 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
         KdDokter.setText("");
         NmDokter.setText("");
         DTPTgl.setDate(new Date());
-        DTPTgl.requestFocus();
+        nomorSurat(); 
+        NoSurat.requestFocus();
     }
 
     private void getData() {
@@ -1249,6 +1283,7 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
             icd4.setText(tbMati.getValueAt(tbMati.getSelectedRow(),15).toString());
             KdDokter.setText(tbMati.getValueAt(tbMati.getSelectedRow(),16).toString());
             NmDokter.setText(tbMati.getValueAt(tbMati.getSelectedRow(),17).toString());
+            NoSurat.setText(tbMati.getValueAt(tbMati.getSelectedRow(),18).toString());
         }
     }
     
@@ -1270,7 +1305,7 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
     private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,185));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,210));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
@@ -1280,7 +1315,55 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
             ChkInput.setVisible(true);
         }
     }
+private void nomorSurat() {
+        bln_angka = "";
+        bln_romawi = "";
     
+        bln_angka = DTPTgl.getSelectedItem().toString().substring(3,5);
+        
+        if (bln_angka.equals("01")) {
+            //bln_angka  = "01";
+            bln_romawi = "I";
+        } else if (bln_angka.equals("02")) {
+            //bln_angka  = "02";
+            bln_romawi = "II";
+        } else if (bln_angka.equals("03")) {
+            //bln_angka  = "03";
+            bln_romawi = "III";
+        } else if (bln_angka.equals("04")) {
+            //bln_angka  = "04";
+            bln_romawi = "IV";
+        } else if (bln_angka.equals("05")) {
+            //bln_angka  = "05";
+            bln_romawi = "V";
+        } else if (bln_angka.equals("06")) {
+            //bln_angka  = "06";
+            bln_romawi = "VI";
+        } else if (bln_angka.equals("07")) {
+            //bln_angka  = "07";
+            bln_romawi = "VII";
+        } else if (bln_angka.equals("08")) {
+            //bln_angka  = "08";
+            bln_romawi = "VIII";
+        } else if (bln_angka.equals("09")) {
+            //bln_angka  = "09";
+            bln_romawi = "IX";
+        } else if (bln_angka.equals("10")) {
+            //bln_angka  = "10";
+            bln_romawi = "X";
+        } else if (bln_angka.equals("11")) {
+            //bln_angka  = "11";
+            bln_romawi = "XI";
+        } else if (bln_angka.equals("12")) {
+            //bln_angka  = "12";
+            bln_romawi = "XII";
+}
+
+        Valid1.autoNomerSuratKhusus1("select ifnull(MAX(CONVERT(LEFT(nosurat,3),signed)),0), MONTH(tanggal) bln from pasien_mati where "
+                + "tanggal like '%" + Valid.SetTgl(DTPTgl.getSelectedItem() + "").substring(0, 7) + "%' ", "/SKM/RSUB/" + bln_romawi + "/" + DTPTgl.getSelectedItem().toString().substring(6,10), 3, NoSurat);
+        bln_angka = Sequel.cariIsi("SELECT MONTH(tanggal) bln FROM pasien_mati WHERE tanggal like '%" + Valid.SetTgl(DTPTgl.getSelectedItem() + "").substring(0, 7) + "%'");
+    }
+        
     private void runBackground(Runnable task) {
         if (ceksukses) return;
         if (executor.isShutdown() || executor.isTerminated()) return;

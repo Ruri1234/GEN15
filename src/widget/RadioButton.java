@@ -20,11 +20,11 @@ public class RadioButton extends JRadioButton {
 
     private static final long serialVersionUID = 2L;
 
-    static final Color AKSEN    = new Color(0x16A05D);
-    static final Color BORDER   = new Color(0x96BEA5);   
-    static final Color HOVER    = new Color(0x5A9170);
-    static final Color NONAKTIF = new Color(0xF1F4F2);
-    static final Color RING     = new Color(0x16, 0xA0, 0x5D, 70);
+    static final Color AKSEN    = new Color(0x1E88E5);
+    static final Color BORDER   = new Color(0xA9B6C4);
+    static final Color HOVER    = new Color(0x6F8299);
+    static final Color NONAKTIF = new Color(0xF1F3F6);
+    static final Color RING     = new Color(0x1E, 0x88, 0xE5, 70);
 
     private static final Icon IKON = new IkonRadio();
 
@@ -90,16 +90,16 @@ public class RadioButton extends JRadioButton {
                 }
 
                 if (dipilih) {
-                    Color isi = !aktif ? new Color(0x9CC9B1) : ditekan ? AKSEN.darker() : AKSEN;
+                    Color isi = !aktif ? new Color(0x9CC7F0) : ditekan ? AKSEN.darker() : AKSEN;
                     g2.setColor(isi);
                     g2.fill(lingkaran);
                     float d = 6f;
                     g2.setColor(Color.WHITE);
                     g2.fill(new Ellipse2D.Float((s - d) / 2f, (s - d) / 2f, d, d));
                 } else {
-                    g2.setColor(!aktif ? NONAKTIF : ditekan ? new Color(0xE3F2EA) : Color.WHITE);
+                    g2.setColor(!aktif ? NONAKTIF : ditekan ? new Color(0xE3F0FD) : Color.WHITE);
                     g2.fill(lingkaran);
-                    g2.setColor(!aktif ? new Color(0xC9D3CD) : (hover || fokus) ? HOVER : BORDER);
+                    g2.setColor(!aktif ? new Color(0xC9D0D8) : (hover || fokus) ? HOVER : BORDER);
                     g2.setStroke(new BasicStroke(1f));
                     g2.draw(lingkaran);
                 }

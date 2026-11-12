@@ -3,6 +3,7 @@ import bridging.ApotekBPJSInputResepObat;
 import bridging.BPJSDataSEP;
 import fungsi.BackgroundMusic;
 import fungsi.WarnaTable;
+import fungsi.WarnaTableLiterasi;
 import fungsi.batasInput;
 import fungsi.koneksiDB;
 import fungsi.sekuel;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
@@ -65,6 +67,9 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
     private String bangsal="",aktifkanparsial="no",kamar="",alarm="",DEPOAKTIFOBAT="",rincianobat="",
             formalarm="",nol_detik,detik,NoResep="",TglPeresepan="",JamPeresepan="",finger="",
             NoRawat="",NoRM="",Pasien="",DokterPeresep="",Status="",KodeDokter="",Ruang="",KodeRuang="";
+    private DlgCariDokter dokter=new DlgCariDokter(null,false);
+    private DlgCariPoli poli=new DlgCariPoli(null,false);
+    private DlgCariBangsal ruang=new DlgCariBangsal(null,false);
     private int jmlparsial=0,nilai_detik,resepbaru=0,i=0,baris=0;
     private BackgroundMusic music;
     private boolean aktif=false,semua,ceksukses=false;
@@ -76,10 +81,12 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         
+        WindowObatSiap.setSize(500,150);
+      
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Resep","Tgl.Peresepan","Jam Peresepan","No.Rawat","No.RM","Pasien","Dokter Peresep",
                 "Status","Kode Dokter","Poli/Unit","Kode Poli","Jenis Bayar","Tgl.Validasi","Jam Validasi",
-                "Tgl.Penyerahan","Jam Penyerahan"
+                "Tgl.Penyerahan","Jam Penyerahan","Iterasi","Status Obat","Tgl. Obat Siap","Jam Obat Siap","Pesan"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -89,7 +96,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         tbResepRalan.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbResepRalan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i <16; i++) {
+        for (int i = 0; i <21; i++) {
             TableColumn column = tbResepRalan.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(75);
@@ -125,9 +132,19 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                 column.setPreferredWidth(85);
             }else if(i==15){
                 column.setPreferredWidth(90);
+            }else if(i==16){
+                column.setPreferredWidth(70);
+            }else if(i==17){
+                column.setPreferredWidth(70);
+            }else if(i==18){
+                column.setPreferredWidth(90);
+            }else if(i==19){
+                column.setPreferredWidth(90);
+            }else if(i==20){
+                column.setPreferredWidth(250);
             }
         }
-        tbResepRalan.setDefaultRenderer(Object.class, new WarnaTable());
+        tbResepRalan.setDefaultRenderer(Object.class, new WarnaTableLiterasi());
         
         tabMode2=new DefaultTableModel(null,new Object[]{
                 "No.Resep","Tgl.Resep","Poli/Unit","Status","Pasien","Dokter Peresep"
@@ -417,6 +434,12 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        WindowObatSiap = new javax.swing.JDialog();
+        internalFrame5 = new widget.InternalFrame();
+        BtnCloseIn4 = new widget.Button();
+        BtnSimpan4 = new widget.Button();
+        jLabel26 = new widget.Label();
+        TanggalObatSiap = new widget.Tanggal();
         internalFrame1 = new widget.InternalFrame();
         jPanel2 = new javax.swing.JPanel();
         panelisi2 = new widget.panelisi();
@@ -434,6 +457,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         BtnTambah = new widget.Button();
         BtnEdit = new widget.Button();
         BtnHapus = new widget.Button();
+        BtnObatSiap = new widget.Button();
         BtnPenyerahan = new widget.Button();
         BtnPrint = new widget.Button();
         BtnRekap = new widget.Button();
@@ -490,6 +514,56 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         BtnSEPBPJS = new widget.Button();
         BtnObat23HariBPJS = new widget.Button();
 
+        WindowObatSiap.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        WindowObatSiap.setName("WindowObatSiap"); // NOI18N
+        WindowObatSiap.setUndecorated(true);
+        WindowObatSiap.setResizable(false);
+
+        internalFrame5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Update Waktu Pengambilan Sampel ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame5.setName("internalFrame5"); // NOI18N
+        internalFrame5.setLayout(null);
+
+        BtnCloseIn4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
+        BtnCloseIn4.setMnemonic('U');
+        BtnCloseIn4.setText("Tutup");
+        BtnCloseIn4.setToolTipText("Alt+U");
+        BtnCloseIn4.setName("BtnCloseIn4"); // NOI18N
+        BtnCloseIn4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnCloseIn4ActionPerformed(evt);
+            }
+        });
+        internalFrame5.add(BtnCloseIn4);
+        BtnCloseIn4.setBounds(410, 30, 100, 30);
+
+        BtnSimpan4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
+        BtnSimpan4.setMnemonic('S');
+        BtnSimpan4.setText("Simpan");
+        BtnSimpan4.setToolTipText("Alt+S");
+        BtnSimpan4.setName("BtnSimpan4"); // NOI18N
+        BtnSimpan4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSimpan4ActionPerformed(evt);
+            }
+        });
+        internalFrame5.add(BtnSimpan4);
+        BtnSimpan4.setBounds(305, 30, 100, 30);
+
+        jLabel26.setText("Tanggal & Jam :");
+        jLabel26.setName("jLabel26"); // NOI18N
+        internalFrame5.add(jLabel26);
+        jLabel26.setBounds(6, 32, 100, 23);
+
+        TanggalObatSiap.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-10-2026 15:18:18" }));
+        TanggalObatSiap.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
+        TanggalObatSiap.setName("TanggalObatSiap"); // NOI18N
+        TanggalObatSiap.setOpaque(false);
+        TanggalObatSiap.setPreferredSize(new java.awt.Dimension(95, 23));
+        internalFrame5.add(TanggalObatSiap);
+        TanggalObatSiap.setBounds(110, 32, 150, 23);
+
+        WindowObatSiap.getContentPane().add(internalFrame5, java.awt.BorderLayout.CENTER);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
@@ -525,10 +599,9 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         panelisi2.add(jLabel20);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-10-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
-        DTPCari1.setOpaque(false);
         DTPCari1.setPreferredSize(new java.awt.Dimension(90, 23));
         panelisi2.add(DTPCari1);
 
@@ -539,10 +612,9 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         panelisi2.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-10-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
-        DTPCari2.setOpaque(false);
         DTPCari2.setPreferredSize(new java.awt.Dimension(90, 23));
         panelisi2.add(DTPCari2);
 
@@ -664,6 +736,24 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         });
         panelisi1.add(BtnHapus);
 
+        BtnObatSiap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/lebah4.png"))); // NOI18N
+        BtnObatSiap.setMnemonic('P');
+        BtnObatSiap.setText("Obat Siap");
+        BtnObatSiap.setToolTipText("Alt+P");
+        BtnObatSiap.setName("BtnObatSiap"); // NOI18N
+        BtnObatSiap.setPreferredSize(new java.awt.Dimension(120, 30));
+        BtnObatSiap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnObatSiapActionPerformed(evt);
+            }
+        });
+        BtnObatSiap.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnObatSiapKeyPressed(evt);
+            }
+        });
+        panelisi1.add(BtnObatSiap);
+
         BtnPenyerahan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Agenda-1-16x16.png"))); // NOI18N
         BtnPenyerahan.setMnemonic('H');
         BtnPenyerahan.setText("Penyerahan");
@@ -752,7 +842,6 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         internalFrame1.add(jPanel2, java.awt.BorderLayout.PAGE_END);
 
         TabPilihRawat.setBackground(new java.awt.Color(255, 255, 253));
-        TabPilihRawat.setForeground(new java.awt.Color(50, 50, 50));
         TabPilihRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabPilihRawat.setName("TabPilihRawat"); // NOI18N
         TabPilihRawat.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -766,7 +855,6 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         internalFrame2.setLayout(new java.awt.BorderLayout());
 
         TabRawatJalan.setBackground(new java.awt.Color(255, 255, 253));
-        TabRawatJalan.setForeground(new java.awt.Color(50, 50, 50));
         TabRawatJalan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabRawatJalan.setName("TabRawatJalan"); // NOI18N
         TabRawatJalan.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -885,7 +973,6 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         internalFrame3.setLayout(new java.awt.BorderLayout());
 
         TabRawatInap.setBackground(new java.awt.Color(255, 255, 253));
-        TabRawatInap.setForeground(new java.awt.Color(50, 50, 50));
         TabRawatInap.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabRawatInap.setName("TabRawatInap"); // NOI18N
         TabRawatInap.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1186,7 +1273,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         FormMenu.add(BtnPiutangObat);
 
         BtnTelaahResep.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
-        BtnTelaahResep.setText("Pengkajian Resep");
+        BtnTelaahResep.setText("Telaah Resep");
         BtnTelaahResep.setFocusPainted(false);
         BtnTelaahResep.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         BtnTelaahResep.setGlassColor(new java.awt.Color(255, 255, 255));
@@ -1640,6 +1727,20 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void BtnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTambahActionPerformed
+ 
+        if(TabPilihRawat.getSelectedIndex()==0 && TabRawatJalan.getSelectedIndex()==0){
+    int row = tbResepRalan.getSelectedRow();
+    if(row != -1){
+        NoResep = tbResepRalan.getValueAt(row, 0).toString();
+    }
+} else if(TabPilihRawat.getSelectedIndex()==1 && TabRawatInap.getSelectedIndex()==0){
+    int row = tbResepRanap.getSelectedRow();
+    if(row != -1){
+        NoResep = tbResepRanap.getValueAt(row, 0).toString();
+    }
+}
+
+
         if(TabPilihRawat.getSelectedIndex()==0){
             if(TabRawatJalan.getSelectedIndex()==0){
                 if(akses.getberi_obat()==true){
@@ -1654,7 +1755,10 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                         }else {
                             jmlparsial=0;
                             if(aktifkanparsial.equals("yes")){
-                                jmlparsial=Sequel.cariInteger("select count(set_input_parsial.kd_pj) from set_input_parsial where set_input_parsial.kd_pj=?",Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",NoRawat));
+                            jmlparsial=Sequel.cariInteger(
+                                "select count(set_input_parsial.kd_pj) from set_input_parsial where set_input_parsial.kd_pj=?",
+                                Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",NoRawat)
+                            );
                             }
                             if(jmlparsial>0){
                                 Sequel.queryu("delete from antriapotek2");
@@ -3812,6 +3916,74 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         }
     }//GEN-LAST:event_formWindowOpened
 
+    private void BtnObatSiapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnObatSiapActionPerformed
+
+        String noResep = "";
+
+        if(TabPilihRawat.getSelectedIndex()==0 &&
+            TabRawatJalan.getSelectedIndex()==0){
+
+            int row = tbResepRalan.getSelectedRow();
+            if(row != -1){
+                noResep = tbResepRalan.getValueAt(row,0).toString();
+            }
+
+        }else if(TabPilihRawat.getSelectedIndex()==1 &&
+            TabRawatInap.getSelectedIndex()==0){
+
+            int row = tbResepRanap.getSelectedRow();
+            if(row != -1){
+                noResep = tbResepRanap.getValueAt(row,0).toString();
+            }
+        }
+
+        if(noResep.trim().equals("")){
+            JOptionPane.showMessageDialog(null,
+                "Silahkan pilih resep terlebih dahulu");
+            return;
+        }
+
+        String sudah = Sequel.cariIsi(
+            "select ifnull(jam_obat_siap,'') from resep_obat where no_resep='"+noResep+"'"
+        );
+
+        if(sudah != null && !sudah.trim().equals("")){
+            JOptionPane.showMessageDialog(null,
+                "Jam obat siap sudah dicatat");
+            return;
+        }
+
+        try{
+            Sequel.queryu(
+                "update resep_obat set " +
+                "tgl_obat_siap=current_date(), " +
+                "jam_obat_siap=current_time() " +
+                "where no_resep='"+noResep+"'"
+            );
+
+            JOptionPane.showMessageDialog(null,
+                "Jam obat siap berhasil dicatat");
+
+            tampil();
+
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,
+                "Gagal menyimpan jam obat siap : "+e.getMessage());
+        }
+    }//GEN-LAST:event_BtnObatSiapActionPerformed
+
+    private void BtnObatSiapKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnObatSiapKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnObatSiapKeyPressed
+
+    private void BtnCloseIn4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCloseIn4ActionPerformed
+        WindowObatSiap.dispose();
+    }//GEN-LAST:event_BtnCloseIn4ActionPerformed
+
+    private void BtnSimpan4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpan4ActionPerformed
+
+    }//GEN-LAST:event_BtnSimpan4ActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -3831,12 +4003,14 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private widget.Button BtnAll;
     private widget.Button BtnCari;
+    private widget.Button BtnCloseIn4;
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnInformasiObat;
     private widget.Button BtnKeluar;
     private widget.Button BtnKonselingFarmasi;
     private widget.Button BtnObat23HariBPJS;
+    private widget.Button BtnObatSiap;
     private widget.Button BtnPemberianObat;
     private widget.Button BtnPenyerahan;
     private widget.Button BtnPiutangObat;
@@ -3850,6 +4024,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private widget.Button BtnSeek4;
     private widget.Button BtnSeek5;
     private widget.Button BtnSeek6;
+    private widget.Button BtnSimpan4;
     private widget.Button BtnTambah;
     private widget.Button BtnTelaahResep;
     private widget.CekBox ChkAccor;
@@ -3867,10 +4042,13 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private widget.TabPane TabPilihRawat;
     private widget.TabPane TabRawatInap;
     private widget.TabPane TabRawatJalan;
+    private widget.Tanggal TanggalObatSiap;
+    private javax.swing.JDialog WindowObatSiap;
     private widget.ComboBox cmbStatus;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame2;
     private widget.InternalFrame internalFrame3;
+    private widget.InternalFrame internalFrame5;
     private widget.Label jLabel12;
     private widget.Label jLabel14;
     private widget.Label jLabel15;
@@ -3878,6 +4056,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private widget.Label jLabel17;
     private widget.Label jLabel20;
     private widget.Label jLabel21;
+    private widget.Label jLabel26;
     private javax.swing.JPanel jPanel2;
     private widget.Label label10;
     private widget.Label label9;
@@ -3913,13 +4092,13 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     try{  
                         semua=CrDokter.getText().trim().equals("")&&CrPoli.getText().trim().equals("")&&TCari.getText().trim().equals("");
                         if(DEPOAKTIFOBAT.equals("")){
-                            ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"+
+                            ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.iterasi,resep_obat.status_obat,tgl_obat_siap,jam_obat_siap,"+
                                     " resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,"+
                                     " if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,poliklinik.nm_poli, "+
                                     " reg_periksa.kd_poli,penjab.png_jawab,if(resep_obat.tgl_perawatan='0000-00-00','',resep_obat.tgl_perawatan) as tgl_perawatan,"+
                                     " if(resep_obat.jam='00:00:00','',resep_obat.jam) as jam,"+
                                     " if(resep_obat.tgl_penyerahan='0000-00-00','',resep_obat.tgl_penyerahan) as tgl_penyerahan,"+
-                                    " if(resep_obat.jam_penyerahan='00:00:00','',resep_obat.jam_penyerahan) as jam_penyerahan from resep_obat "+
+                                    " if(resep_obat.jam_penyerahan='00:00:00','',resep_obat.jam_penyerahan) as jam_penyerahan,resep_obat.pesan from resep_obat "+
                                     " inner join reg_periksa on resep_obat.no_rawat=reg_periksa.no_rawat "+
                                     " inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                                     " inner join dokter on resep_obat.kd_dokter=dokter.kd_dokter "+
@@ -3927,16 +4106,17 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
                                     " where resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.status='ralan' and resep_obat.tgl_peresepan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and poliklinik.nm_poli like ? and "+
-                                    "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
-                                    "penjab.png_jawab like ?)")+" order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
+                        "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
+                        "dokter.nm_dokter like ? or penjab.png_jawab like ?)")+" order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         }else{
-                            ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"+
+                            ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.iterasi,resep_obat.status_obat,tgl_obat_siap,jam_obat_siap,"+
                                     " resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,"+
                                     " if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,poliklinik.nm_poli, "+
                                     " reg_periksa.kd_poli,penjab.png_jawab,if(resep_obat.tgl_perawatan='0000-00-00','',resep_obat.tgl_perawatan) as tgl_perawatan,"+
                                     " if(resep_obat.jam='00:00:00','',resep_obat.jam) as jam,"+
                                     " if(resep_obat.tgl_penyerahan='0000-00-00','',resep_obat.tgl_penyerahan) as tgl_penyerahan,"+
-                                    " if(resep_obat.jam_penyerahan='00:00:00','',resep_obat.jam_penyerahan) as jam_penyerahan from resep_obat "+
+                                    " if(resep_obat.jam_penyerahan='00:00:00','',resep_obat.jam_penyerahan) as jam_penyerahan,resep_obat.pesan from resep_obat "+
                                     " inner join reg_periksa on resep_obat.no_rawat=reg_periksa.no_rawat "+
                                     " inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                                     " inner join dokter on resep_obat.kd_dokter=dokter.kd_dokter "+
@@ -3945,8 +4125,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " inner join set_depo_ralan on set_depo_ralan.kd_poli=reg_periksa.kd_poli "+
                                     " where set_depo_ralan.kd_bangsal='"+DEPOAKTIFOBAT+"' and resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.status='ralan' and resep_obat.tgl_peresepan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and poliklinik.nm_poli like ? and "+
-                                    "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
-                                    "penjab.png_jawab like ?)")+" order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
+                        "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
+                        "dokter.nm_dokter like ? or penjab.png_jawab like ? or resep_obat.iterasi like ? or resep_obat.status_obat ?)")+" order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         }
 
                         try{
@@ -3960,6 +4141,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 ps.setString(7,"%"+TCari.getText()+"%");
                                 ps.setString(8,"%"+TCari.getText()+"%");
                                 ps.setString(9,"%"+TCari.getText()+"%");
+                                ps.setString(10,"%"+TCari.getText()+"%");
                             } 
                             rs=ps.executeQuery();
                             i=0;
@@ -3970,7 +4152,10 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                         rs.getString("no_resep"),rs.getString("tgl_peresepan"),rs.getString("jam_peresepan"),rs.getString("no_rawat"),
                                         rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("status"),
                                         rs.getString("kd_dokter"),rs.getString("nm_poli"),rs.getString("kd_poli"),rs.getString("png_jawab"),
-                                        rs.getString("tgl_perawatan"),rs.getString("jam"),rs.getString("tgl_penyerahan"),rs.getString("jam_penyerahan")
+                                        rs.getString("tgl_perawatan"),rs.getString("jam"),rs.getString("tgl_penyerahan"),rs.getString("jam_penyerahan"),rs.getString("iterasi"),rs.getString("status_obat"),
+                                        (rs.getString("tgl_obat_siap")==null || rs.getString("tgl_obat_siap").equals("0000-00-00") ? "" : rs.getString("tgl_obat_siap")),
+                                        (rs.getString("jam_obat_siap")==null || rs.getString("jam_obat_siap").equals("00:00:00") ? "" : rs.getString("jam_obat_siap")),
+                                        (rs.getString("pesan")==null ? "" : rs.getString("pesan"))
                                     });
                                 }  
                             }else{
@@ -3981,7 +4166,10 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                             rs.getString("no_resep"),rs.getString("tgl_peresepan"),rs.getString("jam_peresepan"),rs.getString("no_rawat"),
                                             rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("status"),
                                             rs.getString("kd_dokter"),rs.getString("nm_poli"),rs.getString("kd_poli"),rs.getString("png_jawab"),
-                                            rs.getString("tgl_perawatan"),rs.getString("jam"),rs.getString("tgl_penyerahan"),rs.getString("jam_penyerahan")
+                                            rs.getString("tgl_perawatan"),rs.getString("jam"),rs.getString("tgl_penyerahan"),rs.getString("jam_penyerahan"),rs.getString("iterasi"),rs.getString("status_obat"),
+                                            (rs.getString("tgl_obat_siap")==null || rs.getString("tgl_obat_siap").equals("0000-00-00") ? "" : rs.getString("tgl_obat_siap")),
+                                            (rs.getString("jam_obat_siap")==null || rs.getString("jam_obat_siap").equals("00:00:00") ? "" : rs.getString("jam_obat_siap")),
+                                        (rs.getString("pesan")==null ? "" : rs.getString("pesan"))
                                         });
                                     }                    
                                 }  
@@ -4133,8 +4321,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
                                     " where resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.status='ralan' and resep_obat.tgl_peresepan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and poliklinik.nm_poli like ? and "+
-                                    "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
-                                    "penjab.png_jawab like ?) ")+"order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
+                        "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
+                        "dokter.nm_dokter like ? or penjab.png_jawab like ?) ")+"order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         }else{
                             ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,"+
                                     " pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"+
@@ -4147,8 +4336,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " inner join set_depo_ralan on set_depo_ralan.kd_poli=reg_periksa.kd_poli "+
                                     " where set_depo_ralan.kd_bangsal='"+DEPOAKTIFOBAT+"' and resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.status='ralan' and resep_obat.tgl_peresepan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and poliklinik.nm_poli like ? and "+
-                                    "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
-                                    "penjab.png_jawab like ?) ")+"order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
+                        "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
+                        "dokter.nm_dokter like ? or penjab.png_jawab like ?) ")+"order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         }
 
                         try{
@@ -4162,6 +4352,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 ps.setString(7,"%"+TCari.getText()+"%");
                                 ps.setString(8,"%"+TCari.getText()+"%");
                                 ps.setString(9,"%"+TCari.getText()+"%");
+                    ps.setString(10,"%"+TCari.getText()+"%");
                             }
 
                             rs=ps.executeQuery();
@@ -4382,6 +4573,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             obatralan.setNoRm(NoRawat,NoRM,Pasien,TglPeresepan,JamPeresepan);
             obatralan.isCek();
             obatralan.tampilobat3(NoResep); 
+            obatralan.setNoResep(NoResep); // tambahkan ini agar Pesan tampil
         }
 
         if (obatralan.isVisible()) {
@@ -4440,6 +4632,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             obatranap.setNoRm(NoRawat,NoRM,Pasien,Valid.SetTgl2(TglPeresepan));
             obatranap.isCek();
             obatranap.tampilobat3(NoResep);  
+            obatranap.setNoResep(NoResep); // tambahkan ini agar Pesan tampil
         }
 
         if (obatranap.isVisible()) {
@@ -4447,6 +4640,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             return;
         }
         obatranap.setVisible(true);
+        TeksKosong();
     }
     
     private void panggilform3() {
@@ -4593,7 +4787,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where resep_obat.tgl_peresepan<>'0000-00-00' and kamar_inap.stts_pulang='-' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         }else{
                             ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"+
@@ -4613,7 +4807,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and resep_obat.tgl_peresepan<>'0000-00-00' and kamar_inap.stts_pulang='-' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         }
 
@@ -4628,6 +4822,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 ps.setString(7,"%"+TCari.getText()+"%");
                                 ps.setString(8,"%"+TCari.getText()+"%");
                                 ps.setString(9,"%"+TCari.getText()+"%");
+                                ps.setString(10,"%"+TCari.getText()+"%");
                             }
 
                             rs=ps.executeQuery();
@@ -4684,7 +4879,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where resep_obat.tgl_peresepan<>'0000-00-00' and kamar_inap.stts_pulang='-' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         }else{
                             ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"+
@@ -4705,7 +4900,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and resep_obat.tgl_peresepan<>'0000-00-00' and kamar_inap.stts_pulang='-' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         }
 
@@ -4720,6 +4915,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 ps.setString(7,"%"+TCari.getText()+"%");
                                 ps.setString(8,"%"+TCari.getText()+"%");
                                 ps.setString(9,"%"+TCari.getText()+"%");
+                                ps.setString(10,"%"+TCari.getText()+"%");
                             }
 
                             rs=ps.executeQuery();
@@ -4796,7 +4992,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where resep_obat.tgl_peresepan<>'0000-00-00' and kamar_inap.stts_pulang='-' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
             }else{
                 ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,"+
@@ -4813,7 +5009,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and resep_obat.tgl_peresepan<>'0000-00-00' and kamar_inap.stts_pulang='-' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
             }
                 
@@ -4828,6 +5024,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     ps.setString(7,"%"+TCari.getText()+"%");
                     ps.setString(8,"%"+TCari.getText()+"%");
                     ps.setString(9,"%"+TCari.getText()+"%");
+                    ps.setString(10,"%"+TCari.getText()+"%");
                 }
                 rs=ps.executeQuery();
                 i=0;
@@ -5020,7 +5217,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where resep_obat.tgl_peresepan<>'0000-00-00' and kamar_inap.stts_pulang='-' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
             }else{
                 ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,"+
@@ -5038,7 +5235,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and resep_obat.tgl_peresepan<>'0000-00-00' and kamar_inap.stts_pulang='-' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
             }
                 
@@ -5053,6 +5250,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     ps.setString(7,"%"+TCari.getText()+"%");
                     ps.setString(8,"%"+TCari.getText()+"%");
                     ps.setString(9,"%"+TCari.getText()+"%");
+                    ps.setString(10,"%"+TCari.getText()+"%");
                 }
                 rs=ps.executeQuery();
                 i=0;
@@ -5258,7 +5456,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where kamar_inap.stts_pulang='-' and permintaan_stok_obat_pasien.tgl_permintaan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(permintaan_stok_obat_pasien.no_permintaan like ? or permintaan_stok_obat_pasien.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
                         }else{
                             ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,"+
@@ -5276,7 +5474,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and kamar_inap.stts_pulang='-' and permintaan_stok_obat_pasien.tgl_permintaan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(permintaan_stok_obat_pasien.no_permintaan like ? or permintaan_stok_obat_pasien.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
                         }
 
@@ -5291,6 +5489,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 ps.setString(7,"%"+TCari.getText()+"%");
                                 ps.setString(8,"%"+TCari.getText()+"%");
                                 ps.setString(9,"%"+TCari.getText()+"%");
+                    ps.setString(10,"%"+TCari.getText()+"%");
                             }
 
                             rs=ps.executeQuery();
@@ -5343,7 +5542,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where kamar_inap.stts_pulang='-' and permintaan_stok_obat_pasien.tgl_permintaan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(permintaan_stok_obat_pasien.no_permintaan like ? or permintaan_stok_obat_pasien.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
                         }else{
                             ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,"+
@@ -5362,7 +5561,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and kamar_inap.stts_pulang='-' and permintaan_stok_obat_pasien.tgl_permintaan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(permintaan_stok_obat_pasien.no_permintaan like ? or permintaan_stok_obat_pasien.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
                         }
 
@@ -5377,6 +5576,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 ps.setString(7,"%"+TCari.getText()+"%");
                                 ps.setString(8,"%"+TCari.getText()+"%");
                                 ps.setString(9,"%"+TCari.getText()+"%");
+                    ps.setString(10,"%"+TCari.getText()+"%");
                             }
 
                             rs=ps.executeQuery();
@@ -5451,7 +5651,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where kamar_inap.stts_pulang='-' and permintaan_stok_obat_pasien.tgl_permintaan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(permintaan_stok_obat_pasien.no_permintaan like ? or permintaan_stok_obat_pasien.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
             }else{
                 ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,"+
@@ -5468,7 +5668,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and kamar_inap.stts_pulang='-' and permintaan_stok_obat_pasien.tgl_permintaan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(permintaan_stok_obat_pasien.no_permintaan like ? or permintaan_stok_obat_pasien.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
             }
                 
@@ -5483,6 +5683,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     ps.setString(7,"%"+TCari.getText()+"%");
                     ps.setString(8,"%"+TCari.getText()+"%");
                     ps.setString(9,"%"+TCari.getText()+"%");
+                    ps.setString(10,"%"+TCari.getText()+"%");
                 }
                 rs=ps.executeQuery();
                 i=0;
@@ -5648,7 +5849,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where kamar_inap.stts_pulang='-' and permintaan_stok_obat_pasien.tgl_permintaan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(permintaan_stok_obat_pasien.no_permintaan like ? or permintaan_stok_obat_pasien.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
             }else{
                 ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,"+
@@ -5666,7 +5867,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and kamar_inap.stts_pulang='-' and permintaan_stok_obat_pasien.tgl_permintaan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(permintaan_stok_obat_pasien.no_permintaan like ? or permintaan_stok_obat_pasien.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
             }
                 
@@ -5681,6 +5882,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     ps.setString(7,"%"+TCari.getText()+"%");
                     ps.setString(8,"%"+TCari.getText()+"%");
                     ps.setString(9,"%"+TCari.getText()+"%");
+                    ps.setString(10,"%"+TCari.getText()+"%");
                 }
                 rs=ps.executeQuery();
                 i=0;
@@ -5858,7 +6060,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where kamar_inap.stts_pulang='-' and permintaan_resep_pulang.tgl_permintaan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(permintaan_resep_pulang.no_permintaan like ? or permintaan_resep_pulang.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
                         }else{
                             ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,"+
@@ -5876,7 +6078,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and kamar_inap.stts_pulang='-' and permintaan_resep_pulang.tgl_permintaan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(permintaan_resep_pulang.no_permintaan like ? or permintaan_resep_pulang.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
                         }
 
@@ -5891,6 +6093,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 ps.setString(7,"%"+TCari.getText()+"%");
                                 ps.setString(8,"%"+TCari.getText()+"%");
                                 ps.setString(9,"%"+TCari.getText()+"%");
+                    ps.setString(10,"%"+TCari.getText()+"%");
                             }
 
                             rs=ps.executeQuery();
@@ -5943,7 +6146,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where kamar_inap.stts_pulang='-' and permintaan_resep_pulang.tgl_permintaan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(permintaan_resep_pulang.no_permintaan like ? or permintaan_resep_pulang.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
                         }else{
                             ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,"+
@@ -5962,7 +6165,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and kamar_inap.stts_pulang='-' and permintaan_resep_pulang.tgl_permintaan between ? and ? "+
                                     (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                                     "(permintaan_resep_pulang.no_permintaan like ? or permintaan_resep_pulang.no_rawat like ? or "+
-                                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                                     " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
                         }
 
@@ -5977,6 +6180,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 ps.setString(7,"%"+TCari.getText()+"%");
                                 ps.setString(8,"%"+TCari.getText()+"%");
                                 ps.setString(9,"%"+TCari.getText()+"%");
+                    ps.setString(10,"%"+TCari.getText()+"%");
                             }
 
                             rs=ps.executeQuery();
@@ -6051,7 +6255,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where kamar_inap.stts_pulang='-' and permintaan_resep_pulang.tgl_permintaan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(permintaan_resep_pulang.no_permintaan like ? or permintaan_resep_pulang.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
             }else{
                 ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,"+
@@ -6068,7 +6272,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and kamar_inap.stts_pulang='-' and permintaan_resep_pulang.tgl_permintaan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(permintaan_resep_pulang.no_permintaan like ? or permintaan_resep_pulang.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
             }
                 
@@ -6083,6 +6287,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     ps.setString(7,"%"+TCari.getText()+"%");
                     ps.setString(8,"%"+TCari.getText()+"%");
                     ps.setString(9,"%"+TCari.getText()+"%");
+                    ps.setString(10,"%"+TCari.getText()+"%");
                 }
                 rs=ps.executeQuery();
                 i=0;
@@ -6182,7 +6387,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where kamar_inap.stts_pulang='-' and permintaan_resep_pulang.tgl_permintaan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(permintaan_resep_pulang.no_permintaan like ? or permintaan_resep_pulang.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
             }else{
                 ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,"+
@@ -6200,7 +6405,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " where set_depo_ranap.kd_depo='"+DEPOAKTIFOBAT+"' and kamar_inap.stts_pulang='-' and permintaan_resep_pulang.tgl_permintaan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(permintaan_resep_pulang.no_permintaan like ? or permintaan_resep_pulang.no_rawat like ? or "+
-                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
+                        "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
                         " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
             }
                 
@@ -6215,6 +6420,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     ps.setString(7,"%"+TCari.getText()+"%");
                     ps.setString(8,"%"+TCari.getText()+"%");
                     ps.setString(9,"%"+TCari.getText()+"%");
+                    ps.setString(10,"%"+TCari.getText()+"%");
                 }
                 rs=ps.executeQuery();
                 i=0;

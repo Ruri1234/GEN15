@@ -26,8 +26,12 @@ import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
@@ -37,6 +41,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import kepegawaian.DlgCariDokter;
+import laporan.RekapPendapatanPerpoli;
+import laporan.RekapPenyakitRalan;
 import simrskhanza.DlgCariPoli;
 import simrskhanza.DlgCariCaraBayar;
 
@@ -63,7 +69,7 @@ public final class DlgPembayaranRalanPerHari extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setLocation(8,1);
-        setSize(885,674);
+        setSize(960,674);
 
         tabMode=new DefaultTableModel(null,new Object[]{
             "Tanggal","Laborat","Radiologi","Obat+Emb+Tuslah","Paket Tindakan","Operasi","Tambahan","Potongan","Registrasi","Total"}){
@@ -116,6 +122,7 @@ public final class DlgPembayaranRalanPerHari extends javax.swing.JDialog {
         jLabel10 = new javax.swing.JLabel();
         LCount = new javax.swing.JLabel();
         BtnPrint = new widget.Button();
+        BtnRekapPoli = new widget.Button();
         BtnKeluar = new widget.Button();
         PanelInput = new javax.swing.JPanel();
         ChkInput = new widget.CekBox();
@@ -243,7 +250,7 @@ public final class DlgPembayaranRalanPerHari extends javax.swing.JDialog {
         LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount.setText("0");
         LCount.setName("LCount"); // NOI18N
-        LCount.setPreferredSize(new java.awt.Dimension(180, 23));
+        LCount.setPreferredSize(new java.awt.Dimension(110, 23));
         panelGlass5.add(LCount);
 
         BtnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
@@ -263,6 +270,24 @@ public final class DlgPembayaranRalanPerHari extends javax.swing.JDialog {
             }
         });
         panelGlass5.add(BtnPrint);
+
+        BtnRekapPoli.setIcon(RekapPenyakitRalan.ikonTabel());
+        BtnRekapPoli.setMnemonic('R');
+        BtnRekapPoli.setText("Rekap Pendapatan Reguler Ralan");
+        BtnRekapPoli.setToolTipText("Alt+R");
+        BtnRekapPoli.setName("BtnRekapPoli"); // NOI18N
+        BtnRekapPoli.setPreferredSize(new java.awt.Dimension(235, 30));
+        BtnRekapPoli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRekapPoliActionPerformed(evt);
+            }
+        });
+        BtnRekapPoli.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnRekapPoliKeyPressed(evt);
+            }
+        });
+        panelGlass5.add(BtnRekapPoli);
 
         BtnKeluar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/exit.png"))); // NOI18N
         BtnKeluar.setMnemonic('K');
@@ -431,6 +456,30 @@ public final class DlgPembayaranRalanPerHari extends javax.swing.JDialog {
             //Valid.pindah(evt, BtnHapus, BtnAll);
         }
 }//GEN-LAST:event_BtnPrintKeyPressed
+
+    private void BtnRekapPoliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRekapPoliActionPerformed
+        // bulan & tahun awal diambil dari tanggal awal; seluruh bulan dalam setahun langsung tampil
+        int bulanAwal=LocalDate.now().getMonthValue(),tahunAwal=LocalDate.now().getYear();
+        try {
+            LocalDate tglAwal=LocalDate.parse(Valid.SetTgl(Tgl1.getSelectedItem()+""));
+            bulanAwal=tglAwal.getMonthValue();
+            tahunAwal=tglAwal.getYear();
+        } catch (Exception e) {
+        }
+        // filter (dokter/cara bayar/poli) ikut dipakai bila diisi pada panel Filter Data
+        final String fPoli="%"+KdPoli.getText()+NmPoli.getText()+"%";
+        final String fDokter="%"+KdDokter.getText()+NmDokter.getText()+"%";
+        final String fCaraBayar="%"+KdCaraBayar.getText()+NmCaraBayar.getText()+"%";
+        RekapPendapatanPerpoli.tampil(this,(tahun,sampai,sampaiLalu) -> muatPendapatanPerpoli(tahun,sampai,sampaiLalu,fPoli,fDokter,fCaraBayar),bulanAwal,tahunAwal);
+    }//GEN-LAST:event_BtnRekapPoliActionPerformed
+
+    private void BtnRekapPoliKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnRekapPoliKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+            BtnRekapPoliActionPerformed(null);
+        }else{
+            Valid.pindah(evt, BtnPrint, BtnKeluar);
+        }
+    }//GEN-LAST:event_BtnRekapPoliKeyPressed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
         dispose();
@@ -653,6 +702,7 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Button BtnKeluar;
     private widget.Button BtnPoli;
     private widget.Button BtnPrint;
+    private widget.Button BtnRekapPoli;
     private widget.CekBox ChkInput;
     private widget.panelisi FormInput;
     private widget.TextBox KdCaraBayar;
@@ -829,6 +879,149 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
+    }
+
+    /** reg_periksa.kd_poli untuk IGD (sama dengan yang dipakai grafik kunjungan ralan). */
+    private static final String KD_POLI_IGD=laporan.KunjunganRalanAturan.KD_POLI_IGD;
+
+    /**
+     * Poli yang tidak ditampilkan sebagai kolom IRJ pada Rekap Pendapatan Perpoli (nama poli huruf besar, persis
+     * seperti poliklinik.nm_poli). Tambah/hapus nama di sini bila ada poli lain yang ingin disembunyikan.
+     */
+    private static final java.util.Set<String> POLI_DISEMBUNYIKAN=new java.util.HashSet<>(Arrays.asList("-","APOTEK","KLINIK MARJORIE"));
+
+    /**
+     * Pendapatan rawat jalan (tanpa piutang) per bulan untuk tahun terpilih dan pembandingnya (periode yang sama
+     * tahun lalu), dipecah menjadi tiga kelompok:
+     * IRJ = pendapatan poli selain IGD (poli di POLI_DISEMBUNYIKAN tidak dimunculkan),
+     * IGD = pendapatan poli IGD,
+     * Penunjang = Apotek (Obat), Laboratorium dan Radiologi dari seluruh pasien (rawat jalan + IGD).
+     * Data gabungan dihitung di dialog. Pendapatan poli = semua biaya selain Obat/Laborat/Radiologi
+     * (tindakan dokter/paramedis, operasi, tambahan, potongan, registrasi), sama dengan aturan tampil().
+     * Sel poli dikosongkan bila poli tsb tidak punya kunjungan pada bulan itu; bernilai 0 bila ada kunjungan tanpa biaya.
+     */
+    private RekapPendapatanPerpoli.Paket muatPendapatanPerpoli(int tahun,LocalDate sampai,LocalDate sampaiLalu,String fPoli,String fDokter,String fCaraBayar) throws Exception {
+        // penunjang per poli (Apotek/Laborat/Radiologi pasien tiap poli) dipakai saat satu poli dipilih pada rekap
+        HashMap<String,RekapPendapatanPerpoli.Data> penPoliIni=new HashMap<>();
+        HashMap<String,RekapPendapatanPerpoli.Data> penPoliLalu=new HashMap<>();
+        RekapPendapatanPerpoli.Data[] ini=muatPendapatanPeriode(LocalDate.of(tahun,1,1),sampai,fPoli,fDokter,fCaraBayar,penPoliIni);
+        RekapPendapatanPerpoli.Data[] lalu=muatPendapatanPeriode(LocalDate.of(tahun-1,1,1),sampaiLalu,fPoli,fDokter,fCaraBayar,penPoliLalu);
+        return new RekapPendapatanPerpoli.Paket(ini[0],ini[1],ini[2],lalu[0],lalu[1],lalu[2]).denganPenunjangPoli(penPoliIni,penPoliLalu);
+    }
+
+    /**
+     * @param penPoli diisi dengan Data penunjang tiap poli (kunci = nama poli huruf besar; poli di POLI_DISEMBUNYIKAN tidak ikut).
+     * @return {data IRJ, data IGD, data Penunjang} untuk rentang tanggal registrasi dari..sampai.
+     */
+    private RekapPendapatanPerpoli.Data[] muatPendapatanPeriode(LocalDate dari,LocalDate sampai,String fPoli,String fDokter,String fCaraBayar,Map<String,RekapPendapatanPerpoli.Data> penPoli) throws Exception {
+        ArrayList<Object[]> barisIrj=new ArrayList<>();
+        ArrayList<Object[]> barisIgd=new ArrayList<>();
+        double[][] penunjang=new double[12][3];
+        boolean[] adaPenunjang=new boolean[12];
+        HashMap<String,double[][]> penunjangPoli=new HashMap<>();
+        HashMap<String,boolean[]> adaPoli=new HashMap<>();
+        try (PreparedStatement p=koneksi.prepareStatement(
+                "select month(reg_periksa.tgl_registrasi) as bln,poliklinik.nm_poli,(reg_periksa.kd_poli=?) as igd,"+
+                "sum(case when billing.status='Obat' then billing.totalbiaya else 0 end) as obat,"+
+                "sum(case when billing.status='Laborat' then billing.totalbiaya else 0 end) as lab,"+
+                "sum(case when billing.status='Radiologi' then billing.totalbiaya else 0 end) as rad,"+
+                "sum(case when billing.status not in ('Obat','Laborat','Radiologi') then billing.totalbiaya else 0 end) as poli "+
+                "from reg_periksa inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli "+
+                "inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter "+
+                "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
+                "left join billing on billing.no_rawat=reg_periksa.no_rawat "+
+                "where reg_periksa.status_lanjut='Ralan' and reg_periksa.tgl_registrasi between ? and ? "+
+                "and not exists (select 1 from piutang_pasien where piutang_pasien.no_rawat=reg_periksa.no_rawat) "+
+                "and concat(reg_periksa.kd_poli,poliklinik.nm_poli) like ? "+
+                "and concat(reg_periksa.kd_dokter,dokter.nm_dokter) like ? "+
+                "and concat(reg_periksa.kd_pj,penjab.png_jawab) like ? "+
+                "group by month(reg_periksa.tgl_registrasi),poliklinik.nm_poli,igd")) {
+            p.setString(1,KD_POLI_IGD);
+            p.setString(2,dari.toString());
+            p.setString(3,sampai.toString());
+            p.setString(4,fPoli);
+            p.setString(5,fDokter);
+            p.setString(6,fCaraBayar);
+            try (ResultSet r=p.executeQuery()) {
+                while(r.next()){
+                    int m=r.getInt("bln")-1;
+                    // Apotek / Laboratorium / Radiologi: semua pasien masuk Penunjang
+                    penunjang[m][0]+=r.getDouble("obat");
+                    penunjang[m][1]+=r.getDouble("lab");
+                    penunjang[m][2]+=r.getDouble("rad");
+                    adaPenunjang[m]=true;
+                    String nm=r.getString("nm_poli");
+                    nm=nm==null?"-":nm.trim().toUpperCase();
+                    Object[] b=new Object[]{m+1,nm,r.getDouble("poli")};
+                    if(r.getInt("igd")==1){
+                        barisIgd.add(b);
+                    }else if(!POLI_DISEMBUNYIKAN.contains(nm)){
+                        barisIrj.add(b);
+                    }
+                    if(r.getInt("igd")==1||!POLI_DISEMBUNYIKAN.contains(nm)){
+                        // penunjang milik pasien poli ini
+                        double[][] pp=penunjangPoli.computeIfAbsent(nm,k->new double[12][3]);
+                        pp[m][0]+=r.getDouble("obat");
+                        pp[m][1]+=r.getDouble("lab");
+                        pp[m][2]+=r.getDouble("rad");
+                        adaPoli.computeIfAbsent(nm,k->new boolean[12])[m]=true;
+                    }
+                }
+            }
+        }
+        for(Map.Entry<String,double[][]> en:penunjangPoli.entrySet()){
+            Long[][] hasil=new Long[12][3];
+            boolean[] ada=adaPoli.get(en.getKey());
+            for(int m=0;m<12;m++){
+                if(ada[m]){
+                    for(int c=0;c<3;c++){
+                        hasil[m][c]=Long.valueOf(Math.round(en.getValue()[m][c]));
+                    }
+                }
+            }
+            penPoli.put(en.getKey(),RekapPendapatanPerpoli.Data.penunjang(hasil));
+        }
+        return new RekapPendapatanPerpoli.Data[]{
+            bangunDataPoli("IRJ",false,barisIrj),
+            bangunDataPoli("IGD",true,barisIgd),
+            bangunDataPenunjang(penunjang,adaPenunjang)};
+    }
+
+    /** Satu kolom per nama poli; baris = {bulan 1..12, nama poli, pendapatan poli}. */
+    private RekapPendapatanPerpoli.Data bangunDataPoli(String label,boolean igd,ArrayList<Object[]> baris){
+        TreeSet<String> daftarPoli=new TreeSet<>();
+        for(Object[] b:baris){
+            daftarPoli.add((String)b[1]);
+        }
+        String[] poli=daftarPoli.toArray(new String[0]);
+        double[][] nilai=new double[12][poli.length];
+        boolean[][] ada=new boolean[12][poli.length];
+        for(Object[] b:baris){
+            int m=(Integer)b[0]-1;
+            int ip=Arrays.binarySearch(poli,(String)b[1]);
+            nilai[m][ip]+=(Double)b[2];
+            ada[m][ip]=true;
+        }
+        Long[][] hasil=new Long[12][poli.length];
+        for(int m=0;m<12;m++){
+            for(int c=0;c<poli.length;c++){
+                hasil[m][c]=ada[m][c]?Long.valueOf(Math.round(nilai[m][c])):null;
+            }
+        }
+        return RekapPendapatanPerpoli.Data.poli(label,igd,poli,hasil);
+    }
+
+    /** Kolom Apotek, Laboratorium, Radiologi; sel kosong pada bulan tanpa kunjungan sama sekali. */
+    private RekapPendapatanPerpoli.Data bangunDataPenunjang(double[][] nilai,boolean[] ada){
+        Long[][] hasil=new Long[12][3];
+        for(int m=0;m<12;m++){
+            if(ada[m]){
+                for(int c=0;c<3;c++){
+                    hasil[m][c]=Long.valueOf(Math.round(nilai[m][c]));
+                }
+            }
+        }
+        return RekapPendapatanPerpoli.Data.penunjang(hasil);
     }
 
     private void getData() {

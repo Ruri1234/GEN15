@@ -20,8 +20,8 @@ public class ScrollPane extends JScrollPane {
 
     private static final long serialVersionUID = 2L;
 
-    static final Color AKSEN_DEFAULT = new Color(0x16A05D);
-    static final Color TRACK_DEFAULT = new Color(0xF6F9F7);
+    static final Color AKSEN_DEFAULT = new Color(0x1E88E5);
+    static final Color TRACK_DEFAULT = new Color(0xF5F8FC);
 
     public ScrollPane() {
         super();
@@ -31,12 +31,12 @@ public class ScrollPane extends JScrollPane {
 
         setOpaque(false);
         setBackground(Color.WHITE);
-        setBorder(new LineBorder(new Color(239, 244, 234)));  
+        setBorder(new LineBorder(new Color(232, 238, 245)));  
 
         getVerticalScrollBar().setUI(new ModernScrollBarUI());
         getHorizontalScrollBar().setUI(new ModernScrollBarUI());
-        getVerticalScrollBar().setUnitIncrement(25);
-        getHorizontalScrollBar().setUnitIncrement(25);
+        getVerticalScrollBar().setUnitIncrement(15);
+        getHorizontalScrollBar().setUnitIncrement(15);
         getVerticalScrollBar().setOpaque(false);
         getHorizontalScrollBar().setOpaque(false);
 
@@ -59,7 +59,7 @@ public class ScrollPane extends JScrollPane {
         protected void configureScrollBarColors() {
             super.configureScrollBarColors();
             trackColor = TRACK_DEFAULT;
-            thumbColor = new Color(0xC2CEC7);
+            thumbColor = new Color(0xC3CEDA);
         }
 
         @Override
@@ -100,7 +100,7 @@ public class ScrollPane extends JScrollPane {
         protected void paintTrack(Graphics g, JComponent c, Rectangle r) {
             g.setColor(trackColor);
             g.fillRect(r.x, r.y, r.width, r.height);
-            g.setColor(new Color(0xE6EDE9));
+            g.setColor(new Color(0xE6ECF3));
             if (scrollbar.getOrientation() == JScrollBar.VERTICAL) {
                 g.drawLine(r.x, r.y, r.x, r.y + r.height - 1);
             } else {
@@ -120,7 +120,7 @@ public class ScrollPane extends JScrollPane {
                 boolean aktif = isDragging || isThumbRollover();
                 int tebal = aktif ? THUMB_HOVER : THUMB;
                 Color warna = isDragging ? AKSEN_DEFAULT
-                        : isThumbRollover() ? new Color(0x98ABA0) : thumbColor;
+                        : isThumbRollover() ? new Color(0x98A9BD) : thumbColor;
                 g2.setColor(warna);
 
                 if (scrollbar.getOrientation() == JScrollBar.VERTICAL) {

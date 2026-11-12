@@ -78,7 +78,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
     private double h_belicari=0, hargacari=0, sisacari=0,y=0,kenaikan,stokbarang,ttlhpp,ttljual;
     private int jml=0,i=0,z=0,row=0;
     private String signa1="1",signa2="1",kdObatSK="",requestJson="",nokunjungan="",URL="",otorisasi,sql="",no_batchcari="", tgl_kadaluarsacari="", 
-            no_fakturcari="",aktifkanbatch="no",aktifpcare="no",noresep="",hppfarmasi="",VALIDASIULANGBERIOBAT="",DEPOAKTIFOBAT="",utc="";
+            no_fakturcari="",aktifkanbatch="no",aktifpcare="no",noresep="",hppfarmasi="",VALIDASIULANGBERIOBAT="",DEPOAKTIFOBAT="",utc="",NoResep = "";
     private WarnaTable2 warna=new WarnaTable2();
     private DlgCariBangsal lokasidepo;
     private WarnaTable2 warna2=new WarnaTable2();
@@ -95,7 +95,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
     private File file;
     private FileWriter fileWriter;
     private FileReader myObj;
-    private String TANGGALMUNDUR="yes";
+    private String TANGGALMUNDUR="yes",statusclosingparsial="";
     private DlgResepObat ResepObat;
     
     /** Creates new form DlgPenyakit
@@ -398,6 +398,9 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         kdgudang = new widget.TextBox();
         nmgudang = new widget.TextBox();
         BtnGudang = new widget.Button();
+        scrollPane3 = new widget.ScrollPane();
+        Pesan = new widget.TextArea();
+        label39 = new widget.Label();
         TabRawat = new widget.TabPane();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -409,8 +412,6 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
 
         Popup.setName("Popup"); // NOI18N
 
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkan.setText("Bersihkan Jumlah");
         ppBersihkan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -424,8 +425,6 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         });
         Popup.add(ppBersihkan);
 
-        ppStok.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppStok.setForeground(new java.awt.Color(50, 50, 50));
         ppStok.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppStok.setText("Tampilkan Semua Stok");
         ppStok.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -439,8 +438,6 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         });
         Popup.add(ppStok);
 
-        ppStok1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppStok1.setForeground(new java.awt.Color(50, 50, 50));
         ppStok1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppStok1.setText("Tampilkan Stok Lokasi Lain");
         ppStok1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -641,7 +638,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
 
         FormInput.setBackground(new java.awt.Color(215, 225, 215));
         FormInput.setName("FormInput"); // NOI18N
-        FormInput.setPreferredSize(new java.awt.Dimension(100, 73));
+        FormInput.setPreferredSize(new java.awt.Dimension(100, 120));
         FormInput.setLayout(null);
 
         jLabel5.setText("Tanggal :");
@@ -651,10 +648,9 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         jLabel5.setBounds(4, 10, 68, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "26-03-2026" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
-        DTPTgl.setOpaque(false);
         DTPTgl.setPreferredSize(new java.awt.Dimension(100, 23));
         DTPTgl.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -715,7 +711,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         label12.setName("label12"); // NOI18N
         label12.setPreferredSize(new java.awt.Dimension(50, 23));
         FormInput.add(label12);
-        label12.setBounds(382, 10, 50, 23);
+        label12.setBounds(4, 68, 50, 23);
 
         Jeniskelas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kelas 1", "Kelas 2", "Kelas 3", "Utama/BPJS", "VIP", "VVIP", "Beli Luar", "Karyawan" }));
         Jeniskelas.setName("Jeniskelas"); // NOI18N
@@ -731,14 +727,13 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
             }
         });
         FormInput.add(Jeniskelas);
-        Jeniskelas.setBounds(435, 10, 110, 23);
+        Jeniskelas.setBounds(80, 68, 110, 23);
 
         ChkNoResep.setSelected(true);
         ChkNoResep.setText("No.Resep   ");
         ChkNoResep.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         ChkNoResep.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         ChkNoResep.setName("ChkNoResep"); // NOI18N
-        ChkNoResep.setOpaque(false);
         ChkNoResep.setPreferredSize(new java.awt.Dimension(85, 23));
         ChkNoResep.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -746,7 +741,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
             }
         });
         FormInput.add(ChkNoResep);
-        ChkNoResep.setBounds(548, 10, 100, 23);
+        ChkNoResep.setBounds(200, 68, 100, 23);
 
         label21.setText("Depo :");
         label21.setName("label21"); // NOI18N
@@ -784,11 +779,36 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         FormInput.add(BtnGudang);
         BtnGudang.setBounds(332, 40, 28, 23);
 
+        scrollPane3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        scrollPane3.setName("scrollPane3"); // NOI18N
+
+        Pesan.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        Pesan.setColumns(20);
+        Pesan.setRows(5);
+        Pesan.setName("Pesan"); // NOI18N
+        Pesan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                PesanKeyPressed(evt);
+            }
+        });
+        scrollPane3.setViewportView(Pesan);
+
+        FormInput.add(scrollPane3);
+        scrollPane3.setBounds(400, 25, 280, 90);
+
+        label39.setForeground(new java.awt.Color(51, 153, 255));
+        label39.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        label39.setText(".:: Pesan dari Dokter Peresep ::.");
+        label39.setFont(new java.awt.Font("Ubuntu Sans", 1, 12)); // NOI18N
+        label39.setName("label39"); // NOI18N
+        label39.setPreferredSize(new java.awt.Dimension(65, 23));
+        FormInput.add(label39);
+        label39.setBounds(400, 3, 280, 23);
+
         internalFrame1.add(FormInput, java.awt.BorderLayout.PAGE_START);
 
         TabRawat.setBackground(new java.awt.Color(255, 255, 253));
         TabRawat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)));
-        TabRawat.setForeground(new java.awt.Color(50, 50, 50));
         TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -849,7 +869,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         Scroll3.setName("Scroll3"); // NOI18N
         Scroll3.setOpaque(true);
 
-        tbDetailObatRacikan.setAutoCreateRowSorter(false);
+        tbDetailObatRacikan.setAutoCreateRowSorter(true);
         tbDetailObatRacikan.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbDetailObatRacikan.setName("tbDetailObatRacikan"); // NOI18N
         tbDetailObatRacikan.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1094,6 +1114,8 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             Valid.textKosong(TCari,"Data");
         }else if(kdgudang.getText().equals("")){
             Valid.textKosong(TCari,"Lokasi");                              
+        }else if((statusclosingparsial=Sequel.cariIsi("select reg_periksa.status_closing_parsial from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText())).equals("Sudah Closing")){
+            JOptionPane.showMessageDialog(null,"Pasien Reguler Sudah Closing Kasir ..!!\nData tidak dapat ditambahkan lagi.\nSilahkan hubungi bagian kasir/keuangan ..!!");
         }else{
             int reply = JOptionPane.showConfirmDialog(rootPane,"Eeiiiiiits, udah bener belum data yang mau disimpan..??","Konfirmasi",JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
@@ -1941,6 +1963,10 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         }
     }//GEN-LAST:event_formWindowOpened
 
+    private void PesanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PesanKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PesanKeyPressed
+
     /**
     * @param args the command line arguments
     */
@@ -1973,6 +1999,7 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private widget.PanelBiasa FormInput;
     private widget.ComboBox Jeniskelas;
     private widget.TextBox KdPj;
+    private widget.TextArea Pesan;
     private javax.swing.JPopupMenu Popup;
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll2;
@@ -1993,12 +2020,14 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private widget.Label label12;
     private widget.Label label13;
     private widget.Label label21;
+    private widget.Label label39;
     private widget.Label label9;
     private widget.TextBox nmgudang;
     private widget.panelisi panelisi3;
     private widget.MenuItem ppBersihkan;
     private widget.MenuItem ppStok;
     private widget.MenuItem ppStok1;
+    private widget.ScrollPane scrollPane3;
     private widget.Table tbDetailObatRacikan;
     private widget.Table tbObat;
     private widget.Table tbObatRacikan;
@@ -2810,6 +2839,16 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         kenaikan=Sequel.cariIsiAngka("select (set_harga_obat_ranap.hargajual/100) from set_harga_obat_ranap where set_harga_obat_ranap.kd_pj='"+KdPj.getText()+"' and set_harga_obat_ranap.kelas='"+kelas.getText()+"'");
         TCari.requestFocus();
     } 
+    
+     // Menampilkan pesan resep berdasarkan no_resep
+public void setNoResep(String noResep) {
+    if (Sequel.cariInteger("SELECT COUNT(*) FROM resep_obat WHERE no_resep=?", noResep) > 0) {
+        String pesanResep = Sequel.cariIsi("SELECT pesan FROM resep_obat WHERE no_resep=?", noResep);
+        Pesan.setText(pesanResep != null ? pesanResep : "Pesan kosong.");
+    } else {
+        Pesan.setText("Tidak ada pesan untuk resep ini.");
+    }
+}
     
     private void jam(){
         ActionListener taskPerformer = new ActionListener(){

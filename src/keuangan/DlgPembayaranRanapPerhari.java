@@ -26,6 +26,8 @@ import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.HashMap;
@@ -36,6 +38,8 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import laporan.RekapPendapatanRanap;
+import laporan.RekapPenyakitRalan;
 import simrskhanza.DlgCariBangsal;
 import simrskhanza.DlgCariCaraBayar;
 
@@ -64,7 +68,7 @@ public final class DlgPembayaranRanapPerhari extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setLocation(8,1);
-        setSize(885,674);
+        setSize(1010,674);
 
         Object[] rowRwJlDr={"Tgl.Pulang","Registrasi","Tindakan","Obat+Emb+Tsl","Retur Obat","Resep Pulang",
                             "Laborat","Radiologi","Potongan","Tambahan","Kamar+Service","Operasi","Harian","Total"};
@@ -120,6 +124,7 @@ public final class DlgPembayaranRanapPerhari extends javax.swing.JDialog {
         jLabel10 = new javax.swing.JLabel();
         LCount = new javax.swing.JLabel();
         BtnPrint = new widget.Button();
+        BtnRekapRanap = new widget.Button();
         BtnKeluar = new widget.Button();
         PanelInput = new javax.swing.JPanel();
         ChkInput = new widget.CekBox();
@@ -157,7 +162,7 @@ public final class DlgPembayaranRanapPerhari extends javax.swing.JDialog {
         Scroll.setName("Scroll"); // NOI18N
         Scroll.setOpaque(true);
 
-        tbBangsal.setAutoCreateRowSorter(false);
+        tbBangsal.setAutoCreateRowSorter(true);
         tbBangsal.setName("tbBangsal"); // NOI18N
         tbBangsal.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -245,7 +250,7 @@ public final class DlgPembayaranRanapPerhari extends javax.swing.JDialog {
         LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount.setText("0");
         LCount.setName("LCount"); // NOI18N
-        LCount.setPreferredSize(new java.awt.Dimension(180, 23));
+        LCount.setPreferredSize(new java.awt.Dimension(110, 23));
         panelGlass5.add(LCount);
 
         BtnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
@@ -265,6 +270,24 @@ public final class DlgPembayaranRanapPerhari extends javax.swing.JDialog {
             }
         });
         panelGlass5.add(BtnPrint);
+
+        BtnRekapRanap.setIcon(RekapPenyakitRalan.ikonTabel());
+        BtnRekapRanap.setMnemonic('R');
+        BtnRekapRanap.setText("Rekap Pendapatan Reguler Ranap");
+        BtnRekapRanap.setToolTipText("Alt+R");
+        BtnRekapRanap.setName("BtnRekapRanap"); // NOI18N
+        BtnRekapRanap.setPreferredSize(new java.awt.Dimension(235, 30));
+        BtnRekapRanap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRekapRanapActionPerformed(evt);
+            }
+        });
+        BtnRekapRanap.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnRekapRanapKeyPressed(evt);
+            }
+        });
+        panelGlass5.add(BtnRekapRanap);
 
         BtnKeluar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/exit.png"))); // NOI18N
         BtnKeluar.setMnemonic('K');
@@ -420,6 +443,29 @@ public final class DlgPembayaranRanapPerhari extends javax.swing.JDialog {
             //Valid.pindah(evt, BtnHapus, BtnAll);
         }
 }//GEN-LAST:event_BtnPrintKeyPressed
+
+    private void BtnRekapRanapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRekapRanapActionPerformed
+        // bulan & tahun awal diambil dari tanggal awal; seluruh bulan dalam setahun langsung tampil
+        int bulanAwal=LocalDate.now().getMonthValue(),tahunAwal=LocalDate.now().getYear();
+        try {
+            LocalDate tglAwal=LocalDate.parse(Valid.SetTgl(Tgl1.getSelectedItem()+""));
+            bulanAwal=tglAwal.getMonthValue();
+            tahunAwal=tglAwal.getYear();
+        } catch (Exception e) {
+        }
+        // filter (kamar/bangsal dan cara bayar) ikut dipakai bila diisi pada panel Filter Data
+        final String fBangsal=nmbangsal.getText().equals("")?"":"%"+kdbangsal.getText()+nmbangsal.getText()+"%";
+        final String fCaraBayar=NmCaraBayar.getText().equals("")?"":"%"+KdCaraBayar.getText()+NmCaraBayar.getText()+"%";
+        RekapPendapatanRanap.tampil(this,(tahun,sampai,sampaiLalu) -> muatPendapatanRanap(tahun,sampai,sampaiLalu,fBangsal,fCaraBayar),bulanAwal,tahunAwal);
+    }//GEN-LAST:event_BtnRekapRanapActionPerformed
+
+    private void BtnRekapRanapKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnRekapRanapKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+            BtnRekapRanapActionPerformed(null);
+        }else{
+            Valid.pindah(evt, BtnPrint, BtnKeluar);
+        }
+    }//GEN-LAST:event_BtnRekapRanapKeyPressed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
         dispose();
@@ -614,6 +660,7 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Button BtnCari1;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
+    private widget.Button BtnRekapRanap;
     private widget.Button BtnSeek2;
     private widget.CekBox ChkInput;
     private widget.panelisi FormInput;
@@ -1093,6 +1140,99 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
+    }
+
+    /** Awalan "Kode Kamar" (kamar.kd_bangsal, bukan nomor bed) untuk tiap kelompok pada rekap. Ubah di sini bila kode berubah. */
+    private static final String[] AWALAN_ICU={"ICU"};
+    private static final String[] AWALAN_KEBIDANAN={"BD","BID","SAL","AN"};
+    private static final String[] AWALAN_IGD={"IGD"};   // kamar IGD tidak dihitung
+
+    private static String sqlAwalan(String kolom,String[] awalan){
+        StringBuilder s=new StringBuilder("(");
+        for(int i=0;i<awalan.length;i++){
+            if(i>0){
+                s.append(" or ");
+            }
+            s.append("upper(").append(kolom).append(") like '").append(awalan[i]).append("%'");
+        }
+        return s.append(")").toString();
+    }
+
+    /**
+     * Pendapatan rawat inap (tanpa piutang) per bulan tanggal pulang untuk tahun terpilih dan pembandingnya (periode
+     * yang sama tahun lalu), dipecah per bangsal: ICU, KEBIDANAN dan RRUB. Aturan pasien sama dengan tampil():
+     * kamar_inap bukan 'Pindah Kamar', punya nota_inap, tidak ada di piutang_pasien.
+     * Pembagian bangsal menurut "Kode Kamar" (kamar.kd_bangsal): ICU* = ICU; BD*, BID*, SAL*, AN* = KEBIDANAN; selain itu = RRUB; kamar IGD*
+     * tidak dihitung (pasien yang hanya pernah di kamar IGD tidak ikut). Pasien yang pernah di beberapa bangsal
+     * dibagi sebanding lama rawat (kamar_inap.lama, minimal 1 hari) di tiap bangsal. Komponen biaya (status pada
+     * tabel billing): Tindakan = Ranap/Ralan Dokter, Dokter Paramedis, Paramedis; Operasi; Kamar = Kamar + Service +
+     * Harian; Obat = Obat + Retur Obat + Resep Pulang; Laborat; Radiologi; Lainnya = Registrasi + Tambahan + Potongan.
+     */
+    private RekapPendapatanRanap.Paket muatPendapatanRanap(int tahun,LocalDate sampai,LocalDate sampaiLalu,String fBangsal,String fCaraBayar) throws Exception {
+        RekapPendapatanRanap.Mentah ini=muatPendapatanRanapPeriode(LocalDate.of(tahun,1,1),sampai,fBangsal,fCaraBayar);
+        RekapPendapatanRanap.Mentah lalu=muatPendapatanRanapPeriode(LocalDate.of(tahun-1,1,1),sampaiLalu,fBangsal,fCaraBayar);
+        return new RekapPendapatanRanap.Paket(ini,lalu);
+    }
+
+    /** Satu query agregat untuk rentang tanggal pulang dari..sampai; filter kosong ("") = tidak dipakai. */
+    private RekapPendapatanRanap.Mentah muatPendapatanRanapPeriode(LocalDate dari,LocalDate sampai,String fBangsal,String fCaraBayar) throws Exception {
+        // "Kode Kamar" pada informasi kamar = kamar.kd_bangsal (dipakai bersama oleh seluruh bed di bangsal itu)
+        String kode="coalesce(kamar.kd_bangsal,ki.kd_kamar)";
+        String tinggal="select ki.no_rawat,"+
+            "case when "+sqlAwalan(kode,AWALAN_ICU)+" then 'ICU' "+
+            "when "+sqlAwalan(kode,AWALAN_KEBIDANAN)+" then 'KEBIDANAN' else 'RRUB' end as grup,"+
+            "greatest(coalesce(ki.lama,0),1) as w from kamar_inap ki left join kamar on ki.kd_kamar=kamar.kd_kamar "+
+            "where not "+sqlAwalan(kode,AWALAN_IGD);
+        StringBuilder sql=new StringBuilder(
+            "select month(pulang.tgl_keluar) as bln,grp.grup,"+
+            "sum((case when billing.status in ('Ranap Dokter','Ranap Dokter Paramedis','Ranap Paramedis','Ralan Dokter','Ralan Dokter Paramedis','Ralan Paramedis') then billing.totalbiaya else 0 end)*grp.w/tot.w) as tindakan,"+
+            "sum((case when billing.status='Operasi' then billing.totalbiaya else 0 end)*grp.w/tot.w) as operasi,"+
+            "sum((case when billing.status in ('Kamar','Service','Harian') then billing.totalbiaya else 0 end)*grp.w/tot.w) as kamar,"+
+            "sum((case when billing.status in ('Obat','Retur Obat','Resep Pulang') then billing.totalbiaya else 0 end)*grp.w/tot.w) as obat,"+
+            "sum((case when billing.status='Laborat' then billing.totalbiaya else 0 end)*grp.w/tot.w) as lab,"+
+            "sum((case when billing.status='Radiologi' then billing.totalbiaya else 0 end)*grp.w/tot.w) as rad,"+
+            "sum((case when billing.status in ('Registrasi','Tambahan','Potongan') then billing.totalbiaya else 0 end)*grp.w/tot.w) as lain "+
+            "from (select kamar_inap.no_rawat,max(kamar_inap.tgl_keluar) as tgl_keluar from kamar_inap "+
+            "where kamar_inap.stts_pulang<>'Pindah Kamar' and kamar_inap.tgl_keluar between ? and ? group by kamar_inap.no_rawat) pulang "+
+            "inner join reg_periksa on reg_periksa.no_rawat=pulang.no_rawat "+
+            "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
+            "inner join (select s.no_rawat,s.grup,sum(s.w) as w from ("+tinggal+") s group by s.no_rawat,s.grup) grp on grp.no_rawat=pulang.no_rawat "+
+            "inner join (select s.no_rawat,sum(s.w) as w from ("+tinggal+") s group by s.no_rawat) tot on tot.no_rawat=pulang.no_rawat "+
+            "left join billing on billing.no_rawat=reg_periksa.no_rawat "+
+            "where exists (select 1 from nota_inap where nota_inap.no_rawat=reg_periksa.no_rawat) "+
+            "and not exists (select 1 from piutang_pasien where piutang_pasien.no_rawat=reg_periksa.no_rawat) ");
+        if(!fBangsal.isEmpty()){
+            // filter bangsal (master bangsal) pada panel Filter Data: bangsal tempat pasien dirawat saat pulang
+            sql.append("and exists (select 1 from kamar_inap ki inner join kamar on ki.kd_kamar=kamar.kd_kamar "+
+                "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal where ki.no_rawat=pulang.no_rawat "+
+                "and ki.tgl_keluar=pulang.tgl_keluar and ki.stts_pulang<>'Pindah Kamar' "+
+                "and concat(kamar.kd_bangsal,bangsal.nm_bangsal) like ?) ");
+        }
+        if(!fCaraBayar.isEmpty()){
+            sql.append("and concat(reg_periksa.kd_pj,penjab.png_jawab) like ? ");
+        }
+        sql.append("group by month(pulang.tgl_keluar),grp.grup");
+        ArrayList<Object[]> baris=new ArrayList<>();
+        try (PreparedStatement p=koneksi.prepareStatement(sql.toString())) {
+            int i=1;
+            p.setString(i++,dari.toString());
+            p.setString(i++,sampai.toString());
+            if(!fBangsal.isEmpty()){
+                p.setString(i++,fBangsal);
+            }
+            if(!fCaraBayar.isEmpty()){
+                p.setString(i++,fCaraBayar);
+            }
+            try (ResultSet r=p.executeQuery()) {
+                while(r.next()){
+                    baris.add(new Object[]{r.getInt("bln"),r.getString("grup"),new long[]{
+                        Math.round(r.getDouble("tindakan")),Math.round(r.getDouble("operasi")),Math.round(r.getDouble("kamar")),
+                        Math.round(r.getDouble("obat")),Math.round(r.getDouble("lab")),Math.round(r.getDouble("rad")),
+                        Math.round(r.getDouble("lain"))}});
+                }
+            }
+        }
+        return RekapPendapatanRanap.Mentah.bangun(baris);
     }
 
     private void getData() {

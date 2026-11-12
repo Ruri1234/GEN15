@@ -20,7 +20,7 @@ public class WarnaTable3 extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
         Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         if (row % 2 == 1){
-            component.setBackground(new Color(255,244,244));
+            component.setBackground(new Color(225,235,249));
         }else{
             component.setBackground(new Color(255,255,255));
         } 
@@ -34,6 +34,13 @@ public class WarnaTable3 extends DefaultTableCellRenderer {
         }else{
             component.setForeground(new Color(70,70,70));
         }
+
+        // Penanganan jika baris sedang dipilih
+        if (isSelected) {
+            component.setBackground(new Color(80,129,227)); // Warna biru untuk baris yang dipilih
+            component.setForeground(Color.WHITE);           // Warna teks putih agar kontras
+        }
+
         return component;
     }
 

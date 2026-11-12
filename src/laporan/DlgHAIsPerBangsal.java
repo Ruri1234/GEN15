@@ -407,13 +407,13 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>IVL</td>"+
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>UC</td>"+
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>VAP</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>IAD</td>"+
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Clabsi</td>"+
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Pleb</td>"+
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>ISK</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>ILO</td>"+
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>IDO</td>"+
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>HAP</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tinea</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Scabies</td>"+
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Plabsi</td>"+
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tirah Baring</td>"+
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sputum</td>"+
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Darah</td>"+
                     "<td valign='middle' bgcolor='#FFFAFA' align='center'>Urine</td>"+

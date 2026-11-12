@@ -61,7 +61,7 @@ public final class DlgHitungBOR extends javax.swing.JDialog {
         this.setLocation(8,1);
         setSize(885,674);
 
-        tabMode=new DefaultTableModel(null,new String[]{"No","No.Rawat","Nomer RM","Nama Pasien","Kamar","Tgl.Masuk","Tgl.Keluar","Lama","Status"}){
+        tabMode=new DefaultTableModel(null,new String[]{"No","No.Rawat","Nomer RM","Nama Pasien","Kamar","Tgl.Masuk","Tgl.Keluar","Lama","Status","Nama Dpjp"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         Tabel1.setModel(tabMode);
@@ -70,7 +70,7 @@ public final class DlgHitungBOR extends javax.swing.JDialog {
         Tabel1.setPreferredScrollableViewportSize(new Dimension(500,500));
         Tabel1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < 10; i++) {
             TableColumn column = Tabel1.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(35);
@@ -90,12 +90,14 @@ public final class DlgHitungBOR extends javax.swing.JDialog {
                 column.setPreferredWidth(70);
             }else if(i==8){
                 column.setPreferredWidth(80);
+            }else if(i==9){
+                column.setPreferredWidth(200);
             }
         }
 
         Tabel1.setDefaultRenderer(Object.class, new WarnaTable());
         
-        tabMode2=new DefaultTableModel(null,new String[]{"No","No.Rawat","Nomer RM","Nama Pasien","Kamar","Tgl.Masuk","Tgl.Keluar","Lama","Status"}){
+        tabMode2=new DefaultTableModel(null,new String[]{"No","No.Rawat","Nomer RM","Nama Pasien","Kamar","Tgl.Masuk","Tgl.Keluar","Lama","Status","Nama Dpjp"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         Tabel2.setModel(tabMode2);
@@ -104,7 +106,7 @@ public final class DlgHitungBOR extends javax.swing.JDialog {
         Tabel2.setPreferredScrollableViewportSize(new Dimension(500,500));
         Tabel2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < 10; i++) {
             TableColumn column = Tabel2.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(35);
@@ -124,6 +126,8 @@ public final class DlgHitungBOR extends javax.swing.JDialog {
                 column.setPreferredWidth(70);
             }else if(i==8){
                 column.setPreferredWidth(80);
+            }else if(i==9){
+                column.setPreferredWidth(200);
             }
         }
 
@@ -750,13 +754,24 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             Valid.tabelKosong(tabMode);   
             
             ps=koneksi.prepareStatement(
-                       "select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,concat(kamar_inap.kd_kamar,' ',bangsal.nm_bangsal) as kamar," +
-                       "kamar_inap.tgl_masuk,if(kamar_inap.tgl_keluar='0000-00-00',current_date(),kamar_inap.tgl_keluar) as tgl_keluar,kamar_inap.lama,kamar_inap.stts_pulang "+
-                       "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat "+
-                       "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                       "inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar "+
+              "select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien," +
+"concat(kamar_inap.kd_kamar,' ',bangsal.nm_bangsal) as kamar," +
+"kamar_inap.tgl_masuk," +
+"if(kamar_inap.tgl_keluar='0000-00-00',current_date(),kamar_inap.tgl_keluar) as tgl_keluar," +
+"kamar_inap.lama," +
+"kamar_inap.stts_pulang as stts_pulang," +   // status pulang saja
+    "ifnull(group_concat(dokter.nm_dokter separator ', '),'-') as dpjp " + // kolom baru untuk nama dokter
+"from kamar_inap " +
+"inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat " +
+"inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+"inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar " +
                        "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal " +
-                       "where kamar_inap.tgl_masuk between ? and ? "+filter+(Kamar.getText().equals("")?"":"and bangsal.nm_bangsal=?")+" order by kamar_inap.tgl_masuk");  
+"left join dpjp_ranap on kamar_inap.no_rawat=dpjp_ranap.no_rawat " +
+"left join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter " +
+"where kamar_inap.tgl_masuk between ? and ? " + filter +
+(Kamar.getText().equals("") ? "" : "and bangsal.nm_bangsal=? ") +
+"group by kamar_inap.no_rawat " +
+"order by kamar_inap.tgl_masuk");  
             
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
@@ -771,7 +786,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     tabMode.addRow(new Object[]{
                         i,rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),
                         rs.getString("kamar"),rs.getString("tgl_masuk"),rs.getString("tgl_keluar"),
-                        rs.getString("lama"),rs.getString("stts_pulang")
+                        rs.getString("lama"),rs.getString("stts_pulang"),rs.getString("dpjp")
                     });
                     hari=hari+rs.getDouble("lama");
                     i++;
@@ -806,13 +821,36 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             Valid.tabelKosong(tabMode2);   
             
             ps=koneksi.prepareStatement(
-                       "select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,concat(kamar_inap.kd_kamar,' ',bangsal.nm_bangsal) as kamar," +
-                       "kamar_inap.tgl_masuk,if(kamar_inap.tgl_keluar='0000-00-00',current_date(),kamar_inap.tgl_keluar) as tgl_keluar,kamar_inap.lama,kamar_inap.stts_pulang "+
-                       "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat "+
-                       "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                       "inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar "+
-                       "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal  " +
-                       "where kamar_inap.tgl_keluar between ? and ? "+filter+(Kamar.getText().equals("")?"":"and bangsal.nm_bangsal=?")+" order by kamar_inap.tgl_keluar");  
+"select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien," +
+"concat(kamar_inap.kd_kamar,' ',bangsal.nm_bangsal) as kamar," +
+"kamar_inap.tgl_masuk," +
+"if(kamar_inap.tgl_keluar='0000-00-00',current_date(),kamar_inap.tgl_keluar) as tgl_keluar," +
+"kamar_inap.lama," +
+ "kamar_inap.stts_pulang as stts_pulang," +   // status pulang saja
+    "ifnull(dokter.nm_dokter,'-') as dpjp " +    // kolom baru untuk nama dokter
+"from kamar_inap " +
+"inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat " +
+"inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+"inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar " +
+"inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal " +
+            
+"left join ( " +
+"   select d1.no_rawat, d1.kd_dokter " +
+"   from dpjp_ranap d1 " +
+"   where d1.kd_dokter = ( " +
+"       select d2.kd_dokter " +
+"       from dpjp_ranap d2 " +
+"       where d2.no_rawat = d1.no_rawat " +
+"       limit 1 " +
+"   ) " +
+") dp on kamar_inap.no_rawat=dp.no_rawat " +
+
+"left join dokter on dp.kd_dokter=dokter.kd_dokter " +
+
+"where (if(kamar_inap.tgl_keluar='0000-00-00',current_date(),kamar_inap.tgl_keluar) between ? and ?) " +
+filter +
+(Kamar.getText().equals("") ? "" : "and bangsal.nm_bangsal=? ") +
+"order by tgl_keluar");  
             
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
@@ -827,7 +865,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     tabMode2.addRow(new Object[]{
                         i,rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),
                         rs.getString("kamar"),rs.getString("tgl_masuk"),rs.getString("tgl_keluar"),
-                        rs.getString("lama"),rs.getString("stts_pulang")
+                        rs.getString("lama"),rs.getString("stts_pulang"),rs.getString("dpjp")
                     });
                     hari=hari+rs.getDouble("lama");
                     i++;

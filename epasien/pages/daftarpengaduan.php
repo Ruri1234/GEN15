@@ -11,12 +11,12 @@
         $resultpengaduan = bukaquery2($sqlpengaduan);
         while($rowpengaduan = mysqli_fetch_array($resultpengaduan)) {
             echo "<tr class='col-blue-grey'>
-                   <td align='left'>".$rowpengaduan["pesan"]."<br/>(".$rowpengaduan["tanggal"].")</td>
+                   <td align='left'>".nl2br(escapeHtml($rowpengaduan["pesan"]))."<br/>(".escapeHtml($rowpengaduan["tanggal"]).")</td>
                  </tr>";
             $balasan=getOne("select pesan_balasan from balasan_pengaduan where id_pengaduan='".$rowpengaduan["id"]."'");
             if(!empty($balasan)){
                 echo "<tr class='col-pink'>
-                        <td align='right'>$balasan</td>
+                        <td align='right'>".nl2br(escapeHtml($balasan))."</td>
                       </tr>";
             }
         }

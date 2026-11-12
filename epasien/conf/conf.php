@@ -268,6 +268,30 @@
         }
     }
 
+    function validPasswordInput($data, $panjang = 50){
+        $save = "";
+        if(strlen($data) > $panjang){
+            return "";
+        }else{
+            // Menghapus karakter berbahaya yang dapat merusak SQL string literal
+            // namun TETAP mempertahankan karakter khusus password: * # $ ! & @ % ^ ( ) - _ + = ? / . ,
+            $save = str_replace(array("'", "\"", "\\", "\0", "\r", "\n", "`", ";"), "", $data);
+        }
+        return $save;
+    }
+
+    function validPasswordComplexity($password){
+        // Klausul 1.7: Panjang minimal 8, memuat kombinasi huruf besar, huruf kecil, angka, dan karakter khusus (*,#,$,!,&, dll)
+        if(strlen($password) < 8 || strlen($password) > 50){
+            return false;
+        }
+        if(!preg_match('/[a-z]/', $password)) return false; // Huruf kecil
+        if(!preg_match('/[A-Z]/', $password)) return false; // Huruf besar
+        if(!preg_match('/[0-9]/', $password)) return false; // Angka
+        if(!preg_match('/[\W_]/', $password)) return false; // Karakter khusus / simbol
+        return true;
+    }
+
 
     function tutupkoneksi(){
        global  $konektor;
@@ -731,4 +755,10 @@
         return $output;
     }
         
+    function escapeHtml($data){
+        if($data === null){
+            return '';
+        }
+        return htmlspecialchars((string)$data, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
 ?>

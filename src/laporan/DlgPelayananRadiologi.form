@@ -33,7 +33,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,42,0,0,3,72"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,102,0,0,6,4"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -145,6 +145,62 @@
                 </Property>
               </Properties>
             </Component>
+            <Component class="widget.Label" name="jLabel18">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Status :"/>
+                <Property name="name" type="java.lang.String" value="jLabel18" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[55, 23]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="widget.ComboBox" name="Status">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="3">
+                    <StringItem index="0" value="Semua"/>
+                    <StringItem index="1" value="ralan"/>
+                    <StringItem index="2" value="ranap"/>
+                  </StringArray>
+                </Property>
+                <Property name="lightWeightPopupEnabled" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="Status" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[92, 23]"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="StatusActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="widget.Label" name="jLabel19">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Sifat :"/>
+                <Property name="name" type="java.lang.String" value="jLabel19" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[55, 23]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="widget.ComboBox" name="Sifat">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="3">
+                    <StringItem index="0" value="Semua"/>
+                    <StringItem index="1" value="CITO"/>
+                    <StringItem index="2" value="TIDAK CITO"/>
+                  </StringArray>
+                </Property>
+                <Property name="lightWeightPopupEnabled" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="Sifat" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[92, 23]"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SifatActionPerformed"/>
+              </Events>
+            </Component>
             <Component class="widget.Label" name="jLabel6">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Key Word :"/>
@@ -198,6 +254,22 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnAllActionPerformed"/>
                 <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="BtnAllKeyPressed"/>
               </Events>
+            </Component>
+            <Component class="widget.Label" name="jLabel8">
+              <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="66" green="66" red="ff" type="rgb"/>
+                </Property>
+                <Property name="horizontalAlignment" type="int" value="2"/>
+                <Property name="text" type="java.lang.String" value="Ketik di Keyword USG- untuk filter USG || Ketik RTG- untuk Rontgen || Ketik CITO untuk filter Cito"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Trebuchet MS" size="11" style="1"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="jLabel8" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[530, 30]"/>
+                </Property>
+              </Properties>
             </Component>
             <Component class="widget.Label" name="jLabel7">
               <Properties>

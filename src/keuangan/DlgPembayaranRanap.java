@@ -74,7 +74,7 @@ public final class DlgPembayaranRanap extends javax.swing.JDialog {
         setSize(885,674);
 
         Object[] rowRwJlDr={"Tgl.Pulang","No.Nota","No.RM","Nama Pasien","Kamar/Bangsal","Perujuk","Registrasi","Tindakan","Obt+Emb+Tsl","Retur Obat","Resep Pulang",
-                            "Laborat","Radiologi","Potongan","Tambahan","Kamar+Service","Operasi","Harian","Total"};
+                            "Laborat","Radiologi","Potongan","Tambahan","Kamar+Service","Operasi","Harian","Total","DPJP"};
         tabMode=new DefaultTableModel(null,rowRwJlDr){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -99,6 +99,8 @@ public final class DlgPembayaranRanap extends javax.swing.JDialog {
                 column.setPreferredWidth(100);
             }else if(i==18){
                 column.setPreferredWidth(110);
+            }else if(i==19){
+                column.setPreferredWidth(180);
             }else{
                 column.setPreferredWidth(75);
             }
@@ -975,28 +977,43 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     public void tampil(){
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
         Valid.tabelKosong(tabMode);
+    
         try{      
             if(nmbangsal.getText().equals("")&&NmCaraBayar.getText().equals("")){
                 ps= koneksi.prepareStatement(
-                    "select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,kamar_inap.tgl_keluar,bangsal.nm_bangsal,kamar_inap.stts_pulang, "+
-                    "kamar.kd_kamar from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat "+
+                "select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,kamar_inap.tgl_keluar,"+
+                "bangsal.nm_bangsal,kamar_inap.stts_pulang,kamar.kd_kamar,dokter.nm_dokter "+
+                "from kamar_inap "+
+                "inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat "+
                     "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar "+
                     "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
                     "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
-                    "where kamar_inap.stts_pulang<>'Pindah Kamar' and kamar_inap.tgl_keluar between ? and ? and "+
-                    "reg_periksa.no_rawat not in (select piutang_pasien.no_rawat from piutang_pasien where piutang_pasien.no_rawat=reg_periksa.no_rawat) "+
+                "left join dpjp_ranap on dpjp_ranap.no_rawat=kamar_inap.no_rawat "+
+                "left join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter "+
+                "where kamar_inap.stts_pulang<>'Pindah Kamar' "+
+                "and kamar_inap.tgl_keluar between ? and ? "+
+                "and reg_periksa.no_rawat not in "+
+                "(select piutang_pasien.no_rawat from piutang_pasien where piutang_pasien.no_rawat=reg_periksa.no_rawat) "+
                     "order by kamar_inap.tgl_keluar,kamar_inap.jam_keluar");
             }else{
                 ps= koneksi.prepareStatement(
-                    "select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,kamar_inap.tgl_keluar,bangsal.nm_bangsal,kamar_inap.stts_pulang, "+
-                    "kamar.kd_kamar from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat "+
+                "select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,kamar_inap.tgl_keluar,"+
+                "bangsal.nm_bangsal,kamar_inap.stts_pulang,kamar.kd_kamar,dokter.nm_dokter "+
+                "from kamar_inap "+
+                "inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat "+
                     "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar "+
                     "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
                     "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
-                    "where kamar_inap.stts_pulang<>'Pindah Kamar' and kamar_inap.tgl_keluar between ? and ? and concat(kamar.kd_bangsal,bangsal.nm_bangsal) like ? and concat(reg_periksa.kd_pj,penjab.png_jawab) like ? and "+
-                    "reg_periksa.no_rawat not in (select piutang_pasien.no_rawat from piutang_pasien where piutang_pasien.no_rawat=reg_periksa.no_rawat) "+
+                "left join dpjp_ranap on dpjp_ranap.no_rawat=kamar_inap.no_rawat "+
+                "left join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter "+
+                "where kamar_inap.stts_pulang<>'Pindah Kamar' "+
+                "and kamar_inap.tgl_keluar between ? and ? "+
+                "and concat(kamar.kd_bangsal,bangsal.nm_bangsal) like ? "+
+                "and concat(reg_periksa.kd_pj,penjab.png_jawab) like ? "+
+                "and reg_periksa.no_rawat not in "+
+                "(select piutang_pasien.no_rawat from piutang_pasien where piutang_pasien.no_rawat=reg_periksa.no_rawat) "+
                     "order by kamar_inap.tgl_keluar,kamar_inap.jam_keluar");
             }
                 
@@ -1414,6 +1431,7 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                 Valid.SetAngka(Obat),Valid.SetAngka(Retur_Obat),Valid.SetAngka(Resep_Pulang),Valid.SetAngka(Laborat),Valid.SetAngka(Radiologi),Valid.SetAngka(Potongan),
                                 Valid.SetAngka(Tambahan),Valid.SetAngka(Kamar+Service),Valid.SetAngka(Operasi),Valid.SetAngka(Harian),Valid.SetAngka(Laborat+Radiologi+Operasi+Obat+Ranap_Dokter+
                                         Ranap_Dokter_Paramedis+Ranap_Paramedis+Ralan_Dokter+Ralan_Dokter_Paramedis+Ralan_Paramedis+Tambahan+Potongan+Kamar+Registrasi+Harian+Retur_Obat+Resep_Pulang+Service)
+                            ,rs.getString("nm_dokter")
                             });
                         }else if(tampilkan.equals("Sudah Bayar")&&Keterangan.equals("Sudah Bayar")){
                             tabMode.addRow(new Object[]{
@@ -1424,7 +1442,8 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                 Valid.SetAngka(Obat),Valid.SetAngka(Retur_Obat),Valid.SetAngka(Resep_Pulang),Valid.SetAngka(Laborat),Valid.SetAngka(Radiologi),Valid.SetAngka(Potongan),
                                 Valid.SetAngka(Tambahan),Valid.SetAngka(Kamar+Service),Valid.SetAngka(Operasi),Valid.SetAngka(Harian),Valid.SetAngka(Laborat+Radiologi+Operasi+Obat+Ranap_Dokter+
                                         Ranap_Dokter_Paramedis+Ranap_Paramedis+Ralan_Dokter+Ralan_Dokter_Paramedis+Ralan_Paramedis+Tambahan+Potongan+Kamar+Registrasi+Harian+Retur_Obat+Resep_Pulang+Service)
-                            });
+                           ,rs.getString("nm_dokter") }
+                            );
                         }else if(tampilkan.equals("Semua")){
                             tabMode.addRow(new Object[]{
                                 rs.getString("tgl_keluar"),Sequel.cariIsi("select nota_inap.no_nota from nota_inap where nota_inap.no_rawat=?",rs.getString("no_rawat")),
@@ -1434,7 +1453,8 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                 Valid.SetAngka(Obat),Valid.SetAngka(Retur_Obat),Valid.SetAngka(Resep_Pulang),Valid.SetAngka(Laborat),Valid.SetAngka(Radiologi),Valid.SetAngka(Potongan),
                                 Valid.SetAngka(Tambahan),Valid.SetAngka(Kamar+Service),Valid.SetAngka(Operasi),Valid.SetAngka(Harian),Valid.SetAngka(Laborat+Radiologi+Operasi+Obat+Ranap_Dokter+
                                         Ranap_Dokter_Paramedis+Ranap_Paramedis+Ralan_Dokter+Ralan_Dokter_Paramedis+Ralan_Paramedis+Tambahan+Potongan+Kamar+Registrasi+Harian+Retur_Obat+Resep_Pulang+Service)
-                            });
+                            ,rs.getString("nm_dokter")}
+                            );
                         }
                             
                         

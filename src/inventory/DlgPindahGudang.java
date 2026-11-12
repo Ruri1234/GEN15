@@ -53,7 +53,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
     private ResultSet rs;
     private String sql="";
     private DecimalFormat df2 = new DecimalFormat("###,###,###,###,###,###,###");
-    private double nilaitotal=0;
+    private double nilaitotal=0,totalbrg=0;
     private String aktifkanbatch="no",DEPOAKTIFOBAT="";
     private boolean sukses=false;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -207,6 +207,8 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         LCount = new widget.Label();
         label13 = new widget.Label();
         LTotalMutasi = new widget.Label();
+        label14 = new widget.Label();
+        LTotalBrg = new widget.Label();
         BtnCetak = new widget.Button();
         BtnKeluar = new widget.Button();
         panelBiasa1 = new widget.PanelBiasa();
@@ -395,9 +397,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
 
         Popup1.setName("Popup1"); // NOI18N
 
-        MnKodeBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKodeBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeBarangDesc.setText("Urutkan Berdasar Kode Barang Descending");
         MnKodeBarangDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -411,9 +410,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnKodeBarangDesc);
 
-        MnKodeBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKodeBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeBarangAsc.setText("Urutkan Berdasar Kode Barang Ascending");
         MnKodeBarangAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -427,9 +423,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnKodeBarangAsc);
 
-        MnNamaBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnNamaBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaBarangDesc.setText("Urutkan Berdasar Nama Barang Descending");
         MnNamaBarangDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -443,9 +436,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnNamaBarangDesc);
 
-        MnNamaBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnNamaBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaBarangAsc.setText("Urutkan Berdasar Nama Barang Ascending");
         MnNamaBarangAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -459,9 +449,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnNamaBarangAsc);
 
-        MnKategoriAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKategoriAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKategoriAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKategoriAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKategoriAsc.setText("Urutkan Berdasar Kategori Ascending");
         MnKategoriAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -475,9 +462,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnKategoriAsc);
 
-        MnKategoriDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKategoriDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKategoriDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKategoriDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKategoriDesc.setText("Urutkan Berdasar Kategori Descending");
         MnKategoriDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -491,9 +475,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnKategoriDesc);
 
-        MnJenisDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnJenisDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnJenisDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnJenisDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJenisDesc.setText("Urutkan Berdasar Jenis Descending");
         MnJenisDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -507,9 +488,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnJenisDesc);
 
-        MnJenisAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnJenisAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnJenisAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnJenisAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJenisAsc.setText("Urutkan Berdasar Jenis Ascending");
         MnJenisAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -523,9 +501,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnJenisAsc);
 
-        MnGolonganDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnGolonganDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnGolonganDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnGolonganDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGolonganDesc.setText("Urutkan Berdasar Golongan Descending");
         MnGolonganDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -539,9 +514,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnGolonganDesc);
 
-        MnGolonganAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnGolonganAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnGolonganAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnGolonganAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGolonganAsc.setText("Urutkan Berdasar Golongan Ascending");
         MnGolonganAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -555,9 +527,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnGolonganAsc);
 
-        MnKodeLokasiAsalDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeLokasiAsalDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKodeLokasiAsalDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeLokasiAsalDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeLokasiAsalDesc.setText("Urutkan Berdasar Kode Lokasi Asal Descending");
         MnKodeLokasiAsalDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -571,9 +540,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnKodeLokasiAsalDesc);
 
-        MnKodeLokasiAsalAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeLokasiAsalAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKodeLokasiAsalAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeLokasiAsalAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeLokasiAsalAsc.setText("Urutkan Berdasar Kode Lokasi Asal Ascending");
         MnKodeLokasiAsalAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -587,9 +553,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnKodeLokasiAsalAsc);
 
-        MnNamaLokasiAsalDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaLokasiAsalDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnNamaLokasiAsalDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaLokasiAsalDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaLokasiAsalDesc.setText("Urutkan Berdasar Nama Lokasi Asal Descending");
         MnNamaLokasiAsalDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -603,9 +566,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnNamaLokasiAsalDesc);
 
-        MnNamaLokasiAsalAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaLokasiAsalAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnNamaLokasiAsalAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaLokasiAsalAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaLokasiAsalAsc.setText("Urutkan Berdasar Nama Lokasi Asal Ascending");
         MnNamaLokasiAsalAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -619,9 +579,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnNamaLokasiAsalAsc);
 
-        MnKodeLokasiTujuanDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeLokasiTujuanDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKodeLokasiTujuanDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeLokasiTujuanDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeLokasiTujuanDesc.setText("Urutkan Berdasar Kode Lokasi Tujuan Descending");
         MnKodeLokasiTujuanDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -635,9 +592,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnKodeLokasiTujuanDesc);
 
-        MnKodeLokasiTujuanAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeLokasiTujuanAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKodeLokasiTujuanAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeLokasiTujuanAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeLokasiTujuanAsc.setText("Urutkan Berdasar Kode Lokasi Tujuan Ascending");
         MnKodeLokasiTujuanAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -651,9 +605,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnKodeLokasiTujuanAsc);
 
-        MnNamaLokasiTujuanDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaLokasiTujuanDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnNamaLokasiTujuanDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaLokasiTujuanDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaLokasiTujuanDesc.setText("Urutkan Berdasar Nama Lokasi Tujuan Descending");
         MnNamaLokasiTujuanDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -667,9 +618,6 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         });
         Popup1.add(MnNamaLokasiTujuanDesc);
 
-        MnNamaLokasiTujuanlAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaLokasiTujuanlAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnNamaLokasiTujuanlAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaLokasiTujuanlAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaLokasiTujuanlAsc.setText("Urutkan Berdasar Nama Lokasi Tujuan Ascending");
         MnNamaLokasiTujuanlAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -734,10 +682,9 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         panelisi3.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "13-04-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
-        DTPCari1.setOpaque(false);
         DTPCari1.setPreferredSize(new java.awt.Dimension(105, 23));
         panelisi3.add(DTPCari1);
 
@@ -748,10 +695,9 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         panelisi3.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "13-04-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
-        DTPCari2.setOpaque(false);
         DTPCari2.setPreferredSize(new java.awt.Dimension(105, 23));
         panelisi3.add(DTPCari2);
 
@@ -829,25 +775,36 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
 
         label10.setText("Record :");
         label10.setName("label10"); // NOI18N
-        label10.setPreferredSize(new java.awt.Dimension(100, 30));
+        label10.setPreferredSize(new java.awt.Dimension(50, 30));
         panelisi1.add(label10);
 
         LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount.setText("0");
         LCount.setName("LCount"); // NOI18N
-        LCount.setPreferredSize(new java.awt.Dimension(100, 30));
+        LCount.setPreferredSize(new java.awt.Dimension(40, 30));
         panelisi1.add(LCount);
 
         label13.setText("Nilai Mutasi Barang :");
         label13.setName("label13"); // NOI18N
-        label13.setPreferredSize(new java.awt.Dimension(125, 30));
+        label13.setPreferredSize(new java.awt.Dimension(100, 30));
         panelisi1.add(label13);
 
         LTotalMutasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LTotalMutasi.setText("0");
         LTotalMutasi.setName("LTotalMutasi"); // NOI18N
-        LTotalMutasi.setPreferredSize(new java.awt.Dimension(205, 30));
+        LTotalMutasi.setPreferredSize(new java.awt.Dimension(100, 30));
         panelisi1.add(LTotalMutasi);
+
+        label14.setText("Total Jlh Barang :");
+        label14.setName("label14"); // NOI18N
+        label14.setPreferredSize(new java.awt.Dimension(100, 30));
+        panelisi1.add(label14);
+
+        LTotalBrg.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        LTotalBrg.setText("0");
+        LTotalBrg.setName("LTotalBrg"); // NOI18N
+        LTotalBrg.setPreferredSize(new java.awt.Dimension(40, 30));
+        panelisi1.add(LTotalBrg);
 
         BtnCetak.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
         BtnCetak.setMnemonic('C');
@@ -1414,6 +1371,7 @@ private void BtnCetakKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Tanggal DTPCari2;
     private widget.TextBox Keterangan;
     private widget.Label LCount;
+    private widget.Label LTotalBrg;
     private widget.Label LTotalMutasi;
     private widget.MenuItem MnGolonganAsc;
     private widget.MenuItem MnGolonganDesc;
@@ -1453,6 +1411,7 @@ private void BtnCetakKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.TextBox kdke;
     private widget.Label label10;
     private widget.Label label13;
+    private widget.Label label14;
     private widget.Label label17;
     private widget.Label label18;
     private widget.Label label19;
@@ -1482,7 +1441,7 @@ private void BtnCetakKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private void tampil(String order) {
         Valid.tabelKosong(tabMode);
         try{
-            nilaitotal=0;
+            nilaitotal=0;totalbrg=0;
             if(TCari.getText().trim().equals("")&&nmjns.getText().trim().equals("")&&nmkategori.getText().trim().equals("")&&nmgolongan.getText().trim().equals("")){
                 ps=koneksi.prepareStatement(
                     "select mutasibarang.kd_bangsaldari,bangsaldari.nm_bangsal as dari,"+
@@ -1523,6 +1482,7 @@ private void BtnCetakKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                 rs=ps.executeQuery();
                 while(rs.next()){    
                     nilaitotal=nilaitotal+rs.getDouble(9);
+                    totalbrg=totalbrg+rs.getDouble(7);
                     tabMode.addRow(new Object[]{
                         rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),
                         rs.getString(5),rs.getString(6),rs.getDouble(7),rs.getDouble(8),
@@ -1545,6 +1505,7 @@ private void BtnCetakKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         }
         LCount.setText(""+tabMode.getRowCount());
         LTotalMutasi.setText(df2.format(nilaitotal));
+        LTotalBrg.setText(df2.format(totalbrg));
     }
     
     public void tampil2(String order) {
@@ -1605,6 +1566,7 @@ private void BtnCetakKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
             Sequel.AutoComitTrue();
             if(sukses==true){
                 LTotalMutasi.setText(""+Valid.SetAngka(nilaitotal-Double.parseDouble(tbKamar.getValueAt(tbKamar.getSelectedRow(),8).toString())));
+                LTotalBrg.setText(""+Valid.SetAngka(totalbrg-Double.parseDouble(tbKamar.getValueAt(tbKamar.getSelectedRow(),7).toString())));
                 tabMode.removeRow(tbKamar.getSelectedRow());
                 LCount.setText(""+tabMode.getRowCount());
             } 

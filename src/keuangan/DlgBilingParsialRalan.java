@@ -56,6 +56,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
             pscaripoli,pscarialamat,psdokterralan,psrekening,psbiling;
     private ResultSet rsakunbayar,rstindakan,rsset_tarif,rsbayar,rsreg,rscaripoli,
             rscarialamat,rsdokterralan,rsrekening;
+    private String statusClosingParsial="Belum Closing";
     private String noorderradiologi="",noorderlaborat="",jmls="",kd_pj="",kd_poli="",poli_ralan="Yes",cara_bayar_ralan="Yes",cara_bayar_lab="Yes",kelas_lab="Yes",
             NoNota="",sqlpscaripoli="select poliklinik.nm_poli from poliklinik where poliklinik.kd_poli=?",
             sqlpscarialamat="select concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) from pasien "+
@@ -109,6 +110,9 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
     public DlgBilingParsialRalan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        setupHoverGrow(BtnTutupParsial,"/picture/btn_kunci_billing.png",90,102);
+        setupHoverGrow(BtnBukaParsial,"/picture/btn_buka_billing.png",90,102);
         
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));
         kdptg.setDocument(new batasInput((byte)20).getKata(kdptg));
@@ -1097,47 +1101,47 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
     private void initComponents() {
 
         PopupTindakanDr = new javax.swing.JPopupMenu();
-        ppBersihkanTindakanDr = new widget.MenuItem();
-        ppSemuaTindakanDr = new widget.MenuItem();
+        ppBersihkanTindakanDr = new javax.swing.JMenuItem();
+        ppSemuaTindakanDr = new javax.swing.JMenuItem();
         PopupTindakanDrBayar = new javax.swing.JPopupMenu();
-        ppBersihkanTindakanDrBayar = new widget.MenuItem();
-        ppSemuaTindakanDrBayar = new widget.MenuItem();
+        ppBersihkanTindakanDrBayar = new javax.swing.JMenuItem();
+        ppSemuaTindakanDrBayar = new javax.swing.JMenuItem();
         PopupTindakanPr = new javax.swing.JPopupMenu();
-        ppBersihkanTindakanPr = new widget.MenuItem();
-        ppSemuaTindakanPr = new widget.MenuItem();
+        ppBersihkanTindakanPr = new javax.swing.JMenuItem();
+        ppSemuaTindakanPr = new javax.swing.JMenuItem();
         PopupTindakanPrBayar = new javax.swing.JPopupMenu();
-        ppBersihkanTindakanPrBayar = new widget.MenuItem();
-        ppSemuaTindakanPrBayar = new widget.MenuItem();
+        ppBersihkanTindakanPrBayar = new javax.swing.JMenuItem();
+        ppSemuaTindakanPrBayar = new javax.swing.JMenuItem();
         PopupTindakanDrPr = new javax.swing.JPopupMenu();
-        ppBersihkanTindakanDrPr = new widget.MenuItem();
-        ppSemuaTindakanDrPr = new widget.MenuItem();
+        ppBersihkanTindakanDrPr = new javax.swing.JMenuItem();
+        ppSemuaTindakanDrPr = new javax.swing.JMenuItem();
         PopupTindakanDrPrBayar = new javax.swing.JPopupMenu();
-        ppBersihkanTindakanDrPrBayar = new widget.MenuItem();
-        ppSemuaTindakanDrPrBayar = new widget.MenuItem();
+        ppBersihkanTindakanDrPrBayar = new javax.swing.JMenuItem();
+        ppSemuaTindakanDrPrBayar = new javax.swing.JMenuItem();
         PopupRadiologi = new javax.swing.JPopupMenu();
-        ppBersihkanRadiologi = new widget.MenuItem();
-        ppSemuaRadiologi = new widget.MenuItem();
+        ppBersihkanRadiologi = new javax.swing.JMenuItem();
+        ppSemuaRadiologi = new javax.swing.JMenuItem();
         PopupRadiologiBayar = new javax.swing.JPopupMenu();
-        ppBersihkanRadiologiBayar = new widget.MenuItem();
-        ppSemuaRadiologiBayar = new widget.MenuItem();
+        ppBersihkanRadiologiBayar = new javax.swing.JMenuItem();
+        ppSemuaRadiologiBayar = new javax.swing.JMenuItem();
         PopupLaborat = new javax.swing.JPopupMenu();
-        ppBersihkanLaborat = new widget.MenuItem();
-        ppSemuaLaborat = new widget.MenuItem();
+        ppBersihkanLaborat = new javax.swing.JMenuItem();
+        ppSemuaLaborat = new javax.swing.JMenuItem();
         PopupDetailLaborat = new javax.swing.JPopupMenu();
-        ppBersihkanDetailLaborat = new widget.MenuItem();
-        ppSemuaDetailLaborat = new widget.MenuItem();
+        ppBersihkanDetailLaborat = new javax.swing.JMenuItem();
+        ppSemuaDetailLaborat = new javax.swing.JMenuItem();
         PopupLaboratBayar = new javax.swing.JPopupMenu();
-        ppBersihkanLaboratBayar = new widget.MenuItem();
-        ppSemuaLaboratBayar = new widget.MenuItem();
+        ppBersihkanLaboratBayar = new javax.swing.JMenuItem();
+        ppSemuaLaboratBayar = new javax.swing.JMenuItem();
         PopupDetailLaboratBayar = new javax.swing.JPopupMenu();
-        ppBersihkanDetailLaboratBayar = new widget.MenuItem();
-        ppSemuaDetailLaboratBayar = new widget.MenuItem();
+        ppBersihkanDetailLaboratBayar = new javax.swing.JMenuItem();
+        ppSemuaDetailLaboratBayar = new javax.swing.JMenuItem();
         PopupObat = new javax.swing.JPopupMenu();
-        ppBersihkanObat = new widget.MenuItem();
-        ppSemuaObat = new widget.MenuItem();
+        ppBersihkanObat = new javax.swing.JMenuItem();
+        ppSemuaObat = new javax.swing.JMenuItem();
         PopupObatBayar = new javax.swing.JPopupMenu();
-        ppBersihkanObatBayar = new widget.MenuItem();
-        ppSemuaObatBayar = new widget.MenuItem();
+        ppBersihkanObatBayar = new javax.swing.JMenuItem();
+        ppSemuaObatBayar = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
         panelGlass1 = new widget.panelisi();
         jLabel3 = new widget.Label();
@@ -1165,9 +1169,11 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         TKembali = new widget.TextBox();
         BtnSimpan = new widget.Button();
         BtnNota = new widget.Button();
+        BtnTutupParsial = new widget.Button();
+        BtnBukaParsial = new widget.Button();
         TtlSemua = new widget.TextBox();
         jLabel11 = new widget.Label();
-        TabRawat = new widget.TabPane();
+        TabRawat = new javax.swing.JTabbedPane();
         internalFrame2 = new widget.InternalFrame();
         panelGlass7 = new widget.panelisi();
         jLabel5 = new widget.Label();
@@ -1219,13 +1225,13 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         BtnSeekDokter3 = new widget.Button();
         TDokterPerujukLab = new widget.TextBox();
         internalFrame7 = new widget.InternalFrame();
-        TabRawatLaborat = new widget.TabPane();
+        TabRawatLaborat = new javax.swing.JTabbedPane();
         Scroll12 = new widget.ScrollPane();
         tbLaborat = new widget.Table();
         Scroll14 = new widget.ScrollPane();
         tbDetailLaborat = new widget.Table();
         internalFrame8 = new widget.InternalFrame();
-        TabRawatLaboratBayar = new widget.TabPane();
+        TabRawatLaboratBayar = new javax.swing.JTabbedPane();
         Scroll15 = new widget.ScrollPane();
         tbLaboratBayar = new widget.Table();
         Scroll16 = new widget.ScrollPane();
@@ -1979,6 +1985,42 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         });
         panelGlass8.add(BtnNota);
         BtnNota.setBounds(565, 180, 100, 30);
+
+        BtnTutupParsial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/btn_kunci_billing.png"))); // NOI18N
+        BtnTutupParsial.setText("");
+        BtnTutupParsial.setToolTipText("Alt+T - Tutup/closing billing parsial pasien ini (pasien selesai & pulang)");
+        BtnTutupParsial.setBorder(null);
+        BtnTutupParsial.setBorderPainted(false);
+        BtnTutupParsial.setContentAreaFilled(false);
+        BtnTutupParsial.setFocusPainted(false);
+        BtnTutupParsial.setOpaque(false);
+        BtnTutupParsial.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        BtnTutupParsial.setPreferredSize(new java.awt.Dimension(90, 90));
+        BtnTutupParsial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnTutupParsialActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(BtnTutupParsial);
+        BtnTutupParsial.setBounds(910, 72, 90, 90);
+
+        BtnBukaParsial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/btn_buka_billing.png"))); // NOI18N
+        BtnBukaParsial.setText("");
+        BtnBukaParsial.setToolTipText("Alt+B - Buka kembali closing billing parsial pasien ini");
+        BtnBukaParsial.setBorder(null);
+        BtnBukaParsial.setBorderPainted(false);
+        BtnBukaParsial.setContentAreaFilled(false);
+        BtnBukaParsial.setFocusPainted(false);
+        BtnBukaParsial.setOpaque(false);
+        BtnBukaParsial.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        BtnBukaParsial.setPreferredSize(new java.awt.Dimension(90, 90));
+        BtnBukaParsial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnBukaParsialActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(BtnBukaParsial);
+        BtnBukaParsial.setBounds(1035, 72, 90, 90);
 
         TtlSemua.setEditable(false);
         TtlSemua.setText("0");
@@ -2841,8 +2883,62 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
     }//GEN-LAST:event_BtnCariBayarKeyPressed
 
+    private void BtnTutupParsialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTutupParsialActionPerformed
+        if(TNoRw.getText().trim().equals("")||TNoRM.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"Pasien");
+        }else{
+            statusClosingParsial=Sequel.cariIsi("select reg_periksa.status_closing_parsial from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+            if(statusClosingParsial.equals("Sudah Closing")){
+                JOptionPane.showMessageDialog(null,"Pasien ini sudah dalam status Closing Parsial ..!!");
+            }else{
+                int jwb=JOptionPane.showConfirmDialog(null,
+                        "Pasien : "+TPasien.getText()+"\nNo. Rawat : "+TNoRw.getText()+
+                        "\n\nYakin pasien ini sudah selesai/pulang dan billing akan diKunci (closing)?"+
+                        "\nSetelah di Kunci, petugas TIDAK BISA lagi menginput tindakan, permintaan lab, "+
+                        "permintaan radiologi, tagihan operasi, maupun resep obat susulan untuk pasien ini sampai dibuka kembali.",
+                        "Konfirmasi Kunci Billing",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+                if(jwb==JOptionPane.YES_OPTION){
+                    if(Sequel.queryu2tf("update reg_periksa set status_closing_parsial='Sudah Closing' where no_rawat=?",1,new String[]{TNoRw.getText()})==true){
+                        statusClosingParsial="Sudah Closing";
+                        JOptionPane.showMessageDialog(null,"Billing pasien berhasil di Kunci (Closing) ..!!");
+                    }else{
+                        JOptionPane.showMessageDialog(null,"Maaf, proses Kunci billing gagal, silahkan coba lagi ..!!");
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_BtnTutupParsialActionPerformed
+
+    private void BtnBukaParsialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBukaParsialActionPerformed
+        if(TNoRw.getText().trim().equals("")||TNoRM.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"Pasien");
+        }else{
+            statusClosingParsial=Sequel.cariIsi("select reg_periksa.status_closing_parsial from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+            if(!statusClosingParsial.equals("Sudah Closing")){
+                JOptionPane.showMessageDialog(null,"Pasien ini belum dalam status Closing Parsial ..!!");
+            }else{
+                int jwb=JOptionPane.showConfirmDialog(null,
+                        "Pasien : "+TPasien.getText()+"\nNo. Rawat : "+TNoRw.getText()+
+                        "\n\nYakin ingin membuka kembali billing pasien ini?"+
+                        "\n(Aktifitas Buka / Kunci Billing terekam di Log database)",
+                        "Konfirmasi Buka Billing",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+                if(jwb==JOptionPane.YES_OPTION){
+                    if(Sequel.queryu2tf("update reg_periksa set status_closing_parsial='Belum Closing' where no_rawat=?",1,new String[]{TNoRw.getText()})==true){
+                        statusClosingParsial="Belum Closing";
+                        JOptionPane.showMessageDialog(null,"Billing pasien berhasil dibuka kembali ..!!");
+                    }else{
+                        JOptionPane.showMessageDialog(null,"Maaf, proses buka billing gagal, silahkan coba lagi ..!!");
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_BtnBukaParsialActionPerformed
+
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
-        if(statushapus==true){
+        statusClosingParsial=Sequel.cariIsi("select reg_periksa.status_closing_parsial from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+        if(statusClosingParsial.equals("Sudah Closing")){
+            JOptionPane.showMessageDialog(null,"Pasien Reguler Billing sudah di Kunci ..!!\nSilahkan klik tombol \"Buka Billing\" terlebih dahulu jika ingin menambah pembayaran.");
+        }else if(statushapus==true){
             JOptionPane.showMessageDialog(null,"Maaf, silahkan lanjutkan proses hapus terlebih dahulu ...!!!");
         }else{
             if(TabRawat.getSelectedIndex()==6){
@@ -3403,6 +3499,8 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
     private widget.Button BtnSeekPetugas;
     private widget.Button BtnSeekPetugas2;
     private widget.Button BtnSimpan;
+    private widget.Button BtnTutupParsial;
+    private widget.Button BtnBukaParsial;
     private widget.Tanggal DTPTgl;
     private widget.TextBox KdDok;
     private widget.TextBox KdDok2;
@@ -3451,9 +3549,9 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
     private widget.TextBox TPasien;
     private widget.TextBox TPerawat;
     private widget.TextBox TPerawat2;
-    private widget.TabPane TabRawat;
-    private widget.TabPane TabRawatLaborat;
-    private widget.TabPane TabRawatLaboratBayar;
+    private javax.swing.JTabbedPane TabRawat;
+    private javax.swing.JTabbedPane TabRawatLaborat;
+    private javax.swing.JTabbedPane TabRawatLaboratBayar;
     private widget.TextBox TagihanPPN;
     private widget.TextBox TtlSemua;
     private widget.CekBox chkPoli;
@@ -3490,34 +3588,34 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
     private widget.panelisi panelGlass7;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
-    private widget.MenuItem ppBersihkanDetailLaborat;
-    private widget.MenuItem ppBersihkanDetailLaboratBayar;
-    private widget.MenuItem ppBersihkanLaborat;
-    private widget.MenuItem ppBersihkanLaboratBayar;
-    private widget.MenuItem ppBersihkanObat;
-    private widget.MenuItem ppBersihkanObatBayar;
-    private widget.MenuItem ppBersihkanRadiologi;
-    private widget.MenuItem ppBersihkanRadiologiBayar;
-    private widget.MenuItem ppBersihkanTindakanDr;
-    private widget.MenuItem ppBersihkanTindakanDrBayar;
-    private widget.MenuItem ppBersihkanTindakanDrPr;
-    private widget.MenuItem ppBersihkanTindakanDrPrBayar;
-    private widget.MenuItem ppBersihkanTindakanPr;
-    private widget.MenuItem ppBersihkanTindakanPrBayar;
-    private widget.MenuItem ppSemuaDetailLaborat;
-    private widget.MenuItem ppSemuaDetailLaboratBayar;
-    private widget.MenuItem ppSemuaLaborat;
-    private widget.MenuItem ppSemuaLaboratBayar;
-    private widget.MenuItem ppSemuaObat;
-    private widget.MenuItem ppSemuaObatBayar;
-    private widget.MenuItem ppSemuaRadiologi;
-    private widget.MenuItem ppSemuaRadiologiBayar;
-    private widget.MenuItem ppSemuaTindakanDr;
-    private widget.MenuItem ppSemuaTindakanDrBayar;
-    private widget.MenuItem ppSemuaTindakanDrPr;
-    private widget.MenuItem ppSemuaTindakanDrPrBayar;
-    private widget.MenuItem ppSemuaTindakanPr;
-    private widget.MenuItem ppSemuaTindakanPrBayar;
+    private javax.swing.JMenuItem ppBersihkanDetailLaborat;
+    private javax.swing.JMenuItem ppBersihkanDetailLaboratBayar;
+    private javax.swing.JMenuItem ppBersihkanLaborat;
+    private javax.swing.JMenuItem ppBersihkanLaboratBayar;
+    private javax.swing.JMenuItem ppBersihkanObat;
+    private javax.swing.JMenuItem ppBersihkanObatBayar;
+    private javax.swing.JMenuItem ppBersihkanRadiologi;
+    private javax.swing.JMenuItem ppBersihkanRadiologiBayar;
+    private javax.swing.JMenuItem ppBersihkanTindakanDr;
+    private javax.swing.JMenuItem ppBersihkanTindakanDrBayar;
+    private javax.swing.JMenuItem ppBersihkanTindakanDrPr;
+    private javax.swing.JMenuItem ppBersihkanTindakanDrPrBayar;
+    private javax.swing.JMenuItem ppBersihkanTindakanPr;
+    private javax.swing.JMenuItem ppBersihkanTindakanPrBayar;
+    private javax.swing.JMenuItem ppSemuaDetailLaborat;
+    private javax.swing.JMenuItem ppSemuaDetailLaboratBayar;
+    private javax.swing.JMenuItem ppSemuaLaborat;
+    private javax.swing.JMenuItem ppSemuaLaboratBayar;
+    private javax.swing.JMenuItem ppSemuaObat;
+    private javax.swing.JMenuItem ppSemuaObatBayar;
+    private javax.swing.JMenuItem ppSemuaRadiologi;
+    private javax.swing.JMenuItem ppSemuaRadiologiBayar;
+    private javax.swing.JMenuItem ppSemuaTindakanDr;
+    private javax.swing.JMenuItem ppSemuaTindakanDrBayar;
+    private javax.swing.JMenuItem ppSemuaTindakanDrPr;
+    private javax.swing.JMenuItem ppSemuaTindakanDrPrBayar;
+    private javax.swing.JMenuItem ppSemuaTindakanPr;
+    private javax.swing.JMenuItem ppSemuaTindakanPrBayar;
     private widget.ScrollPane scrollPane3;
     private widget.Table tbAkunBayar;
     private widget.Table tbBilling;
@@ -3540,6 +3638,10 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
     public void setNoRm(String norwt,String kodedokter, String namadokter,String KodePoli) {
         TNoRw.setText(norwt);
         this.kd_pj=Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",norwt);
+        statusClosingParsial=Sequel.cariIsi("select reg_periksa.status_closing_parsial from reg_periksa where reg_periksa.no_rawat=?",norwt);
+        if(statusClosingParsial.equals("Sudah Closing")){
+            JOptionPane.showMessageDialog(null,"Perhatian : Pasien Reguler Billing sudah di Kunci !!\nUntuk menambah tagihan/pembayaran, silahkan klik tombol \"Buka Billing\".");
+        }
         this.kd_poli=KodePoli;
         KdDok.setText(kodedokter);
         TDokter.setText(namadokter);
@@ -3564,6 +3666,45 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
     private void isPsien(){
         Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=? ",TPasien,TNoRM.getText());
+    }
+
+    private void setupHoverGrow(final widget.Button btn, final String imagePath, final int normalSize, final int hoverSize){
+        final int baseX = btn.getX();
+        final int baseY = btn.getY();
+        final int centerX = baseX + normalSize/2;
+        final int centerY = baseY + normalSize/2;
+        final java.awt.Image master = new javax.swing.ImageIcon(getClass().getResource(imagePath)).getImage();
+        final javax.swing.Timer[] animTimer = new javax.swing.Timer[1];
+        btn.addMouseListener(new java.awt.event.MouseAdapter(){
+            public void mouseEntered(java.awt.event.MouseEvent evt){
+                if(animTimer[0]!=null){ animTimer[0].stop(); }
+                animTimer[0]=new javax.swing.Timer(8,null);
+                animTimer[0].addActionListener(new java.awt.event.ActionListener(){
+                    public void actionPerformed(java.awt.event.ActionEvent e){
+                        int cur=btn.getWidth()+1;
+                        if(cur>=hoverSize){ cur=hoverSize; animTimer[0].stop(); }
+                        java.awt.Image scaled=master.getScaledInstance(cur,cur,java.awt.Image.SCALE_SMOOTH);
+                        btn.setIcon(new javax.swing.ImageIcon(scaled));
+                        btn.setBounds(centerX-cur/2,centerY-cur/2,cur,cur);
+                    }
+                });
+                animTimer[0].start();
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt){
+                if(animTimer[0]!=null){ animTimer[0].stop(); }
+                animTimer[0]=new javax.swing.Timer(8,null);
+                animTimer[0].addActionListener(new java.awt.event.ActionListener(){
+                    public void actionPerformed(java.awt.event.ActionEvent e){
+                        int cur=btn.getWidth()-1;
+                        if(cur<=normalSize){ cur=normalSize; animTimer[0].stop(); }
+                        java.awt.Image scaled=master.getScaledInstance(cur,cur,java.awt.Image.SCALE_SMOOTH);
+                        btn.setIcon(new javax.swing.ImageIcon(scaled));
+                        btn.setBounds(centerX-cur/2,centerY-cur/2,cur,cur);
+                    }
+                });
+                animTimer[0].start();
+            }
+        });
     }
 
     private void tampilAkunBayar() {

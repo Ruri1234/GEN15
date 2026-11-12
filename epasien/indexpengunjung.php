@@ -9,12 +9,21 @@
      <meta name="keywords" content=""/>
      <meta name="author" content="Tooplate"/>
      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-     <link rel="stylesheet" href="css/bootstrap.min.css"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css"/>
      <link rel="stylesheet" href="css/font-awesome.min.css"/>
      <link rel="stylesheet" href="css/animate.css"/>
      <link rel="stylesheet" href="css/owl.carousel.css"/>
      <link rel="stylesheet" href="css/owl.theme.default.min.css"/>
      <link rel="stylesheet" href="css/tooplate-style.css"/>
+     <link rel="stylesheet" href="css/modern-blue.css"/>
+     <!-- PWA Meta Tags & Icons -->
+     <link rel="manifest" href="manifest.json">
+     <meta name="theme-color" content="#0d47a1">
+     <meta name="mobile-web-app-capable" content="yes">
+     <meta name="apple-mobile-web-app-capable" content="yes">
+     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+     <link rel="icon" href="images/icon-192.png" type="image/png">
+     <link rel="apple-touch-icon" href="images/icon-192.png">
 </head>
 <body id="top" data-spy="scroll" data-target=".navbar-collapse" data-offset="50">
      <!--<section class="preloader">
@@ -46,7 +55,7 @@
                          <span class="icon icon-bar"></span>
                          <span class="icon icon-bar"></span>
                     </button>
-                    <a href="index.php" class="navbar-brand"><i class="fa fa-h-square"></i>ealth Center</a>
+                    <a href="index.php" class="navbar-brand"><i class="fa fa-hospital-o"></i> RSU Bethesda Serukam</a>
                </div>
                <!-- MENU LINKS -->
                <div class="collapse navbar-collapse">
@@ -136,8 +145,9 @@
                </div>
           </div>
      </footer>
-     <script src="js/jquery.js"></script>
-     <script src="js/bootstrap.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.4.1/jquery-migrate.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
      <script src="js/jquery.sticky.js"></script>
      <script src="js/jquery.stellar.min.js"></script>
      <script src="js/wow.min.js"></script>
@@ -145,6 +155,7 @@
      <script src="js/owl.carousel.min.js"></script>
      <script src="js/custom.js"></script>
      <script src="conf/validator.js" type="text/javascript"></script>
+     <script src="js/pwa-installer.js"></script>
      <script type="text/javascript">
         $(function() {
             $("#carikeyword").bind('submit',function() {

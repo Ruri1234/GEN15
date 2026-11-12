@@ -11,22 +11,13 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.KeyEvent;
 import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
-import javax.swing.InputMap;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.plaf.ActionMapUIResource;
-import javax.swing.plaf.InputMapUIResource;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -43,15 +34,16 @@ import javax.swing.plaf.basic.ComboPopup;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public final class ComboBox extends JComboBox {
     private static final long serialVersionUID = 2L;
-    static final Color AKSEN     = new Color(0x16A05D);
-    static final Color BORDER    = new Color(0x96BEA5);   
-    static final Color HOVER     = new Color(0x5A9170);
-    static final Color PEMISAH   = new Color(0xD3DDD7);
-    static final Color TINT      = new Color(0x16, 0xA0, 0x5D, 30);   
+    static final Color AKSEN     = new Color(0x1E88E5);
+    static final Color BORDER    = new Color(0xA9B6C4);
+    static final Color HOVER     = new Color(0x6F8299);
+    static final Color NONAKTIF  = new Color(0xFAFBFD);
+    static final Color PEMISAH   = new Color(0xD3DBE4);
+    static final Color TINT      = new Color(0xE6F1FD);
     static final Color TEKS      = new Color(50, 50, 50);
-    static final Color TEKS_OFF  = new Color(0x55625B);
-    static final Color PILIH_BG  = new Color(0xD5EFE0);
-    static final Color PILIH_FG  = new Color(0x0E3B24);
+    static final Color TEKS_OFF  = new Color(0x55606B);
+    static final Color PILIH_BG  = new Color(0xD6E9FC);
+    static final Color PILIH_FG  = new Color(0x0B3A6B);
     static final int   RADIUS    = 6;
 
     private boolean hover;
@@ -102,6 +94,14 @@ public final class ComboBox extends JComboBox {
 
     @Override
     protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        try {
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(isEnabled() ? getBackground() : NONAKTIF);
+            g2.fill(new RoundRectangle2D.Float(1, 1, getWidth() - 2, getHeight() - 2, RADIUS * 2f, RADIUS * 2f));
+        } finally {
+            g2.dispose();
+        }
         super.paintComponent(g);
     }
 
@@ -121,7 +121,7 @@ public final class ComboBox extends JComboBox {
                     g2.setStroke(new BasicStroke(2f));
                     g2.draw(new RoundRectangle2D.Float(x + 1, y + 1, w - 2, h - 2, arc + 1, arc + 1));
                 }
-                Color garis = !isEnabled() ? new Color(0xC9D3CD)
+                Color garis = !isEnabled() ? new Color(0xC9D0D8)
                         : f ? AKSEN
                         : hover ? HOVER
                         : BORDER;
@@ -154,7 +154,7 @@ public final class ComboBox extends JComboBox {
                                                       boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, false);
             setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
-            if (index >= 0) {                       
+            if (index >= 0) {                       // item di popup
                 setOpaque(true);
                 setBackground(isSelected ? PILIH_BG : Color.WHITE);
                 setForeground(isSelected ? PILIH_FG : TEKS);
@@ -170,84 +170,7 @@ public final class ComboBox extends JComboBox {
         }
     }
 
-
     private static class ModernComboUI extends BasicComboBoxUI {
-
-        private static final String NEXT = "khanzaPilihBerikut";
-        private static final String PREV = "khanzaPilihSebelum";
-        
-        private static final InputMap PETA_TOMBOL = buatPetaTombol();
-        private static final Navigasi AKSI_NEXT = new Navigasi(1);
-        private static final Navigasi AKSI_PREV = new Navigasi(-1);
-
-        private static InputMap buatPetaTombol() {
-            InputMap m = new InputMapUIResource();
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "hidePopup");
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "pageUpPassThrough");
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), "pageDownPassThrough");
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), "homePassThrough");
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), "endPassThrough");
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), NEXT);
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_DOWN, 0), NEXT);
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), PREV);
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_UP, 0), PREV);
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK), "togglePopup");
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_DOWN, KeyEvent.ALT_DOWN_MASK), "togglePopup");
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK), "togglePopup");
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_UP, KeyEvent.ALT_DOWN_MASK), "togglePopup");
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "spacePopup");
-            m.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enterPressed");
-            return m;
-        }
-
-        @Override
-        protected void installKeyboardActions() {
-            super.installKeyboardActions();
-            SwingUtilities.replaceUIInputMap(comboBox, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, PETA_TOMBOL);
-            ActionMap am = new ActionMapUIResource();
-            am.put(NEXT, AKSI_NEXT);
-            am.put(PREV, AKSI_PREV);
-            am.setParent(SwingUtilities.getUIActionMap(comboBox));   // aksi bawaan Basic tetap ada
-            SwingUtilities.replaceUIActionMap(comboBox, am);
-        }
-
-        private static final class Navigasi extends AbstractAction {
-
-            private static final long serialVersionUID = 1L;
-            private final int arah;
-
-            Navigasi(int arah) {
-                this.arah = arah;
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!(e.getSource() instanceof JComboBox)) {
-                    return;
-                }
-                JComboBox c = (JComboBox) e.getSource();
-                int n = c.getItemCount();
-                if (n == 0 || !c.isEnabled()) {
-                    return;
-                }
-                int awal = c.getSelectedIndex();
-                if (c.isPopupVisible() && c.getUI() instanceof ModernComboUI) {
-                    int sorot = ((ModernComboUI) c.getUI()).listBox.getSelectedIndex();
-                    if (sorot >= 0) {
-                        awal = sorot;
-                    }
-                }
-                int baru = awal < 0 ? (arah > 0 ? 0 : n - 1) : Math.max(0, Math.min(n - 1, awal + arah));
-                if (baru != c.getSelectedIndex()) {
-                    c.setSelectedIndex(baru);
-                }
-                if (c.isPopupVisible() && c.getUI() instanceof ModernComboUI) {
-                    JList l = ((ModernComboUI) c.getUI()).listBox;
-                    l.setSelectedIndex(baru);
-                    l.ensureIndexIsVisible(baru);
-                }
-            }
-        }
 
         @Override
         protected JButton createArrowButton() {
@@ -258,6 +181,7 @@ public final class ComboBox extends JComboBox {
 
         @Override
         public void paintCurrentValueBackground(Graphics g, Rectangle bounds, boolean hasFocus) {
+            
         }
 
         @Override
@@ -352,7 +276,7 @@ public final class ComboBox extends JComboBox {
                 chevron.moveTo(cx - 4, cy - 2);
                 chevron.lineTo(cx, cy + 2);
                 chevron.lineTo(cx + 4, cy - 2);
-                g2.setColor(aktif ? new Color(0x3E4B44) : new Color(0xB3BCB7));
+                g2.setColor(aktif ? new Color(0x3E4B5C) : new Color(0xB3BAC4));
                 g2.setStroke(new BasicStroke(1.6f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                 g2.draw(chevron);
             } finally {

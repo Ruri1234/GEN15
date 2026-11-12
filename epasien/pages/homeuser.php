@@ -103,7 +103,7 @@
                         </thead>
                         <tbody>
                         <?php 
-                            $queryjadwal = bukaquery("Select dokter.nm_dokter,poliklinik.nm_poli,jadwal.jam_mulai,jadwal.jam_selesai,poliklinik.kd_poli,jadwal.kuota,dokter.kd_dokter from jadwal inner join dokter on dokter.kd_dokter=jadwal.kd_dokter inner join poliklinik on jadwal.kd_poli=poliklinik.kd_poli where jadwal.hari_kerja like '%".konversiHari($hari)."%'");
+                            $queryjadwal = bukaquery("Select dokter.nm_dokter,poliklinik.nm_poli,jadwal.jam_mulai,jadwal.jam_selesai,poliklinik.kd_poli,jadwal.kuota,dokter.kd_dokter from jadwal inner join dokter on dokter.kd_dokter=jadwal.kd_dokter inner join poliklinik on jadwal.kd_poli=poliklinik.kd_poli where jadwal.hari_kerja like '%".konversiHari($hari)."%' and dokter.kd_dokter<>' -' and dokter.kd_dokter<>'-' and dokter.nm_dokter<>'-' and trim(dokter.nm_dokter)<>'' and dokter.nm_dokter not like '-%' and dokter.nm_dokter not like '%Humisar%' and dokter.nm_dokter not like '%Marianne%' and poliklinik.nm_poli not like '%MARJORIE%' and poliklinik.nm_poli not like '%PROMO%' and poliklinik.nm_poli not like '%APOTEK%' and poliklinik.nm_poli not like '%LABORATORIUM%' and poliklinik.nm_poli not like '%Medical Check Up%' and poliklinik.nm_poli not like '%MCU AKPER%' and poliklinik.nm_poli not in ('APOTEK','MCU AKPER/KARYAWAN','POLI DOTS','POLI GINEKOLOGI','POLI NEONATAL','PROMO LIBUR SEKOLAH','UNIT LABORATORIUM','Medical Check Up','PROMO KEMERDEKAAN','KLINIK MARJORIE')");
                             while($rsqueryjadwal = mysqli_fetch_array($queryjadwal)) {
                                 echo "<tr>
                                         <td align='left'>".$rsqueryjadwal["nm_dokter"]."</td>
@@ -248,7 +248,7 @@
     }
 ?>
 
-<script src="js/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script type="text/javascript">
     $(document).ready(my_function());
     

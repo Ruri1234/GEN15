@@ -49,12 +49,13 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         super(parent, modal);
         initComponents();
         
-        Object[] row={"Kode Barang","Nama Barang","Satuan","Jenis","Jumlah","Total","Kode Sat"};
+        Object[] row={"Kode Barang","Nama Barang","Satuan","Jenis","Jumlah","Total","Kode Sat","No Faktur","Nama Suplier","Tgl.Datang"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
              Class[] types = new Class[] {
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
-                java.lang.Object.class, java.lang.Double.class, java.lang.Double.class,java.lang.Object.class
+                java.lang.Object.class, java.lang.Double.class, java.lang.Double.class,java.lang.Object.class,
+                java.lang.Object.class,java.lang.Object.class,java.lang.Object.class
              };
              /*Class[] types = new Class[] {
                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
@@ -69,7 +70,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 7; i++) {
+        for (i = 0; i < 10; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(95);
@@ -86,6 +87,12 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
             }else if(i==6){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
+            }else if(i==7){
+                column.setPreferredWidth(150);
+            }else if(i==8){
+                column.setPreferredWidth(250);
+            }else if(i==9){
+                column.setPreferredWidth(100);
             }
         }
         tbDokter.setDefaultRenderer(Object.class, new WarnaTable());
@@ -113,6 +120,10 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         MnKodeBarangAsc = new widget.MenuItem();
         MnNamaBarangDesc = new widget.MenuItem();
         MnNamaBarangAsc = new widget.MenuItem();
+        MnNamaSuplierAsc = new javax.swing.JMenuItem();
+        MnNamaSuplierDesc = new javax.swing.JMenuItem();
+        MnTglDatangAsc = new javax.swing.JMenuItem();
+        MnTglDatangDesc = new javax.swing.JMenuItem();
         MnKategoriAsc = new widget.MenuItem();
         MnKategoriDesc = new widget.MenuItem();
         MnSatuanDesc = new widget.MenuItem();
@@ -165,9 +176,6 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
 
         Popup1.setName("Popup1"); // NOI18N
 
-        MnKodeBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKodeBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeBarangDesc.setText("Urutkan Berdasar Kode Barang Descending");
         MnKodeBarangDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -181,9 +189,6 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         });
         Popup1.add(MnKodeBarangDesc);
 
-        MnKodeBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKodeBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeBarangAsc.setText("Urutkan Berdasar Kode Barang Ascending");
         MnKodeBarangAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -197,9 +202,6 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         });
         Popup1.add(MnKodeBarangAsc);
 
-        MnNamaBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnNamaBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaBarangDesc.setText("Urutkan Berdasar Nama Barang Descending");
         MnNamaBarangDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -213,9 +215,6 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         });
         Popup1.add(MnNamaBarangDesc);
 
-        MnNamaBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnNamaBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaBarangAsc.setText("Urutkan Berdasar Nama Barang Ascending");
         MnNamaBarangAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -229,9 +228,70 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         });
         Popup1.add(MnNamaBarangAsc);
 
-        MnKategoriAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKategoriAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKategoriAsc.setForeground(new java.awt.Color(50, 50, 50));
+        MnNamaSuplierAsc.setBackground(new java.awt.Color(255, 255, 254));
+        MnNamaSuplierAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaSuplierAsc.setForeground(new java.awt.Color(50, 50, 50));
+        MnNamaSuplierAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnNamaSuplierAsc.setText("Urutkan Berdasar Nama Suplier Ascending");
+        MnNamaSuplierAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnNamaSuplierAsc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnNamaSuplierAsc.setName("MnNamaSuplierAsc"); // NOI18N
+        MnNamaSuplierAsc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnNamaSuplierAsc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnNamaSuplierAscActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnNamaSuplierAsc);
+
+        MnNamaSuplierDesc.setBackground(new java.awt.Color(255, 255, 254));
+        MnNamaSuplierDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaSuplierDesc.setForeground(new java.awt.Color(50, 50, 50));
+        MnNamaSuplierDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnNamaSuplierDesc.setText("Urutkan Berdasar Nama Suplier Descending");
+        MnNamaSuplierDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnNamaSuplierDesc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnNamaSuplierDesc.setName("MnNamaSuplierDesc"); // NOI18N
+        MnNamaSuplierDesc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnNamaSuplierDesc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnNamaSuplierDescActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnNamaSuplierDesc);
+
+        MnTglDatangAsc.setBackground(new java.awt.Color(255, 255, 254));
+        MnTglDatangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnTglDatangAsc.setForeground(new java.awt.Color(50, 50, 50));
+        MnTglDatangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnTglDatangAsc.setText("Urutkan Berdasar Tgl.Datang Ascending");
+        MnTglDatangAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnTglDatangAsc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnTglDatangAsc.setName("MnTglDatangAsc"); // NOI18N
+        MnTglDatangAsc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnTglDatangAsc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnTglDatangAscActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnTglDatangAsc);
+
+        MnTglDatangDesc.setBackground(new java.awt.Color(255, 255, 254));
+        MnTglDatangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnTglDatangDesc.setForeground(new java.awt.Color(50, 50, 50));
+        MnTglDatangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnTglDatangDesc.setText("Urutkan Berdasar Tgl.Datang Descending");
+        MnTglDatangDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnTglDatangDesc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnTglDatangDesc.setName("MnTglDatangDesc"); // NOI18N
+        MnTglDatangDesc.setPreferredSize(new java.awt.Dimension(280, 26));
+        MnTglDatangDesc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnTglDatangDescActionPerformed(evt);
+            }
+        });
+        Popup1.add(MnTglDatangDesc);
+
         MnKategoriAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKategoriAsc.setText("Urutkan Berdasar Jenis Ascending");
         MnKategoriAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -245,9 +305,6 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         });
         Popup1.add(MnKategoriAsc);
 
-        MnKategoriDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKategoriDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnKategoriDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKategoriDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKategoriDesc.setText("Urutkan Berdasar Jenis Descending");
         MnKategoriDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -261,9 +318,6 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         });
         Popup1.add(MnKategoriDesc);
 
-        MnSatuanDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnSatuanDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnSatuanDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnSatuanDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSatuanDesc.setText("Urutkan Berdasar Satuan Descending");
         MnSatuanDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -277,9 +331,6 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         });
         Popup1.add(MnSatuanDesc);
 
-        MnSatuanAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnSatuanAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnSatuanAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnSatuanAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSatuanAsc.setText("Urutkan Berdasar Satuan Ascending");
         MnSatuanAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -293,9 +344,6 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         });
         Popup1.add(MnSatuanAsc);
 
-        MnTotalAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnTotalAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnTotalAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnTotalAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnTotalAsc.setText("Urutkan Berdasar Total Ascending");
         MnTotalAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -309,9 +357,6 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         });
         Popup1.add(MnTotalAsc);
 
-        MnTotalDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnTotalDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnTotalDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnTotalDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnTotalDesc.setText("Urutkan Berdasar Total Descending");
         MnTotalDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -325,9 +370,6 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         });
         Popup1.add(MnTotalDesc);
 
-        MnJumlahAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnJumlahAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnJumlahAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnJumlahAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJumlahAsc.setText("Urutkan Berdasar Jumlah Ascending");
         MnJumlahAsc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -341,9 +383,6 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         });
         Popup1.add(MnJumlahAsc);
 
-        MnJumlahDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnJumlahDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnJumlahDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnJumlahDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJumlahDesc.setText("Urutkan Berdasar Jumlah Descending");
         MnJumlahDesc.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -1235,6 +1274,26 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         }
     }//GEN-LAST:event_formWindowOpened
 
+    private void MnNamaSuplierAscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnNamaSuplierAscActionPerformed
+        order="order by datasuplier.nama_suplier asc";
+        tampil();
+    }//GEN-LAST:event_MnNamaSuplierAscActionPerformed
+
+    private void MnNamaSuplierDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnNamaSuplierDescActionPerformed
+        order="order by datasuplier.nama_suplier desc";
+        tampil();
+    }//GEN-LAST:event_MnNamaSuplierDescActionPerformed
+
+    private void MnTglDatangAscActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnTglDatangAscActionPerformed
+        order="order by pemesanan.tgl_pesan asc";
+        tampil();
+    }//GEN-LAST:event_MnTglDatangAscActionPerformed
+
+    private void MnTglDatangDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnTglDatangDescActionPerformed
+        order="order by pemesanan.tgl_pesan desc";
+        tampil();
+    }//GEN-LAST:event_MnTglDatangDescActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1266,8 +1325,12 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private widget.MenuItem MnKodeBarangDesc;
     private widget.MenuItem MnNamaBarangAsc;
     private widget.MenuItem MnNamaBarangDesc;
+    private javax.swing.JMenuItem MnNamaSuplierAsc;
+    private javax.swing.JMenuItem MnNamaSuplierDesc;
     private widget.MenuItem MnSatuanAsc;
     private widget.MenuItem MnSatuanDesc;
+    private javax.swing.JMenuItem MnTglDatangAsc;
+    private javax.swing.JMenuItem MnTglDatangDesc;
     private widget.MenuItem MnTotalAsc;
     private widget.MenuItem MnTotalDesc;
     private widget.TextBox NmIF;
@@ -1311,15 +1374,32 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private void tampil() {
        Valid.tabelKosong(tabMode);
         try{   
-            ps=koneksi.prepareStatement(
-                "select detailpesan.kode_brng,databarang.nama_brng,databarang.kode_sat,kodesatuan.satuan,jenis.nama as namajenis,sum(detailpesan.jumlah2) as jumlah,sum(detailpesan.total) as total "+
-                "from pemesanan inner join datasuplier on pemesanan.kode_suplier=datasuplier.kode_suplier inner join petugas on pemesanan.nip=petugas.nip inner join bangsal on pemesanan.kd_bangsal=bangsal.kd_bangsal "+
-                "inner join detailpesan on pemesanan.no_faktur=detailpesan.no_faktur inner join databarang on detailpesan.kode_brng=databarang.kode_brng inner join kodesatuan on databarang.kode_sat=kodesatuan.kode_sat "+
-                "inner join jenis on databarang.kdjns=jenis.kdjns inner join industrifarmasi on databarang.kode_industri=industrifarmasi.kode_industri "+
-                "where pemesanan.tgl_pesan between ? and ? and pemesanan.no_faktur like ? and datasuplier.nama_suplier like ? and petugas.nama like ?  and jenis.nama like ? and databarang.nama_brng like ? and industrifarmasi.nama_industri like ? "+
-                (TCari.getText().trim().equals("")?"":"and (pemesanan.no_faktur like ? or pemesanan.kode_suplier like ? or datasuplier.nama_suplier like ? or pemesanan.nip like ? or petugas.nama like ? or bangsal.nm_bangsal like ? or "+
-                "detailpesan.kode_brng like ? or databarang.nama_brng like ? or detailpesan.kode_sat like ? or detailpesan.no_batch like ? or industrifarmasi.nama_industri like ? or pemesanan.no_order like ? or jenis.nama like ?) ")+
-                "group by detailpesan.kode_brng "+order
+            ps = koneksi.prepareStatement(
+    "SELECT d.kode_brng, b.nama_brng, b.kode_sat, s.satuan, j.nama AS namajenis, " +
+    "SUM(d.jumlah2) AS jumlah, SUM(d.total) AS total " +
+    "FROM pemesanan p " +
+    "JOIN datasuplier ds ON p.kode_suplier = ds.kode_suplier " +
+    "JOIN petugas t ON p.nip = t.nip " +
+    "JOIN bangsal g ON p.kd_bangsal = g.kd_bangsal " +
+    "JOIN detailpesan d ON p.no_faktur = d.no_faktur " +
+    "JOIN databarang b ON d.kode_brng = b.kode_brng " +
+    "JOIN kodesatuan s ON b.kode_sat = s.kode_sat " +
+    "JOIN jenis j ON b.kdjns = j.kdjns " +
+    "JOIN industrifarmasi i ON b.kode_industri = i.kode_industri " +
+    "WHERE p.tgl_pesan BETWEEN ? AND ? " +
+    "AND p.no_faktur LIKE ? " +
+    "AND ds.nama_suplier LIKE ? " +
+    "AND t.nama LIKE ? " +
+    "AND j.nama LIKE ? " +
+    "AND b.nama_brng LIKE ? " +
+    "AND i.nama_industri LIKE ? " +
+    (TCari.getText().trim().equals("") ? "" :
+    "AND (p.no_faktur LIKE ? OR p.kode_suplier LIKE ? OR ds.nama_suplier LIKE ? OR " +
+    "p.nip LIKE ? OR t.nama LIKE ? OR g.nm_bangsal LIKE ? OR " +
+    "d.kode_brng LIKE ? OR b.nama_brng LIKE ? OR b.kode_sat LIKE ? OR " +
+    "d.no_batch LIKE ? OR i.nama_industri LIKE ? OR p.no_order LIKE ? OR j.nama LIKE ?) ") +
+    "GROUP BY d.kode_brng, b.nama_brng, b.kode_sat, s.satuan, j.nama " +
+    order
             );
             try {
                 ps.setString(1,Valid.SetTgl(TglBeli1.getSelectedItem()+""));

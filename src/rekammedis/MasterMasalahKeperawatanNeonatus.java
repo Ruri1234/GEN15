@@ -76,7 +76,7 @@ public class MasterMasalahKeperawatanNeonatus extends javax.swing.JDialog {
 
         tbSpesialis.setDefaultRenderer(Object.class, new WarnaTable());
 
-        TKd.setDocument(new batasInput((byte)3).getKata(TKd));
+        TKd.setDocument(new batasInput((byte)10).getKata(TKd));
         TNm.setDocument(new batasInput((int)100).getKata(TNm));
         TCari.setDocument(new batasInput((int)100).getKata(TCari));
     }

@@ -1231,7 +1231,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                         param.put("ppn",Valid.SetAngka(rs.getDouble("ppn")));
                         param.put("meterai",Valid.SetAngka(rs.getDouble("meterai")));
                         param.put("tagihan",Valid.SetAngka(rs.getDouble("tagihan")));
-                        param.put("tanggal",akses.getkabupatenrs()+", "+rs.getString("tanggal"));
+                        param.put("tanggal","Serukam, " +rs.getString("tanggal"));
                         param.put("apoteker",Apoteker.getText());
                         param.put("petugas",rs.getString("nama"));
                         param.put("kabidkeu",KabidKeu.getText());

@@ -5,7 +5,8 @@
 
     $btnBooking=isset($_POST['btnBooking'])?$_POST['btnBooking']:NULL;
     if (isset($btnBooking)) {
-        if(@$_SESSION["Capcay"]!= getOne2("select aes_encrypt(".cleankar2($_POST["inputcaptcha"]).",'windi')")){
+        $inputcaptcha = isset($_POST["inputcaptcha"]) ? validangka(trim($_POST["inputcaptcha"])) : 0;
+        if(@$_SESSION["Capcay"]!= getOne2("select aes_encrypt(".$inputcaptcha.",'windi')")){
             echo "<section id='news' data-stellar-background-ratio='2.5'>
                             <div class='container'>
                                  <div class='row'>
@@ -31,11 +32,11 @@
             $pesan        = trim(isset($_POST['pesan']))?trim($_POST['pesan']):NULL;
             $pesan        = cleankar2($pesan);
             $TglDaftar    = trim(isset($_POST['TglDaftar']))?trim($_POST['TglDaftar']):NULL;
-            $TglDaftar    = cleankar2($TglDaftar);
+            $TglDaftar    = validangka($TglDaftar);
             $BlnDaftar    = trim(isset($_POST['BlnDaftar']))?trim($_POST['BlnDaftar']):NULL;
-            $BlnDaftar    = cleankar2($BlnDaftar);
+            $BlnDaftar    = validangka($BlnDaftar);
             $ThnDaftar    = trim(isset($_POST['ThnDaftar']))?trim($_POST['ThnDaftar']):NULL;
-            $ThnDaftar    = cleankar2($ThnDaftar);
+            $ThnDaftar    = validangka($ThnDaftar);
             $poli         = trim(isset($_POST['poli']))?trim($_POST['poli']):NULL;
             $poli         = cleankar2($poli);
             $sekarang     = date("Y-m-d H:i:s");
@@ -56,15 +57,15 @@
                                              <div class='news-thumb wow fadeInUp' data-wow-delay='0.2s'>
                                                 <br/>
                                                 <b>
-                                                <table width='95%' border='0' align='center'>
-                                                    <tr><td width='29%' align='left' valign='top'>No. Booking</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>$no_urut</td></tr>
-                                                    <tr><td width='29%' align='left' valign='top'>Tgl. Booking</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>$sekarang</td></tr>
-                                                    <tr><td width='29%' align='left' valign='top'>Tgl. Periksa</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>$TglDaftar-$BlnDaftar-$ThnDaftar</td></tr>
-                                                    <tr><td width='29%' align='left' valign='top'>Nama</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>$nama</td></tr>
-                                                    <tr><td width='29%' align='left' valign='top'>No. Hp/Telp</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>$nohp</td></tr>
-                                                    <tr><td width='29%' align='left' valign='top'>E-Mail</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>$email</td></tr>
-                                                    <tr><td width='29%' align='left' valign='top'>Alamat</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>$alamat</td></tr>
-                                                    <tr><td width='29%' align='left' valign='top'>Unit/Poliklinik</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>".getOne("select nm_poli from poliklinik where kd_poli='$poli'")."</td></tr>
+                                                 <table width='95%' border='0' align='center'>
+                                                    <tr><td width='29%' align='left' valign='top'>No. Booking</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>".escapeHtml($no_urut)."</td></tr>
+                                                    <tr><td width='29%' align='left' valign='top'>Tgl. Booking</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>".escapeHtml($sekarang)."</td></tr>
+                                                    <tr><td width='29%' align='left' valign='top'>Tgl. Periksa</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>".escapeHtml("$TglDaftar-$BlnDaftar-$ThnDaftar")."</td></tr>
+                                                    <tr><td width='29%' align='left' valign='top'>Nama</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>".escapeHtml($nama)."</td></tr>
+                                                    <tr><td width='29%' align='left' valign='top'>No. Hp/Telp</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>".escapeHtml($nohp)."</td></tr>
+                                                    <tr><td width='29%' align='left' valign='top'>E-Mail</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>".escapeHtml($email)."</td></tr>
+                                                    <tr><td width='29%' align='left' valign='top'>Alamat</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>".escapeHtml($alamat)."</td></tr>
+                                                    <tr><td width='29%' align='left' valign='top'>Unit/Poliklinik</td><td valign='top' width='3%' align='center'>:</td><td width='68%' align='left' valign='top'>".escapeHtml(getOne("select nm_poli from poliklinik where kd_poli='$poli'"))."</td></tr>
                                                 </table>
                                                 </b>
                                                 <br/>

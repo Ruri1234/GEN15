@@ -72,7 +72,7 @@ public class DlgPemberianObat extends javax.swing.JDialog {
     private DlgCariObatPenyakit ObatPenyakit;
     private ResultSet rs;
     private double ttljual,ttlhpp,jumlahtotal=0;
-    private String aktifkanbatch="no",aktifkanparsial="no",kodedokter="",namadokter="",statusberi="";
+    private String aktifkanbatch="no",aktifkanparsial="no",kodedokter="",namadokter="",statusberi="",statusclosingparsial="";
     private Jurnal jur=new Jurnal();
     private final Properties prop = new Properties();
     private int jmlparsial=0;
@@ -793,6 +793,11 @@ public class DlgPemberianObat extends javax.swing.JDialog {
             Valid.textKosong(TNoRw,"No.Rawat");
         }else {
             akses.setform("DlgPemberianObat");
+            statusclosingparsial=Sequel.cariIsi("select reg_periksa.status_closing_parsial from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+            if(statusclosingparsial.equals("Sudah Closing")){
+                JOptionPane.showMessageDialog(rootPane,"Pasien Reguler Sudah Closing Kasir ..!!\nData tidak dapat ditambahkan lagi.\nSilahkan hubungi bagian kasir/keuangan ..!!");
+                TCari.requestFocus();
+            }else{
             jmlparsial=0;
             if(aktifkanparsial.equals("yes")){
                 jmlparsial=Sequel.cariInteger("select count(set_input_parsial.kd_pj) from set_input_parsial where set_input_parsial.kd_pj=?",Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));
@@ -806,7 +811,7 @@ public class DlgPemberianObat extends javax.swing.JDialog {
                 }else{ 
                     panggilform();      
                 }
-            }   
+            }   }
         }        
     }//GEN-LAST:event_btnObat1ActionPerformed
 
@@ -826,6 +831,11 @@ public class DlgPemberianObat extends javax.swing.JDialog {
         }else if(!(TPasien.getText().trim().equals(""))){
             try{   
                 if(tbPemberianObat.getSelectedRow()!= -1){
+                    statusclosingparsial=Sequel.cariIsi("select reg_periksa.status_closing_parsial from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+                    if(statusclosingparsial.equals("Sudah Closing")){
+                        JOptionPane.showMessageDialog(rootPane,"Pasien Reguler Sudah Closing Kasir ..!!\nData tidak boleh dihapus.\nSilahkan hubungi bagian kasir/keuangan ..!!");
+                        TCari.requestFocus();
+                    }else{
                     jmlparsial=0;
                     if(aktifkanparsial.equals("yes")){
                         jmlparsial=Sequel.cariInteger("select count(set_input_parsial.kd_pj) from set_input_parsial where set_input_parsial.kd_pj=?",Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));
@@ -874,6 +884,7 @@ public class DlgPemberianObat extends javax.swing.JDialog {
                         LCount.setText(""+tabModePO.getRowCount());
                         LCount1.setText(""+Valid.SetAngka(jumlahtotal-ttljual));
                     }
+                }                    
                 }                    
             }catch(Exception e){
                 System.out.println("Notifikasi : "+e);
@@ -1062,7 +1073,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRw,"No.Rawat");
         }else {            
-            if(Sequel.cariRegistrasi(TNoRw.getText())>0){
+            statusclosingparsial=Sequel.cariIsi("select reg_periksa.status_closing_parsial from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+            if(statusclosingparsial.equals("Sudah Closing")){
+                JOptionPane.showMessageDialog(rootPane,"Pasien Reguler Sudah Closing Kasir ..!!\nData tidak dapat ditambahkan lagi.\nSilahkan hubungi bagian kasir/keuangan ..!!");
+                TCari.requestFocus();
+            }else if(Sequel.cariRegistrasi(TNoRw.getText())>0){
                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi, data tidak boleh dihapus.\nSilahkan hubungi bagian kasir/keuangan ..!!");
                 TCari.requestFocus();
             }else{ 
@@ -1098,7 +1113,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRw,"No.Rawat");
         }else {
-            if(Sequel.cariRegistrasi(TNoRw.getText())>0){
+            statusclosingparsial=Sequel.cariIsi("select reg_periksa.status_closing_parsial from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+            if(statusclosingparsial.equals("Sudah Closing")){
+                JOptionPane.showMessageDialog(rootPane,"Pasien Reguler Sudah Closing Kasir ..!!\nData tidak dapat ditambahkan lagi.\nSilahkan hubungi bagian kasir/keuangan ..!!");
+                TCari.requestFocus();
+            }else if(Sequel.cariRegistrasi(TNoRw.getText())>0){
                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi, data tidak boleh dihapus.\nSilahkan hubungi bagian kasir/keuangan ..!!");
                 TCari.requestFocus();
             }else{ 
